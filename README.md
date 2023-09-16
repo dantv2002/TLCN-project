@@ -1,5 +1,5 @@
 # TLCN-project
-Đồ án môn tiểu luận chuyên ngành
+Đồ án môn tiểu luận chuyên ngành </br>
 Người thực hiện (MSSV): </br>
 -Trần Văn Dân (20110451) </br>
 -Huỳnh Thanh Tuấn (20110120) </br>
