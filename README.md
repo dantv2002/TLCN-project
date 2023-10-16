@@ -5,7 +5,7 @@ Người thực hiện (MSSV): </br>
 -Huỳnh Thanh Tuấn (20110120) </br>
 -Nguyễn Thành Đạt (20110121) </br>
 
-# </br> 
+#
 # Run Backend System
  1. Install docker
  2. Git clone https://github.com/dantv2002/TLCN-project.git
