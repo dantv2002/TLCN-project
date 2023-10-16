@@ -7,6 +7,10 @@ Người thực hiện (MSSV): </br>
 
 #
 # Run Backend System
+### Method 1
  1. Install docker
  2. Git clone https://github.com/dantv2002/TLCN-project.git
  3. Run command: docker compose up
+ ### Method 2
+ 1. Git clone https://github.com/dantv2002/TLCN-project.git
+ 2. Run file BackendsystemApplication.java
