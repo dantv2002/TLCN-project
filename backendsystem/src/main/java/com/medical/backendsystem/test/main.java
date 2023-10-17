@@ -2,6 +2,8 @@ package com.medical.backendsystem.test;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.util.Random;
+
 public class main {
     public static void main(String[] args) {
     //     String password = "123";
@@ -11,7 +13,6 @@ public class main {
     // //     System.out.println(valuate);
     //
 
-    
     }
     
 }

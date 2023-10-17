@@ -17,9 +17,6 @@ public class AccountModel {
     private String role;
     @Field
     private Boolean status;
-
-    public AccountModel() {
-    }
     
     public AccountModel(String email, String password, String role, Boolean status) {
         this.email = email;

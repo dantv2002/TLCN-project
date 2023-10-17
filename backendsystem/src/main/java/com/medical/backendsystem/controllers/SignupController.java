@@ -1,0 +1,70 @@
+package com.medical.backendsystem.controllers;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.medical.backendsystem.models.AccountModel;
+import com.medical.backendsystem.models.PatientModel;
+import com.medical.backendsystem.models.request.SignupRequest;
+import com.medical.backendsystem.services.AccountService;
+import com.medical.backendsystem.services.CryptographyService;
+import com.medical.backendsystem.services.PatientService;
+import com.medical.backendsystem.services.VerifyService;
+
+@RestController
+@RequestMapping("/api")
+public class SignupController {
+
+    private final static Logger logger = LoggerFactory.getLogger(SignupController.class);
+
+    @Autowired
+    private VerifyService verifyService;
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private PatientService patientService;
+    @Autowired
+    private CryptographyService cryptographyRSAService;
+
+    @PostMapping("/signup")
+    public ResponseEntity<?> signUp(@RequestBody SignupRequest signupRequest) {
+        Map<String, Object> responseData = new HashMap<>();
+
+        logger.info("SignUp request");
+        logger.info("Username: " + signupRequest.getFullname());
+        try {
+            // Verify code
+            if (!verifyService.verifyCode(signupRequest.getEmail(), signupRequest.getVerifycode())) {
+                responseData.put("message", "Verify code is incorrect");
+                responseData.put("data", null);
+                return ResponseEntity.status(400).body(responseData);
+            }
+            // Create account
+            String encryptPass = BCrypt.hashpw(cryptographyRSAService.Decrypt(signupRequest.getPassword()),
+                    BCrypt.gensalt(10));
+            accountService.save(new AccountModel(signupRequest.getEmail(), encryptPass, signupRequest.getRole(), true));
+            //
+            patientService.save(new PatientModel(signupRequest.getFullname(), signupRequest.getBirthday(), null,
+                    signupRequest.getAddress(), signupRequest.getPhonenumber(), signupRequest.getEmail(), null, null));
+        } catch (Exception e) {
+            responseData.put("message", "Internal Server Error");
+            responseData.put("data", null);
+            return ResponseEntity.status(500).body(responseData);
+        }
+        
+        logger.info("Sign up successfully");
+        responseData.put("message", "Sign up successfully");
+        responseData.put("data", signupRequest);
+        return ResponseEntity.status(200).body(responseData);
+    }
+}

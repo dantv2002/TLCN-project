@@ -11,11 +11,9 @@ import com.medical.backendsystem.configs.RsaKeyConfig;
 
 @Service
 public class CryptographyService {
-    private final RsaKeyConfig rsaKeyConfig;
+    @Autowired
+    private RsaKeyConfig rsaKeyConfig;
 
-    public CryptographyService(@Autowired RsaKeyConfig rsaKeyConfig){
-        this.rsaKeyConfig = rsaKeyConfig;
-    }
     public String Encrypt(String message) throws Exception {
         byte[] messageBytes = message.getBytes();
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");

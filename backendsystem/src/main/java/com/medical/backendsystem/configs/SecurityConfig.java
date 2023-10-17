@@ -29,43 +29,37 @@ import com.nimbusds.jose.proc.SecurityContext;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
-
-    private final RsaKeyConfig rsaKeyConfig;
-
-
-    public SecurityConfig(@Autowired RsaKeyConfig rsaKeyConfig){
-        this.rsaKeyConfig = rsaKeyConfig;
-    }
+    @Autowired
+    private RsaKeyConfig rsaKeyConfig;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        
+
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests()
                 .requestMatchers("/api/**").permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin()
-                .and().oauth2ResourceServer(OAuth2->OAuth2 
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))      
+                .and().oauth2ResourceServer(OAuth2 -> OAuth2
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().build();
-            
+
     }
 
-    
     private Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
         JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
         jwtConverter.setJwtGrantedAuthoritiesConverter(new KeycloakRealmRoleConverter());
         return jwtConverter;
     }
-    
+
     @Bean
-    JwtDecoder jwtDecoder(){
+    JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(rsaKeyConfig.getPublicKey()).build();
     }
 
     @Bean
-    JwtEncoder jwtEncoder(){
+    JwtEncoder jwtEncoder() {
         JWK jwk = new RSAKey.Builder(rsaKeyConfig.getPublicKey())
                 .privateKey(rsaKeyConfig.getPrivateKey())
                 .build();
@@ -73,6 +67,4 @@ public class SecurityConfig {
         return new NimbusJwtEncoder(jwkSource);
     }
 
-    
 }
-

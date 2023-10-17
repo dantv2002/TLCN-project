@@ -10,11 +10,14 @@ import com.medical.backendsystem.repositories.AccountRepository;
 
 @Service
 public class AccountService {
-    private final AccountRepository accountRepository;
-    public AccountService(@Autowired AccountRepository accountRepository){
-        this.accountRepository = accountRepository;
-    }
+    @Autowired
+    private AccountRepository accountRepository;
+    
     public List<AccountModel> findByEmail(String email){
         return accountRepository.findByEmail(email);
+    }
+
+    public AccountModel save(AccountModel accountModel) {
+        return accountRepository.save(accountModel);
     }
 }

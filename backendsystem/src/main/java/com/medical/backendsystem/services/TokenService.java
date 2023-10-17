@@ -21,13 +21,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenService {
 
-    private final JwtEncoder jwtEncoder;
     private static final Logger logger = LoggerFactory.getLogger(TokenService.class);
-
-    
-    public TokenService(@Autowired JwtEncoder jwtEncoder){
-        this.jwtEncoder = jwtEncoder;
-    }
+    @Autowired
+    private JwtEncoder jwtEncoder;
 
     public String generateToken(List<GrantedAuthority> grantedAuthority, String userName){
         Instant now = Instant.now();

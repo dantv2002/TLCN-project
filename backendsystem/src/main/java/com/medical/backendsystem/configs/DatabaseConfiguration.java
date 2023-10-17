@@ -17,10 +17,9 @@ public class DatabaseConfiguration extends AbstractMongoClientConfiguration {
     @Value("${spring.data.mongodb.database}")
     private String database;
 
-    private final CryptographyService cryptographyRSAService;
-    public DatabaseConfiguration(@Autowired CryptographyService cryptographyRSAService){
-        this.cryptographyRSAService = cryptographyRSAService;
-    }
+    @Autowired
+    private CryptographyService cryptographyRSAService;
+
 
     @Override
     protected String getDatabaseName() {
