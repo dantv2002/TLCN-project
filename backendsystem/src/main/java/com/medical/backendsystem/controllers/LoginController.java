@@ -34,87 +34,68 @@ import com.medical.backendsystem.services.AccountService;
 import com.medical.backendsystem.services.CryptographyService;
 import com.medical.backendsystem.services.TokenService;
 
-
 /**
  * AuthController
  */
 @RestController
 @RequestMapping("/api")
- public class LoginController {
+public class LoginController {
+
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
-    private final TokenService tokenService;
-    private final CryptographyService cryptographyRSAService;
-    private final AccountService accountService;
 
+    @Autowired
+    private TokenService tokenService;
+    @Autowired
+    private CryptographyService cryptographyRSAService;
+    @Autowired
+    private AccountService accountService;
 
-    public LoginController(@Autowired TokenService tokenService, @Autowired CryptographyService cryptographyRSAService, @Autowired AccountService accountService){
-        this.tokenService = tokenService;
-        this.cryptographyRSAService = cryptographyRSAService;
-        this.accountService = accountService;
-    }
-    //Create Account
-    
-    //API Login
+    // API Login
     @PostMapping("/login")
-    public ResponseEntity<?> generateToken(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<?> generateToken(@RequestBody LoginRequest loginRequest) {
         Map<String, Object> responseData = new HashMap<>();
         logger.info("Login request");
-        
+
         List<AccountModel> account = accountService.findByEmail(loginRequest.getEmail());
-        if(account.size() > 0)
-        {
+        if (account.size() > 0) {
             try {
-                boolean valuatePass = false;
-                try {
-                    String DecryptPass = cryptographyRSAService.Decrypt(loginRequest.getPassword());
-                    valuatePass = BCrypt.checkpw(DecryptPass, account.get(0).getPassword());
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    logger.debug("Password not match");
+                String DecryptPass = cryptographyRSAService.Decrypt(loginRequest.getPassword());
+                if (!BCrypt.checkpw(DecryptPass, account.get(0).getPassword())) {
+                    logger.info("Password not match");
                     responseData.put("message", "The Username or Password is Incorrect");
-                    return ResponseEntity.status(401).body(responseData);
-                }
-                if(!valuatePass)
-                {
-                    logger.debug("Password not match");
-                    responseData.put("message", "The Username or Password is Incorrect");
-                    return ResponseEntity.status(401).body(responseData);
+                    responseData.put("data", null);
+                    return ResponseEntity.status(400).body(responseData);
                 }
                 List<GrantedAuthority> authorities = new ArrayList<>();
                 authorities.add(new SimpleGrantedAuthority(account.get(0).getRole()));
-                try{
-                    String token = tokenService.generateToken(authorities, loginRequest.getEmail());
-                    logger.debug("Token generated: {}", token);
-                    logger.debug("For Username: {}", loginRequest.getEmail());
-                    //
-                        responseData.put("Token", token);
-                    //
-                    return ResponseEntity.status(200).body(responseData);
-                }
-                catch(Exception e){
-                    logger.error("Error: {}", e.getMessage());
-                    responseData.put("message", "Internal Server Error");
-                    return ResponseEntity.status(500).body(responseData);
-                }
+                String token = tokenService.generateToken(authorities, loginRequest.getEmail());
+                logger.info("Token generated: {}", token);
+                logger.info("For Username: {}", loginRequest.getEmail());
+                //
+                responseData.put("message", "Create token successfully");
+                responseData.put("data", token);
+                //
+                return ResponseEntity.status(200).body(responseData);
             } catch (Exception e) {
-                // TODO: handle exception
                 responseData.put("message", "Internal Server Error");
+                 responseData.put("data", null);
                 return ResponseEntity.status(500).body(responseData);
             }
         }
-        logger.debug("Email not match");
+        logger.info("Email not match");
         responseData.put("message", "The Username or Password is Incorrect");
-        return ResponseEntity.status(401).body(responseData);
+         responseData.put("data", null);
+        return ResponseEntity.status(400).body(responseData);
     }
-    @GetMapping("/RSA")
-    public String RSA(){
-        try {
-            String DecryptPass = cryptographyRSAService.Encrypt("mongodb+srv://MedicalDB:MedicalDB123321@medicalcluster.3xnzgcp.mongodb.net");
-            System.out.println("KQ: "+DecryptPass);
-        } catch (Exception e) {
-            // TODO: handle exception
-            logger.error("Error: {}", e.getMessage());
-        }
-        return "RSA";        
-    }
+    // @GetMapping("/RSA")
+    // public String RSA(){
+    // try {
+    // String DecryptPass = cryptographyRSAService.Encrypt("lasznhffgywdikzt");
+    // System.out.println("KQ: "+DecryptPass);
+    // } catch (Exception e) {
+    // // TODO: handle exception
+    // logger.error("Error: {}", e.getMessage());
+    // }
+    // return "RSA";
+    // }
 }
