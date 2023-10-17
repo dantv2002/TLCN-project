@@ -73,18 +73,22 @@ public class LoginController {
                 logger.info("For Username: {}", loginRequest.getEmail());
                 //
                 responseData.put("message", "Create token successfully");
-                responseData.put("data", token);
+                responseData.put("data", new HashMap<String, Object>() {
+                    {
+                        put("token", token);
+                    }
+                });
                 //
                 return ResponseEntity.status(200).body(responseData);
             } catch (Exception e) {
                 responseData.put("message", "Internal Server Error");
-                 responseData.put("data", null);
+                responseData.put("data", null);
                 return ResponseEntity.status(500).body(responseData);
             }
         }
         logger.info("Email not match");
         responseData.put("message", "The Username or Password is Incorrect");
-         responseData.put("data", null);
+        responseData.put("data", null);
         return ResponseEntity.status(400).body(responseData);
     }
     // @GetMapping("/RSA")
