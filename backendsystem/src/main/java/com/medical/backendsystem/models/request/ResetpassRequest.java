@@ -3,7 +3,14 @@ package com.medical.backendsystem.models.request;
 public class ResetpassRequest {
     private String email;
     private String password;
+    private String verifycode;
     
+    public String getVerifycode() {
+        return verifycode;
+    }
+    public void setVerifycode(String verifycode) {
+        this.verifycode = verifycode;
+    }
     public String getEmail() {
         return email;
     }

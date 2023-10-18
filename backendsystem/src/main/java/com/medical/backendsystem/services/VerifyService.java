@@ -29,10 +29,16 @@ public class VerifyService {
         List<VerifyModel> verifyModels = verifyRepository.findByEmail(email);
         if (verifyModels.size() > 0) {
             if (verifyModels.get(0).getVerifycode().equals(verifyCode)) {
-                verifyRepository.delete(verifyModels.get(0));
                 return true;
             }
         }
         return false;
+    }
+
+    public void deleteCode(String email){
+        List<VerifyModel> verifyModels = verifyRepository.findByEmail(email);
+        if (verifyModels.size() > 0) {
+            verifyRepository.delete(verifyModels.get(0));
+        }
     }
 }

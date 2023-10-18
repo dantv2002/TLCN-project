@@ -1,14 +1,12 @@
 package com.medical.backendsystem.controllers;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,10 +62,13 @@ public class SignupController {
             //
             response.setData( new HashMap<String, Object>() {
                 {
+                    accountModel.setPassword(null);
                     put("account", accountModel);
                     put("patient", patientModel);
                 }
             });
+            //delete verify code
+            verifyService.deleteCode(signupRequest.getEmail());
         } catch (Exception e) {
             response.setMessage("Internal Server Error");
             response.setData(null);
@@ -75,7 +76,7 @@ public class SignupController {
         }
 
         logger.info("Sign up successfully");
-        response.setMessage("Sign up successfully\"");
+        response.setMessage("Sign up successfully");
         return ResponseEntity.status(200).body(response);
     }
 }
