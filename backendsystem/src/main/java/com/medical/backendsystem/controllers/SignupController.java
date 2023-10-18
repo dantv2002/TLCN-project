@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.medical.backendsystem.models.AccountModel;
 import com.medical.backendsystem.models.PatientModel;
 import com.medical.backendsystem.models.request.SignupRequest;
+import com.medical.backendsystem.models.response.BaseResponse;
 import com.medical.backendsystem.services.AccountService;
 import com.medical.backendsystem.services.CryptographyService;
 import com.medical.backendsystem.services.PatientService;
@@ -39,7 +40,7 @@ public class SignupController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody SignupRequest signupRequest) {
-        Map<String, Object> responseData = new HashMap<>();
+        BaseResponse response = new BaseResponse();
 
         logger.info("SignUp request");
         logger.info("Username: " + signupRequest.getFullname());
@@ -47,9 +48,9 @@ public class SignupController {
         try {
             // Verify code
             if (!verifyService.verifyCode(signupRequest.getEmail(), signupRequest.getVerifycode())) {
-                responseData.put("message", "Verify code is incorrect");
-                responseData.put("data", null);
-                return ResponseEntity.status(400).body(responseData);
+                response.setMessage("Verify code is incorrect");
+                response.setData(null);
+                return ResponseEntity.status(400).body(response);
             }
             // Create account
             String encryptPass = BCrypt.hashpw(cryptographyRSAService.Decrypt(signupRequest.getPassword()),
@@ -61,20 +62,20 @@ public class SignupController {
                     signupRequest.getBirthday(), null,
                     signupRequest.getAddress(), signupRequest.getPhonenumber(), signupRequest.getEmail(), null, null));
             //
-            responseData.put("data", new HashMap<String, Object>() {
+            response.setData( new HashMap<String, Object>() {
                 {
                     put("account", accountModel);
                     put("patient", patientModel);
                 }
             });
         } catch (Exception e) {
-            responseData.put("message", "Internal Server Error");
-            responseData.put("data", null);
-            return ResponseEntity.status(500).body(responseData);
+            response.setMessage("Internal Server Error");
+            response.setData(null);
+            return ResponseEntity.status(500).body(response);
         }
 
         logger.info("Sign up successfully");
-        responseData.put("message", "Sign up successfully");
-        return ResponseEntity.status(200).body(responseData);
+        response.setMessage("Sign up successfully\"");
+        return ResponseEntity.status(200).body(response);
     }
 }

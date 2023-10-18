@@ -10,6 +10,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.support.Repositories;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.medical.backendsystem.models.AccountModel;
 import com.medical.backendsystem.models.request.LoginRequest;
+import com.medical.backendsystem.models.response.BaseResponse;
 import com.medical.backendsystem.repositories.AccountRepository;
 import com.medical.backendsystem.services.AccountService;
 import com.medical.backendsystem.services.CryptographyService;
@@ -53,7 +55,7 @@ public class LoginController {
     // API Login
     @PostMapping("/login")
     public ResponseEntity<?> generateToken(@RequestBody LoginRequest loginRequest) {
-        Map<String, Object> responseData = new HashMap<>();
+        BaseResponse response = new BaseResponse();
         logger.info("Login request");
 
         List<AccountModel> account = accountService.findByEmail(loginRequest.getEmail());
@@ -62,9 +64,9 @@ public class LoginController {
                 String DecryptPass = cryptographyRSAService.Decrypt(loginRequest.getPassword());
                 if (!BCrypt.checkpw(DecryptPass, account.get(0).getPassword())) {
                     logger.info("Password not match");
-                    responseData.put("message", "The Username or Password is Incorrect");
-                    responseData.put("data", null);
-                    return ResponseEntity.status(400).body(responseData);
+                    response.setMessage("The Username or Password is Incorrect");
+                    response.setData(null);
+                    return ResponseEntity.status(400).body(response);
                 }
                 List<GrantedAuthority> authorities = new ArrayList<>();
                 authorities.add(new SimpleGrantedAuthority(account.get(0).getRole()));
@@ -72,34 +74,23 @@ public class LoginController {
                 logger.info("Token generated: {}", token);
                 logger.info("For Username: {}", loginRequest.getEmail());
                 //
-                responseData.put("message", "Create token successfully");
-                responseData.put("data", new HashMap<String, Object>() {
+                response.setMessage("Create token successfully");
+                response.setData(new HashMap<String, Object>() {
                     {
                         put("token", token);
                     }
                 });
                 //
-                return ResponseEntity.status(200).body(responseData);
+                return ResponseEntity.status(200).body(response);
             } catch (Exception e) {
-                responseData.put("message", "Internal Server Error");
-                responseData.put("data", null);
-                return ResponseEntity.status(500).body(responseData);
+                response.setMessage("Internal Server Error");
+                response.setData(null);
+                return ResponseEntity.status(500).body(response);
             }
         }
         logger.info("Email not match");
-        responseData.put("message", "The Username or Password is Incorrect");
-        responseData.put("data", null);
-        return ResponseEntity.status(400).body(responseData);
+        response.setMessage("The Username or Password is Incorrect");
+        response.setData(null);
+        return ResponseEntity.status(400).body(response);
     }
-    // @GetMapping("/RSA")
-    // public String RSA(){
-    // try {
-    // String DecryptPass = cryptographyRSAService.Encrypt("lasznhffgywdikzt");
-    // System.out.println("KQ: "+DecryptPass);
-    // } catch (Exception e) {
-    // // TODO: handle exception
-    // logger.error("Error: {}", e.getMessage());
-    // }
-    // return "RSA";
-    // }
 }

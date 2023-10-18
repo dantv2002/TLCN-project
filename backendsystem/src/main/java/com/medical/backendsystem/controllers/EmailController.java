@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonSerializable.Base;
 import com.medical.backendsystem.models.request.EmailRequest;
+import com.medical.backendsystem.models.response.BaseResponse;
 import com.medical.backendsystem.services.AccountService;
 import com.medical.backendsystem.services.EmailService;
 import com.medical.backendsystem.services.VerifyService;
@@ -35,16 +37,16 @@ public class EmailController {
     // API Send Email Verify Code
     @PostMapping("/sendEmail")
     public ResponseEntity<?> sendEmail(@RequestBody EmailRequest emailRequest) {
-        Map<String, Object> responseData = new HashMap<>();
+        BaseResponse response = new BaseResponse();
         logger.info("SendEmail request");
 
         logger.info("To email: " + emailRequest.getToemail());
         logger.info("User name: " + emailRequest.getUsername());
         //
         if (accountService.findByEmail(emailRequest.getToemail()).size() > 0) {
-            responseData.put("message", "Email already exists");
-            responseData.put("data", null);
-            return ResponseEntity.status(400).body(responseData);
+            response.setMessage("Email already exists");
+            response.setData(null);
+            return ResponseEntity.status(400).body(response);
         }
         //
         try {
@@ -52,14 +54,14 @@ public class EmailController {
                     verifyService.createCode(emailRequest.getToemail()));
         } catch (Exception e) {
             logger.error("Error: " + e.getMessage());
-            responseData.put("message", "Internal Server Error");
-            responseData.put("data", null);
-            return ResponseEntity.status(500).body(responseData);
+            response.setMessage("Internal Server Error");
+            response.setData(null);
+            return ResponseEntity.status(500).body(response);
         }
         logger.info("Email sent successfully");
-        responseData.put("message", "Email sent successfully");
-        responseData.put("data", emailRequest);
-        return ResponseEntity.status(200).body(responseData);
+        response.setMessage("Email sent successfully");
+        response.setData(emailRequest);
+        return ResponseEntity.status(200).body(response);
     }
 
 }

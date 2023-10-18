@@ -1,14 +1,21 @@
 version: '3.4'
 
+#NETWORK
+networks:
+  springboot-app-network:
+    driver: bridge
+
 #SERVICES
 services:
   # Backend
   java-springboot:
     container_name: JavaAPI
-    build: 
+    build:
       dockerfile: Dockerfile
       context: ./backendsystem/
     ports:
-      -  "8080:8080"
+      - "8080:8080"
     volumes:
       - ./backendsystem:/app
+    networks:
+      - springboot-app-network

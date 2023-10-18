@@ -1,5 +1,7 @@
 package com.medical.backendsystem.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,5 +15,9 @@ public class PatientService {
 
     public PatientModel save(PatientModel patientModel) {
         return patientRepository.save(patientModel);
+    }
+
+    public List<PatientModel> findByEmail(String email) {
+        return patientRepository.findByEmail(email);
     }
 }
