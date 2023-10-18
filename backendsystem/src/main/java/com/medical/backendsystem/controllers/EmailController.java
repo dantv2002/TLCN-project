@@ -61,7 +61,7 @@ public class EmailController {
                 return ResponseEntity.status(400).body(response);
             }
             //
-            PatientModel patient = patientService.findByEmail(email).get(0); // Null pointer exception
+            PatientModel patient = patientService.findByEmail(email).get(0); // result empty exception
             return sendEmail(patient.getEmail(), patient.getFullName());
         } catch (Exception e) {
             logger.error("Error: " + e.getMessage());

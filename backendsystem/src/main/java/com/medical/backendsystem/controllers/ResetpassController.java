@@ -65,13 +65,7 @@ public class ResetpassController {
                             BCrypt.gensalt(10)));
             AccountModel accountModelResult = accountService
                     .update(accountModel.get(0));
-            //
-            if (accountModelResult == null) {
-                logger.info("Update password failed");
-                response.setMessage("Update password failed");
-                response.setData(null);
-                return ResponseEntity.status(400).body(response);
-            }
+            
             response.setData(new HashMap<String, Object>() {
                 {
                     accountModelResult.setPassword(null);
