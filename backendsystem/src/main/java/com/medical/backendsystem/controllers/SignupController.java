@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +43,7 @@ public class SignupController {
 
         logger.info("SignUp request");
         logger.info("Username: " + signupRequest.getFullname());
+        //
         try {
             // Verify code
             if (!verifyService.verifyCode(signupRequest.getEmail(), signupRequest.getVerifycode())) {
@@ -52,19 +54,27 @@ public class SignupController {
             // Create account
             String encryptPass = BCrypt.hashpw(cryptographyRSAService.Decrypt(signupRequest.getPassword()),
                     BCrypt.gensalt(10));
-            accountService.save(new AccountModel(signupRequest.getEmail(), encryptPass, signupRequest.getRole(), true));
+            AccountModel accountModel = accountService
+                    .save(new AccountModel(signupRequest.getEmail(), encryptPass, signupRequest.getRole(), true));
             //
-            patientService.save(new PatientModel(signupRequest.getFullname(), signupRequest.getBirthday(), null,
+            PatientModel patientModel = patientService.save(new PatientModel(signupRequest.getFullname(),
+                    signupRequest.getBirthday(), null,
                     signupRequest.getAddress(), signupRequest.getPhonenumber(), signupRequest.getEmail(), null, null));
+            //
+            responseData.put("data", new HashMap<String, Object>() {
+                {
+                    put("account", accountModel);
+                    put("patient", patientModel);
+                }
+            });
         } catch (Exception e) {
             responseData.put("message", "Internal Server Error");
             responseData.put("data", null);
             return ResponseEntity.status(500).body(responseData);
         }
-        
+
         logger.info("Sign up successfully");
         responseData.put("message", "Sign up successfully");
-        responseData.put("data", signupRequest);
         return ResponseEntity.status(200).body(responseData);
     }
 }
