@@ -14,3 +14,5 @@ Người thực hiện (MSSV): </br>
  ### Method 2
  1. Git clone https://github.com/dantv2002/TLCN-project.git
  2. Run file BackendsystemApplication.java
+ #
+ # [Link document API]( https://docs.google.com/document/d/1byt__JC_A_mWgTfvey_zoh7eEF7Zkf2a/edit?usp=sharing&ouid=101945342616659158984&rtpof=true&sd=true)
