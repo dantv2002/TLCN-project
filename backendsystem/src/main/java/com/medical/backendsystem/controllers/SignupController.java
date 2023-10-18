@@ -39,7 +39,7 @@ public class SignupController {
     private CryptographyService cryptographyRSAService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<BaseResponse> signUp(@RequestBody SignupRequest signupRequest) {
         BaseResponse response = new BaseResponse();
 
         logger.info("SignUp request");
@@ -53,7 +53,7 @@ public class SignupController {
                 return ResponseEntity.status(400).body(response);
             }
             // Create account
-            String encryptPass = BCrypt.hashpw(cryptographyRSAService.Decrypt(signupRequest.getPassword()),
+            String encryptPass = BCrypt.hashpw(cryptographyRSAService.Decrypt(signupRequest.getPassword()), // Encrypt password string body request changed
                     BCrypt.gensalt(10));
             AccountModel accountModel = accountService
                     .save(new AccountModel(signupRequest.getEmail(), encryptPass, signupRequest.getRole(), true));

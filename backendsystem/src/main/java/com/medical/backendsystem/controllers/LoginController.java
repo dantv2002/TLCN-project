@@ -54,14 +54,14 @@ public class LoginController {
 
     // API Login
     @PostMapping("/login")
-    public ResponseEntity<?> generateToken(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<BaseResponse> generateToken(@RequestBody LoginRequest loginRequest) {
         BaseResponse response = new BaseResponse();
         logger.info("Login request");
 
         List<AccountModel> account = accountService.findByEmail(loginRequest.getEmail());
         if (account.size() > 0) {
             try {
-                String DecryptPass = cryptographyRSAService.Decrypt(loginRequest.getPassword());
+                String DecryptPass = cryptographyRSAService.Decrypt(loginRequest.getPassword()); // Encrypt password string body request changed
                 if (!BCrypt.checkpw(DecryptPass, account.get(0).getPassword())) {
                     logger.info("Password not match");
                     response.setMessage("The Username or Password is Incorrect");
