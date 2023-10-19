@@ -43,7 +43,7 @@ public class ControllerTest {
     @GetMapping("/RSA")
     public String RSA() {
         try {
-            String DecryptPass = cryptographyRSAService.Encrypt("20110120");
+            String DecryptPass = cryptographyRSAService.Decrypt("PpZn3p/kNzK35gDBSr7jqcFE74jQxdrAMRVO2dzW2B0VQ6BwX+QM1ah20ShJmAgAmCsNjxUmF4FTJ4F/9YBq7M7IJgXcnPup+sl4HVQcCuZaAxJtPBXlgHsNYTW275oTyKj0zrOGpjkOtVO5YYCF0YuhsOTqpz7qLyounziObUR42bns2Gs/Q7kFY2cuQk6aCvHs7sK4AArdR8CX0t8pSdGUG/gs6Xe2yqqSyhF1EZ6GpN9VIki1Gx3jtw3/wrvlJAIGMnvBsmcm8v6SjcyXCqK3x1HNALrMD/yS6wsgrWuHoXRlWTIEWiq3NzSydwog5wjU7e9jYfdC7OKMvAbeJg==");
             System.out.println("KQ: " + DecryptPass);
         } catch (Exception e) {
             // TODO: handle exception

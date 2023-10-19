@@ -8,4 +8,5 @@ import com.medical.backendsystem.models.PatientModel;
 
 public interface PatientRepository extends MongoRepository<PatientModel, String> {
     List<PatientModel> findByEmail(String email);
+    List<PatientModel> findByEmailAndIsDeleted(String email, Boolean isDeleted);
 }

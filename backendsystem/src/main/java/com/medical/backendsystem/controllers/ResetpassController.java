@@ -63,8 +63,7 @@ public class ResetpassController {
             accountModel.get(0)
                     .setPassword(BCrypt.hashpw(cryptographyRSAService.Decrypt(resetPassRequest.getPassword()),// Encrypt password string body request changed
                             BCrypt.gensalt(10)));
-            AccountModel accountModelResult = accountService
-                    .update(accountModel.get(0));
+            AccountModel accountModelResult = accountService.save(accountModel.get(0));
             
             response.setData(new HashMap<String, Object>() {
                 {

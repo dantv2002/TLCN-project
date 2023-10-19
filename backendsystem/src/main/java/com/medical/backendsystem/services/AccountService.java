@@ -20,10 +20,4 @@ public class AccountService {
     public AccountModel save(AccountModel accountModel) {
         return accountRepository.save(accountModel);
     }
-
-    public AccountModel update(AccountModel accountModel) {
-        AccountModel account = accountRepository.findById(accountModel.getId()).get();
-        account.setPassword(accountModel.getPassword());
-        return accountRepository.save(account);
-    }
 }

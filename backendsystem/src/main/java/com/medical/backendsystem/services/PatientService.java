@@ -20,4 +20,8 @@ public class PatientService {
     public List<PatientModel> findByEmail(String email) {
         return patientRepository.findByEmail(email);
     }
+
+    public List<PatientModel> findByEmailAndIsDeleted(String email, Boolean isDeleted) {
+        return patientRepository.findByEmailAndIsDeleted(email, isDeleted);
+    }
 }

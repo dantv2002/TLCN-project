@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.medical.backendsystem.models.AccountModel;
+import com.medical.backendsystem.models.PatientModel;
 import com.medical.backendsystem.models.request.LoginRequest;
 import com.medical.backendsystem.models.response.BaseResponse;
 import com.medical.backendsystem.services.AccountService;
 import com.medical.backendsystem.services.CryptographyService;
+import com.medical.backendsystem.services.PatientService;
 import com.medical.backendsystem.services.TokenService;
 
 /**
@@ -38,6 +40,8 @@ public class LoginController {
     private CryptographyService cryptographyRSAService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private PatientService patientService;
 
     // API Login
     @PostMapping("/login")
@@ -61,10 +65,13 @@ public class LoginController {
                 logger.info("Token generated: {}", token);
                 logger.info("For Username: {}", loginRequest.getEmail());
                 //
+                PatientModel patient = patientService.findByEmail(loginRequest.getEmail()).get(0);
                 response.setMessage("Create token successfully");
                 response.setData(new HashMap<String, Object>() {
                     {
                         put("token", token);
+                        put("fullname", patient.getFullName());
+                        put("email", loginRequest.getEmail());
                     }
                 });
                 //

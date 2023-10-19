@@ -27,11 +27,15 @@ public class PatientModel {
     @Field
     private String allergy; // Dị ứng
 
+    //
+    @Field
+    private Boolean isDeleted;
+
     public PatientModel() {
     }
 
     public PatientModel(String fullName, Date birthday, Boolean gender, String address, String phoneNumber,
-            String email, String identificationCard, String allergy) {
+            String email, String identificationCard, String allergy, Boolean isDeleted) {
         this.fullName = fullName;
         this.birthday = birthday;
         this.gender = gender;
@@ -40,9 +44,10 @@ public class PatientModel {
         this.email = email;
         this.identificationCard = identificationCard;
         this.allergy = allergy;
+        this.isDeleted = isDeleted;
     }
 
-
+    
 
     public String getId() {
         return id;
@@ -68,7 +73,7 @@ public class PatientModel {
         this.birthday = birthday;
     }
 
-    public Boolean isGender() {
+    public Boolean getGender() {
         return gender;
     }
 
@@ -114,6 +119,14 @@ public class PatientModel {
 
     public void setAllergy(String allergy) {
         this.allergy = allergy;
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
 }

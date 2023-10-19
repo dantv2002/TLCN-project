@@ -58,7 +58,7 @@ public class SignupController {
             //
             PatientModel patientModel = patientService.save(new PatientModel(signupRequest.getFullname(),
                     signupRequest.getBirthday(), null,
-                    signupRequest.getAddress(), signupRequest.getPhonenumber(), signupRequest.getEmail(), null, null));
+                    signupRequest.getAddress(), signupRequest.getPhonenumber(), signupRequest.getEmail(), null, null, true));
             //
             response.setData( new HashMap<String, Object>() {
                 {
