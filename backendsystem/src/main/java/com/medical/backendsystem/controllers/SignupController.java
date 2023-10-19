@@ -54,7 +54,7 @@ public class SignupController {
             String encryptPass = BCrypt.hashpw(cryptographyRSAService.Decrypt(signupRequest.getPassword()), // Encrypt password string body request changed
                     BCrypt.gensalt(10));
             AccountModel accountModel = accountService
-                    .save(new AccountModel(signupRequest.getEmail(), encryptPass, signupRequest.getRole(), true));
+                    .save(new AccountModel(signupRequest.getEmail(), encryptPass, "PATIENT", true));
             //
             PatientModel patientModel = patientService.save(new PatientModel(signupRequest.getFullname(),
                     signupRequest.getBirthday(), null,

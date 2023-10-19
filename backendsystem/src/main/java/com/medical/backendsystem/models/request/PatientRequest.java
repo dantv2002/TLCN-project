@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class PatientRequest {
     private String fullname;
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "MM/dd/yyyy")
     private Date birthday;
     private Boolean gender; // Nam = 1, Nữ = 0
     private String address;

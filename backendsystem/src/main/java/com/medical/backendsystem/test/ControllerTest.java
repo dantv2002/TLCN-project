@@ -20,7 +20,7 @@ public class ControllerTest {
     private CryptographyService cryptographyRSAService;
 
     // @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/login")
     public String homepage() {
         

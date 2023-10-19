@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,7 +38,7 @@ public class PatientRecordController {
         // Check email exist
         List<PatientModel> patientModel = patientService.findByEmail(email);
         if (patientModel.size() == 0) {
-            response.setMessage("Email does not exist");
+            response.setMessage("Patient record of " + email + " does not exist");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
@@ -74,14 +74,14 @@ public class PatientRecordController {
         return ResponseEntity.status(200).body(response);
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<BaseResponse> update(@RequestBody PatientRequest patientRequest){
         BaseResponse response = new BaseResponse();
         logger.info("Update patient record request");
         // Check email exist
         List<PatientModel> patientModel = patientService.findByEmail(patientRequest.getEmail());
         if (patientModel.size() == 0) {
-            response.setMessage("Email does not exist");
+            response.setMessage("Patient record of " + patientRequest.getEmail() + " does not exist");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
@@ -111,7 +111,7 @@ public class PatientRecordController {
         // Check email exist
         List<PatientModel> patientModel = patientService.findByEmail(email);
         if (patientModel.size() == 0) {
-            response.setMessage("Email does not exist");
+            response.setMessage("Patient record of " + email + " does not exist");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
