@@ -44,8 +44,7 @@ public class ResetpassController {
         //
         try {
             // Check email exists
-            List<AccountEntity> account = accountService.findByEmail(resetPassRequest.getEmail());
-            if (account.size() == 0) {
+            if (!accountService.isexistsByEmail(resetPassRequest.getEmail())) {
                 logger.info("Email not exists");
                 response.setMessage("Email not exists");
                 response.setData(null);
@@ -60,11 +59,8 @@ public class ResetpassController {
             }
             // Update password
             // decrypt RSA and encrypt password
-            account.get(0)
-                    .setPassword(BCrypt.hashpw(cryptographyRSAService.Decrypt(resetPassRequest.getPassword()),// Encrypt password string body request changed
-                            BCrypt.gensalt(10)));
-            AccountEntity accountModelResult = accountService.save(account.get(0));
-            
+            AccountEntity accountModelResult = accountService.update(resetPassRequest.getEmail(), BCrypt.hashpw(cryptographyRSAService.Decrypt(resetPassRequest.getPassword()),// Encrypt password string body request changed
+                    BCrypt.gensalt(10)));
             response.setData(new HashMap<String, Object>() {
                 {
                     accountModelResult.setPassword(null);
@@ -72,7 +68,7 @@ public class ResetpassController {
                 }
             });
             // delete verify code
-            verifyService.deleteCode(resetPassRequest.getEmail());
+            verifyService.delete(resetPassRequest.getEmail());
         } catch (Exception e) {
             logger.error("Error: " + e.getMessage());
             response.setMessage("Internal Server Error");

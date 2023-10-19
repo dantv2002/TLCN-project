@@ -54,11 +54,10 @@ public class SignupController {
             String encryptPass = BCrypt.hashpw(cryptographyRSAService.Decrypt(signupRequest.getPassword()), // Encrypt password string body request changed
                     BCrypt.gensalt(10));
             AccountEntity account = accountService
-                    .save(new AccountEntity(signupRequest.getEmail(), encryptPass, "PATIENT", true));
+                    .create(signupRequest.getEmail(), encryptPass, "PATIENT", true);
             //
-            PatientEntity patient = patientService.save(new PatientEntity(signupRequest.getFullname(),
-                    signupRequest.getBirthday(), null,
-                    signupRequest.getAddress(), signupRequest.getPhonenumber(), signupRequest.getEmail(), null, null, true));
+            PatientEntity patient = patientService.create(signupRequest.getFullname(), signupRequest.getBirthday(),
+                    signupRequest.getAddress(), signupRequest.getPhonenumber(), signupRequest.getEmail());
             //
             response.setData( new HashMap<String, Object>() {
                 {
@@ -68,7 +67,7 @@ public class SignupController {
                 }
             });
             //delete verify code
-            verifyService.deleteCode(signupRequest.getEmail());
+            verifyService.delete(signupRequest.getEmail());
         } catch (Exception e) {
             response.setMessage("Internal Server Error");
             response.setData(null);

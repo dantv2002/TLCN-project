@@ -14,6 +14,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
+import com.medical.backendsystem.models.entity.AccountEntity;
+
 
 /**
  * Token
@@ -25,11 +27,10 @@ public class TokenService {
     @Autowired
     private JwtEncoder jwtEncoder;
 
-    public String generateToken(List<GrantedAuthority> grantedAuthority, String userName){
+    public String generateToken(AccountEntity accountEntity) {
         Instant now = Instant.now();
-        String authorities = grantedAuthority.stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
+        String authorities = accountEntity.getRole();
+        String userName = accountEntity.getEmail();
 
         logger.debug("authorities: {}", authorities);
         logger.debug("userName: {}", userName);

@@ -18,6 +18,9 @@ public class AccountEntity {
     @Field
     private Boolean status;
     
+    public AccountEntity() {
+    }
+
     public AccountEntity(String email, String password, String role, Boolean status) {
         this.email = email;
         this.password = password;

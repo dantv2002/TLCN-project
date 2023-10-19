@@ -38,7 +38,7 @@ public class EmailController {
     public ResponseEntity<BaseResponse> sendEmailSignUp(@RequestParam String toemail, @RequestParam String username) {
         BaseResponse response = new BaseResponse();
         //
-        if (accountService.findByEmail(toemail).size() > 0) {
+        if (accountService.isexistsByEmail(toemail)) {
             response.setMessage("Email already exists");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
@@ -55,13 +55,13 @@ public class EmailController {
         logger.info("Email: " + email);
         //
         try {
-            if (accountService.findByEmail(email).size() == 0) {
+            if (!accountService.isexistsByEmail(email)) {
                 response.setMessage("Email does not exist");
                 response.setData(null);
                 return ResponseEntity.status(400).body(response);
             }
             //
-            PatientEntity patient = patientService.findByEmail(email).get(0); // result empty exception
+            PatientEntity patient = patientService.findByEmail(email); // result empty exception
             return sendEmail(patient.getEmail(), patient.getFullName());
         } catch (Exception e) {
             logger.error("Error: " + e.getMessage());
@@ -81,7 +81,7 @@ public class EmailController {
         //
         try {
             emailService.sendEmail(toemail, username,
-                    verifyService.createCode(toemail));
+                    verifyService.create(toemail));
         } catch (Exception e) {
             logger.error("Error: " + e.getMessage());
             response.setMessage("Internal Server Error");

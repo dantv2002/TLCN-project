@@ -15,7 +15,8 @@ public class VerifyService {
     @Autowired
     private VerifyRepository verifyRepository;
 
-    public String createCode(String email){
+    // Create
+    public String create(String email){
         String verifyCode = "";
         Random random = new Random();
         for (int i = 0; i < 6; i++) {
@@ -24,7 +25,16 @@ public class VerifyService {
         verifyRepository.save(new VerifyEntity(email, verifyCode));
         return verifyCode;
     }
-
+    // Read
+    // Update
+    // Delete
+    public void delete(String email){
+        List<VerifyEntity> verifyEntities = verifyRepository.findByEmail(email);
+        if (verifyEntities.size() > 0) {
+            verifyRepository.delete(verifyEntities.get(0));
+        }
+    }
+    // Other
     public boolean verifyCode(String email, String verifyCode){
         List<VerifyEntity> verifyEntities = verifyRepository.findByEmail(email);
         if (verifyEntities.size() > 0) {
@@ -33,12 +43,5 @@ public class VerifyService {
             }
         }
         return false;
-    }
-
-    public void deleteCode(String email){
-        List<VerifyEntity> verifyEntities = verifyRepository.findByEmail(email);
-        if (verifyEntities.size() > 0) {
-            verifyRepository.delete(verifyEntities.get(0));
-        }
     }
 }

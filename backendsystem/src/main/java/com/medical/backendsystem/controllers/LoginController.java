@@ -49,23 +49,22 @@ public class LoginController {
         BaseResponse response = new BaseResponse();
         logger.info("Login request");
 
-        List<AccountEntity> account = accountService.findByEmail(loginRequest.getEmail());
-        if (account.size() > 0) {
+        if (accountService.isexistsByEmail(loginRequest.getEmail())) {
             try {
+                AccountEntity account = accountService.findByEmail(loginRequest.getEmail());
                 String DecryptPass = cryptographyRSAService.Decrypt(loginRequest.getPassword()); // Encrypt password string body request changed
-                if (!BCrypt.checkpw(DecryptPass, account.get(0).getPassword())) {
+                if (!BCrypt.checkpw(DecryptPass, account.getPassword())) {
                     logger.info("Password not match");
                     response.setMessage("The Username or Password is Incorrect");
                     response.setData(null);
                     return ResponseEntity.status(400).body(response);
                 }
-                List<GrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(new SimpleGrantedAuthority(account.get(0).getRole()));
-                String token = tokenService.generateToken(authorities, loginRequest.getEmail());
+                //
+                String token = tokenService.generateToken(account);
                 logger.info("Token generated: {}", token);
                 logger.info("For Username: {}", loginRequest.getEmail());
                 //
-                PatientEntity patient = patientService.findByEmail(loginRequest.getEmail()).get(0);
+                PatientEntity patient = patientService.findByEmail(loginRequest.getEmail());
                 response.setMessage("Create token successfully");
                 response.setData(new HashMap<String, Object>() {
                     {

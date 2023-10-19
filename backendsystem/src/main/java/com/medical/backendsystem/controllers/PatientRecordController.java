@@ -36,15 +36,14 @@ public class PatientRecordController {
         BaseResponse response = new BaseResponse();
         logger.info("Create patient record request");
         // Check email exist
-        List<PatientEntity> patient = patientService.findByEmail(email);
-        if (patient.size() == 0) {
+        if (!patientService.isexistsByEmail(email)) {
             response.setMessage("Patient record of " + email + " does not exist");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
         // update isDeleted = false
-        patient.get(0).setIsDeleted(false);
-        PatientEntity patientResult = patientService.save(patient.get(0));
+        PatientEntity patientResult = patientService.create(email);
+        // response
         response.setMessage("Create patient record successfully");
         response.setData(new HashMap<String, Object>() {
             {
@@ -55,46 +54,40 @@ public class PatientRecordController {
     }
 
     @GetMapping("/read")
-    public ResponseEntity<BaseResponse> read(@RequestParam String email){
+    public ResponseEntity<BaseResponse> read(@RequestParam String email) {
         BaseResponse response = new BaseResponse();
         logger.info("Read patient record request");
         // Check email exist
-        List<PatientEntity> patient = patientService.findByEmailAndIsDeleted(email, false);
-        if (patient.size() == 0) {
+        if (!patientService.isexistsByEmailAndIsDeleted(email, false)) {
             response.setMessage("Patient record of " + email + " does not exist");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
+        PatientEntity patient = patientService.findByEmailAndIsDeleted(email, false);
+        // response
         response.setMessage("Read patient record successfully");
         response.setData(new HashMap<String, Object>() {
             {
-                put("patient", patient.get(0));
+                put("patient", patient);
             }
         });
         return ResponseEntity.status(200).body(response);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<BaseResponse> update(@RequestBody PatientRequest patientRequest){
+    public ResponseEntity<BaseResponse> update(@RequestBody PatientRequest patientRequest) {
         BaseResponse response = new BaseResponse();
         logger.info("Update patient record request");
         // Check email exist
-        List<PatientEntity> patient = patientService.findByEmail(patientRequest.getEmail());
-        if (patient.size() == 0) {
+        if (!patientService.isexistsByEmail(patientRequest.getEmail())) {
             response.setMessage("Patient record of " + patientRequest.getEmail() + " does not exist");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
         // update patient record
-        patient.get(0).setFullName(patientRequest.getFullname());
-        patient.get(0).setBirthday(patientRequest.getBirthday());
-        patient.get(0).setGender(patientRequest.getGender());
-        patient.get(0).setAddress(patientRequest.getAddress());
-        patient.get(0).setPhoneNumber(patientRequest.getPhonenumber());
-        patient.get(0).setEmail(patientRequest.getEmail());
-        patient.get(0).setIdentificationCard(patientRequest.getIdentificationCard());
-        patient.get(0).setAllergy(patientRequest.getAllergy());
-        PatientEntity patientResult = patientService.save(patient.get(0));
+        PatientEntity patientResult = patientService.update(patientRequest.getFullname(), patientRequest.getBirthday(),
+                patientRequest.getGender(), patientRequest.getAddress(), patientRequest.getPhonenumber(),
+                patientRequest.getEmail(), patientRequest.getIdentificationCard(), patientRequest.getAllergy());
         response.setMessage("Update patient record successfully");
         response.setData(new HashMap<String, Object>() {
             {
@@ -103,21 +96,19 @@ public class PatientRecordController {
         });
         return ResponseEntity.status(200).body(response);
     }
-    
+
     @GetMapping("/delete")
-    public ResponseEntity<BaseResponse> delete(@RequestParam String email){
+    public ResponseEntity<BaseResponse> delete(@RequestParam String email) {
         BaseResponse response = new BaseResponse();
         logger.info("Delete patient record request");
         // Check email exist
-        List<PatientEntity> patient = patientService.findByEmail(email);
-        if (patient.size() == 0) {
+        if (!patientService.isexistsByEmail(email)) {
             response.setMessage("Patient record of " + email + " does not exist");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
         // update isDeleted = true
-        patient.get(0).setIsDeleted(true);
-        PatientEntity patientResult = patientService.save(patient.get(0));
+        PatientEntity patientResult = patientService.delete(email);
         response.setMessage("Delete patient record successfully");
         response.setData(new HashMap<String, Object>() {
             {
