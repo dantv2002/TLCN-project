@@ -1,11 +1,11 @@
-package com.medical.backendsystem.models;
+package com.medical.backendsystem.models.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "accounts")
-public class AccountModel {
+public class AccountEntity {
 
     @Id
     private String id;
@@ -18,7 +18,7 @@ public class AccountModel {
     @Field
     private Boolean status;
     
-    public AccountModel(String email, String password, String role, Boolean status) {
+    public AccountEntity(String email, String password, String role, Boolean status) {
         this.email = email;
         this.password = password;
         this.role = role;

@@ -1,11 +1,11 @@
-package com.medical.backendsystem.models;
+package com.medical.backendsystem.models.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "verifications")
-public class VerifyModel {
+public class VerifyEntity {
 
     @Id
     private String id;
@@ -14,10 +14,10 @@ public class VerifyModel {
     @Field
     private String verifycode;
 
-    public VerifyModel() {
+    public VerifyEntity() {
     }
 
-    public VerifyModel(String email, String verifycode) {
+    public VerifyEntity(String email, String verifycode) {
         this.email = email;
         this.verifycode = verifycode;
     }

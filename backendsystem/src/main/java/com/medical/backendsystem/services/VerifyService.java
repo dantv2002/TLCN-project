@@ -6,7 +6,7 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.medical.backendsystem.models.VerifyModel;
+import com.medical.backendsystem.models.entity.VerifyEntity;
 import com.medical.backendsystem.repositories.VerifyRepository;
 
 @Service
@@ -21,14 +21,14 @@ public class VerifyService {
         for (int i = 0; i < 6; i++) {
             verifyCode += random.nextInt(10);
         }
-        verifyRepository.save(new VerifyModel(email, verifyCode));
+        verifyRepository.save(new VerifyEntity(email, verifyCode));
         return verifyCode;
     }
 
     public boolean verifyCode(String email, String verifyCode){
-        List<VerifyModel> verifyModels = verifyRepository.findByEmail(email);
-        if (verifyModels.size() > 0) {
-            if (verifyModels.get(0).getVerifycode().equals(verifyCode)) {
+        List<VerifyEntity> verifyEntities = verifyRepository.findByEmail(email);
+        if (verifyEntities.size() > 0) {
+            if (verifyEntities.get(0).getVerifycode().equals(verifyCode)) {
                 return true;
             }
         }
@@ -36,9 +36,9 @@ public class VerifyService {
     }
 
     public void deleteCode(String email){
-        List<VerifyModel> verifyModels = verifyRepository.findByEmail(email);
-        if (verifyModels.size() > 0) {
-            verifyRepository.delete(verifyModels.get(0));
+        List<VerifyEntity> verifyEntities = verifyRepository.findByEmail(email);
+        if (verifyEntities.size() > 0) {
+            verifyRepository.delete(verifyEntities.get(0));
         }
     }
 }

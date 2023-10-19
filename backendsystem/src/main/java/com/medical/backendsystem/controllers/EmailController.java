@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.medical.backendsystem.models.PatientModel;
+import com.medical.backendsystem.models.entity.PatientEntity;
 import com.medical.backendsystem.models.response.BaseResponse;
 import com.medical.backendsystem.services.AccountService;
 import com.medical.backendsystem.services.EmailService;
@@ -61,7 +61,7 @@ public class EmailController {
                 return ResponseEntity.status(400).body(response);
             }
             //
-            PatientModel patient = patientService.findByEmail(email).get(0); // result empty exception
+            PatientEntity patient = patientService.findByEmail(email).get(0); // result empty exception
             return sendEmail(patient.getEmail(), patient.getFullName());
         } catch (Exception e) {
             logger.error("Error: " + e.getMessage());

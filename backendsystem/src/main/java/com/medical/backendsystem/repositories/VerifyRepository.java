@@ -3,10 +3,11 @@ package com.medical.backendsystem.repositories;
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import com.medical.backendsystem.models.VerifyModel;
 
-public interface VerifyRepository extends MongoRepository<VerifyModel, String> {
+import com.medical.backendsystem.models.entity.VerifyEntity;
+
+public interface VerifyRepository extends MongoRepository<VerifyEntity, String> {
     
-    List<VerifyModel> findByEmail(String email);
+    List<VerifyEntity> findByEmail(String email);
     
 }

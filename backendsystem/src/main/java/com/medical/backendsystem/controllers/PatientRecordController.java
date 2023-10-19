@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.medical.backendsystem.models.PatientModel;
+import com.medical.backendsystem.models.entity.PatientEntity;
 import com.medical.backendsystem.models.request.PatientRequest;
 import com.medical.backendsystem.models.response.BaseResponse;
 import com.medical.backendsystem.services.PatientService;
@@ -36,15 +36,15 @@ public class PatientRecordController {
         BaseResponse response = new BaseResponse();
         logger.info("Create patient record request");
         // Check email exist
-        List<PatientModel> patientModel = patientService.findByEmail(email);
-        if (patientModel.size() == 0) {
+        List<PatientEntity> patient = patientService.findByEmail(email);
+        if (patient.size() == 0) {
             response.setMessage("Patient record of " + email + " does not exist");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
         // update isDeleted = false
-        patientModel.get(0).setIsDeleted(false);
-        PatientModel patientResult = patientService.save(patientModel.get(0));
+        patient.get(0).setIsDeleted(false);
+        PatientEntity patientResult = patientService.save(patient.get(0));
         response.setMessage("Create patient record successfully");
         response.setData(new HashMap<String, Object>() {
             {
@@ -59,8 +59,8 @@ public class PatientRecordController {
         BaseResponse response = new BaseResponse();
         logger.info("Read patient record request");
         // Check email exist
-        List<PatientModel> patientModel = patientService.findByEmailAndIsDeleted(email, false);
-        if (patientModel.size() == 0) {
+        List<PatientEntity> patient = patientService.findByEmailAndIsDeleted(email, false);
+        if (patient.size() == 0) {
             response.setMessage("Patient record of " + email + " does not exist");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
@@ -68,7 +68,7 @@ public class PatientRecordController {
         response.setMessage("Read patient record successfully");
         response.setData(new HashMap<String, Object>() {
             {
-                put("patient", patientModel.get(0));
+                put("patient", patient.get(0));
             }
         });
         return ResponseEntity.status(200).body(response);
@@ -79,22 +79,22 @@ public class PatientRecordController {
         BaseResponse response = new BaseResponse();
         logger.info("Update patient record request");
         // Check email exist
-        List<PatientModel> patientModel = patientService.findByEmail(patientRequest.getEmail());
-        if (patientModel.size() == 0) {
+        List<PatientEntity> patient = patientService.findByEmail(patientRequest.getEmail());
+        if (patient.size() == 0) {
             response.setMessage("Patient record of " + patientRequest.getEmail() + " does not exist");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
         // update patient record
-        patientModel.get(0).setFullName(patientRequest.getFullname());
-        patientModel.get(0).setBirthday(patientRequest.getBirthday());
-        patientModel.get(0).setGender(patientRequest.getGender());
-        patientModel.get(0).setAddress(patientRequest.getAddress());
-        patientModel.get(0).setPhoneNumber(patientRequest.getPhonenumber());
-        patientModel.get(0).setEmail(patientRequest.getEmail());
-        patientModel.get(0).setIdentificationCard(patientRequest.getIdentificationCard());
-        patientModel.get(0).setAllergy(patientRequest.getAllergy());
-        PatientModel patientResult = patientService.save(patientModel.get(0));
+        patient.get(0).setFullName(patientRequest.getFullname());
+        patient.get(0).setBirthday(patientRequest.getBirthday());
+        patient.get(0).setGender(patientRequest.getGender());
+        patient.get(0).setAddress(patientRequest.getAddress());
+        patient.get(0).setPhoneNumber(patientRequest.getPhonenumber());
+        patient.get(0).setEmail(patientRequest.getEmail());
+        patient.get(0).setIdentificationCard(patientRequest.getIdentificationCard());
+        patient.get(0).setAllergy(patientRequest.getAllergy());
+        PatientEntity patientResult = patientService.save(patient.get(0));
         response.setMessage("Update patient record successfully");
         response.setData(new HashMap<String, Object>() {
             {
@@ -109,15 +109,15 @@ public class PatientRecordController {
         BaseResponse response = new BaseResponse();
         logger.info("Delete patient record request");
         // Check email exist
-        List<PatientModel> patientModel = patientService.findByEmail(email);
-        if (patientModel.size() == 0) {
+        List<PatientEntity> patient = patientService.findByEmail(email);
+        if (patient.size() == 0) {
             response.setMessage("Patient record of " + email + " does not exist");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
         // update isDeleted = true
-        patientModel.get(0).setIsDeleted(true);
-        PatientModel patientResult = patientService.save(patientModel.get(0));
+        patient.get(0).setIsDeleted(true);
+        PatientEntity patientResult = patientService.save(patient.get(0));
         response.setMessage("Delete patient record successfully");
         response.setData(new HashMap<String, Object>() {
             {

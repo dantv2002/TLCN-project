@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.medical.backendsystem.models.AccountModel;
-import com.medical.backendsystem.models.PatientModel;
+import com.medical.backendsystem.models.entity.AccountEntity;
+import com.medical.backendsystem.models.entity.PatientEntity;
 import com.medical.backendsystem.models.request.SignupRequest;
 import com.medical.backendsystem.models.response.BaseResponse;
 import com.medical.backendsystem.services.AccountService;
@@ -53,18 +53,18 @@ public class SignupController {
             // Create account
             String encryptPass = BCrypt.hashpw(cryptographyRSAService.Decrypt(signupRequest.getPassword()), // Encrypt password string body request changed
                     BCrypt.gensalt(10));
-            AccountModel accountModel = accountService
-                    .save(new AccountModel(signupRequest.getEmail(), encryptPass, "PATIENT", true));
+            AccountEntity account = accountService
+                    .save(new AccountEntity(signupRequest.getEmail(), encryptPass, "PATIENT", true));
             //
-            PatientModel patientModel = patientService.save(new PatientModel(signupRequest.getFullname(),
+            PatientEntity patient = patientService.save(new PatientEntity(signupRequest.getFullname(),
                     signupRequest.getBirthday(), null,
                     signupRequest.getAddress(), signupRequest.getPhonenumber(), signupRequest.getEmail(), null, null, true));
             //
             response.setData( new HashMap<String, Object>() {
                 {
-                    accountModel.setPassword(null);
-                    put("account", accountModel);
-                    put("patient", patientModel);
+                    account.setPassword(null);
+                    put("account", account);
+                    put("patient", patient);
                 }
             });
             //delete verify code

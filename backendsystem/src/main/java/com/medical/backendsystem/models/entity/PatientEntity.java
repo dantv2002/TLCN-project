@@ -1,4 +1,4 @@
-package com.medical.backendsystem.models;
+package com.medical.backendsystem.models.entity;
 
 import java.util.Date;
 import org.springframework.data.annotation.Id;
@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "patients")
-public class PatientModel {
+public class PatientEntity {
 
     @Id
     private String id;
@@ -31,10 +31,10 @@ public class PatientModel {
     @Field
     private Boolean isDeleted;
 
-    public PatientModel() {
+    public PatientEntity() {
     }
 
-    public PatientModel(String fullName, Date birthday, Boolean gender, String address, String phoneNumber,
+    public PatientEntity(String fullName, Date birthday, Boolean gender, String address, String phoneNumber,
             String email, String identificationCard, String allergy, Boolean isDeleted) {
         this.fullName = fullName;
         this.birthday = birthday;

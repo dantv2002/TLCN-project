@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.medical.backendsystem.models.AccountModel;
-import com.medical.backendsystem.models.PatientModel;
+import com.medical.backendsystem.models.entity.AccountEntity;
+import com.medical.backendsystem.models.entity.PatientEntity;
 import com.medical.backendsystem.models.request.LoginRequest;
 import com.medical.backendsystem.models.response.BaseResponse;
 import com.medical.backendsystem.services.AccountService;
@@ -49,7 +49,7 @@ public class LoginController {
         BaseResponse response = new BaseResponse();
         logger.info("Login request");
 
-        List<AccountModel> account = accountService.findByEmail(loginRequest.getEmail());
+        List<AccountEntity> account = accountService.findByEmail(loginRequest.getEmail());
         if (account.size() > 0) {
             try {
                 String DecryptPass = cryptographyRSAService.Decrypt(loginRequest.getPassword()); // Encrypt password string body request changed
@@ -65,7 +65,7 @@ public class LoginController {
                 logger.info("Token generated: {}", token);
                 logger.info("For Username: {}", loginRequest.getEmail());
                 //
-                PatientModel patient = patientService.findByEmail(loginRequest.getEmail()).get(0);
+                PatientEntity patient = patientService.findByEmail(loginRequest.getEmail()).get(0);
                 response.setMessage("Create token successfully");
                 response.setData(new HashMap<String, Object>() {
                     {

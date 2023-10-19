@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.medical.backendsystem.models.AccountModel;
+import com.medical.backendsystem.models.entity.AccountEntity;
 import com.medical.backendsystem.models.request.ResetpassRequest;
 import com.medical.backendsystem.models.response.BaseResponse;
 import com.medical.backendsystem.services.AccountService;
@@ -44,8 +44,8 @@ public class ResetpassController {
         //
         try {
             // Check email exists
-            List<AccountModel> accountModel = accountService.findByEmail(resetPassRequest.getEmail());
-            if (accountModel.size() == 0) {
+            List<AccountEntity> account = accountService.findByEmail(resetPassRequest.getEmail());
+            if (account.size() == 0) {
                 logger.info("Email not exists");
                 response.setMessage("Email not exists");
                 response.setData(null);
@@ -60,10 +60,10 @@ public class ResetpassController {
             }
             // Update password
             // decrypt RSA and encrypt password
-            accountModel.get(0)
+            account.get(0)
                     .setPassword(BCrypt.hashpw(cryptographyRSAService.Decrypt(resetPassRequest.getPassword()),// Encrypt password string body request changed
                             BCrypt.gensalt(10)));
-            AccountModel accountModelResult = accountService.save(accountModel.get(0));
+            AccountEntity accountModelResult = accountService.save(account.get(0));
             
             response.setData(new HashMap<String, Object>() {
                 {
