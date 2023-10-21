@@ -1,0 +1,95 @@
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: gray;
+    height: 610px;
+}
+
+.login-page-container {
+    text-align: center;
+    background-color: white;
+    border-radius: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 650px;
+    height: 375px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.img-login-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.img-login {
+    width: 325px;
+    height: 375px;
+    border-radius: 30px 0px 0px 30px;
+}
+
+.form-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.title {
+    font-size: 20px;
+    color: red;
+}
+
+.img-logo {
+    width: 80px;
+    height: 80px;
+}
+
+a {
+    font-size: 14px;
+    display: flex;
+    justify-content: flex-end;
+    text-align: end;
+}
+
+.form-control {
+    width: 230px;
+    height: 30px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin: 5px;
+    text-align: center;
+}
+
+.submit-btn {
+    font-size: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.icon{
+    width: auto;
+    height: auto;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+h3 {
+    font-size: 10px;
+}
+
+.img-google {
+    width: 25px;
+    height: 25px;
+}
