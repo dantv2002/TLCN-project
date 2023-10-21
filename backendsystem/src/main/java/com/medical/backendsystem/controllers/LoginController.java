@@ -57,7 +57,7 @@ public class LoginController {
                     logger.info("Password not match");
                     response.setMessage("The Username or Password is Incorrect");
                     response.setData(null);
-                    return ResponseEntity.status(400).body(response);
+                    return ResponseEntity.status(401).body(response);
                 }
                 //
                 String token = tokenService.generateToken(account);
@@ -84,6 +84,6 @@ public class LoginController {
         logger.info("Email not match");
         response.setMessage("The Username or Password is Incorrect");
         response.setData(null);
-        return ResponseEntity.status(400).body(response);
+        return ResponseEntity.status(401).body(response);
     }
 }
