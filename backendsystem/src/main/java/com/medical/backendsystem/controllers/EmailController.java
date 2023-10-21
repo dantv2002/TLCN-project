@@ -7,11 +7,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.medical.backendsystem.models.entity.PatientEntity;
+import com.medical.backendsystem.models.request.EmailsignupRequest;
 import com.medical.backendsystem.models.response.BaseResponse;
 import com.medical.backendsystem.services.AccountService;
 import com.medical.backendsystem.services.EmailService;
@@ -34,22 +37,22 @@ public class EmailController {
     private static final Logger logger = LoggerFactory.getLogger(EmailController.class);
 
     // API Send Email Verify Code for Sign Up
-    @GetMapping("/sendEmailSignUp")
-    public ResponseEntity<BaseResponse> sendEmailSignUp(@RequestParam String toemail, @RequestParam String username) {
+    @PostMapping("/sendEmailSignUp")
+    public ResponseEntity<BaseResponse> sendEmailSignUp(@RequestBody EmailsignupRequest request) {
         BaseResponse response = new BaseResponse();
         //
-        if (accountService.isexistsByEmail(toemail)) {
+        if (accountService.isexistsByEmail(request.getToemail())) {
             response.setMessage("Email already exists");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
         //
-        return sendEmail(toemail, username);
+        return sendEmail(request.getToemail(), request.getUsername());
     }
 
     // API Send Email Verify Code for Reset Password
-    @GetMapping("/sendEmailResetPass")
-    public ResponseEntity<BaseResponse> sendEmailResetPass(@RequestParam String email) {
+    @PostMapping("/sendEmailResetPass")
+    public ResponseEntity<BaseResponse> sendEmailResetPass(@RequestBody String email) {
         BaseResponse response = new BaseResponse();
         logger.info("ResetPass request");
         logger.info("Email: " + email);

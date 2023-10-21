@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +32,8 @@ public class PatientRecordController {
     @Autowired
     private PatientService patientService;
 
-    @GetMapping("/create")
-    public ResponseEntity<BaseResponse> create(@RequestParam String email) {
+    @PostMapping("/create")
+    public ResponseEntity<BaseResponse> create(@RequestBody String email) {
         BaseResponse response = new BaseResponse();
         logger.info("Create patient record request");
         // Check email exist
@@ -53,8 +54,8 @@ public class PatientRecordController {
         return ResponseEntity.status(200).body(response);
     }
 
-    @GetMapping("/read")
-    public ResponseEntity<BaseResponse> read(@RequestParam String email) {
+    @PostMapping("/read")
+    public ResponseEntity<BaseResponse> read(@RequestBody String email) {
         BaseResponse response = new BaseResponse();
         logger.info("Read patient record request");
         // Check email exist
@@ -97,8 +98,8 @@ public class PatientRecordController {
         return ResponseEntity.status(200).body(response);
     }
 
-    @GetMapping("/delete")
-    public ResponseEntity<BaseResponse> delete(@RequestParam String email) {
+    @PostMapping("/delete")
+    public ResponseEntity<BaseResponse> delete(@RequestBody String email) {
         BaseResponse response = new BaseResponse();
         logger.info("Delete patient record request");
         // Check email exist
