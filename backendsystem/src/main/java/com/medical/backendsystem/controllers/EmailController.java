@@ -1,6 +1,7 @@
 package com.medical.backendsystem.controllers;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,8 @@ public class EmailController {
 
     // API Send Email Verify Code for Reset Password
     @PostMapping("/sendEmailResetPass")
-    public ResponseEntity<BaseResponse> sendEmailResetPass(@RequestBody String email) {
+    public ResponseEntity<BaseResponse> sendEmailResetPass(@RequestBody Map<String, String> requestBody) {
+        String email = requestBody.get("email");
         BaseResponse response = new BaseResponse();
         logger.info("ResetPass request");
         logger.info("Email: " + email);
