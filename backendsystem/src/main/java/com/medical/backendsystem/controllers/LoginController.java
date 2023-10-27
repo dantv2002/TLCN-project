@@ -49,7 +49,7 @@ public class LoginController {
         BaseResponse response = new BaseResponse();
         logger.info("Login request");
 
-        if (accountService.isexistsByEmail(loginRequest.getEmail())) {
+        if (accountService.isExistsByEmail(loginRequest.getEmail())) {
             try {
                 AccountEntity account = accountService.findByEmail(loginRequest.getEmail());
                 String DecryptPass = cryptographyRSAService.Decrypt(loginRequest.getPassword()); // Encrypt password string body request changed

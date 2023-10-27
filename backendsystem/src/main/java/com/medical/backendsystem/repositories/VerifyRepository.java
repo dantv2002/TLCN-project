@@ -8,6 +8,7 @@ import com.medical.backendsystem.models.entity.VerifyEntity;
 
 public interface VerifyRepository extends MongoRepository<VerifyEntity, String> {
     
-    List<VerifyEntity> findByEmail(String email);
+    VerifyEntity findFirstByEmail(String email);
+    Boolean existsByEmailAndVerifycode(String email, String verifycode);
     
 }

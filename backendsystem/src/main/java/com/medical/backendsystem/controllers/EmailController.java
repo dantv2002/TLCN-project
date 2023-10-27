@@ -42,7 +42,7 @@ public class EmailController {
     public ResponseEntity<BaseResponse> sendEmailSignUp(@RequestBody EmailsignupRequest request) {
         BaseResponse response = new BaseResponse();
         //
-        if (accountService.isexistsByEmail(request.getToemail())) {
+        if (accountService.isExistsByEmail(request.getToemail())) {
             response.setMessage("Email already exists");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
@@ -60,7 +60,7 @@ public class EmailController {
         logger.info("Email: " + email);
         //
         try {
-            if (!accountService.isexistsByEmail(email)) {
+            if (!accountService.isExistsByEmail(email)) {
                 response.setMessage("Email does not exist");
                 response.setData(null);
                 return ResponseEntity.status(400).body(response);

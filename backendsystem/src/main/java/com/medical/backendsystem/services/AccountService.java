@@ -1,7 +1,5 @@
 package com.medical.backendsystem.services;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,19 +20,19 @@ public class AccountService {
         accountEntity.setStatus(status);
         return accountRepository.save(accountEntity);
     }
-    // Read
+    // Read one
     public AccountEntity findByEmail(String email) {
-        return accountRepository.findByEmail(email).get(0);
+        return accountRepository.findFirstByEmail(email);
     }
     // Update
     public AccountEntity update(String email, String password){
-        AccountEntity accountEntity = accountRepository.findByEmail(email).get(0);
+        AccountEntity accountEntity = accountRepository.findFirstByEmail(email);
         accountEntity.setPassword(password);
         return accountRepository.save(accountEntity);
     }
     // Delete
     // Other
-    public Boolean isexistsByEmail(String email) {
-        return accountRepository.findByEmail(email).size() > 0 ? true : false;
+    public Boolean isExistsByEmail(String email) {
+        return accountRepository.existsByEmail(email);
     }
 }

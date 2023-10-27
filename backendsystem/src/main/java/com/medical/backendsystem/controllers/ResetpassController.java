@@ -44,7 +44,7 @@ public class ResetpassController {
         //
         try {
             // Check email exists
-            if (!accountService.isexistsByEmail(resetPassRequest.getEmail())) {
+            if (!accountService.isExistsByEmail(resetPassRequest.getEmail())) {
                 logger.info("Email not exists");
                 response.setMessage("Email not exists");
                 response.setData(null);

@@ -7,6 +7,10 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.medical.backendsystem.models.entity.PatientEntity;
 
 public interface PatientRepository extends MongoRepository<PatientEntity, String> {
-    List<PatientEntity> findByEmail(String email);
-    List<PatientEntity> findByEmailAndIsDeleted(String email, Boolean isDeleted);
+
+    PatientEntity findFirstByEmail(String email);
+    PatientEntity findFirstByEmailAndIsDeleted(String email, Boolean isDeleted);
+    Boolean existsByEmail(String email);
+    Boolean existsByEmailAndIsDeleted(String email, Boolean isDeleted);
+    
 }

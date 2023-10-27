@@ -2,19 +2,19 @@ package com.medical.backendsystem.services;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.stream.Collectors;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import com.medical.backendsystem.models.entity.AccountEntity;
+import com.medical.backendsystem.models.entity.TokenEntity;
+import com.medical.backendsystem.repositories.TokenRepository;
 
 
 /**
@@ -26,9 +26,12 @@ public class TokenService {
     private static final Logger logger = LoggerFactory.getLogger(TokenService.class);
     @Autowired
     private JwtEncoder jwtEncoder;
+    @Autowired
+    private TokenRepository tokenRepository;
 
     public String generateToken(AccountEntity accountEntity) {
         Instant now = Instant.now();
+        Instant expiresAt = now.plus(7, ChronoUnit.DAYS);
         String authorities = accountEntity.getRole();
         String userName = accountEntity.getEmail();
 
@@ -38,11 +41,25 @@ public class TokenService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
-                .expiresAt(now.plus(1, ChronoUnit.HOURS))
+                .expiresAt(expiresAt)
                 .subject(userName)
                 .claim("authorities", authorities)
                 .build();
-                
-        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        
+        String token = this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        //
+        TokenEntity tokenEntity = new TokenEntity(BCrypt.hashpw(token, BCrypt.gensalt(10)), expiresAt, accountEntity.getId());
+        this.tokenRepository.save(tokenEntity);
+        return token;
+    }
+    //
+    public Boolean deleteToken(String token, String email){        
+        try {
+            TokenEntity tokenEntities = this.tokenRepository.findFirstByAccountId(email);
+            this.tokenRepository.deleteByToken(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

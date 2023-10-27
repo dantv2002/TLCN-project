@@ -10,5 +10,8 @@ import com.medical.backendsystem.models.entity.AccountEntity;
  * AccountRepository
  */
 public interface AccountRepository extends MongoRepository<AccountEntity, String> {
-    List<AccountEntity> findByEmail(String email);
+    
+    AccountEntity findFirstByEmail(String email);
+    Boolean existsByEmail(String email);
+    
 }

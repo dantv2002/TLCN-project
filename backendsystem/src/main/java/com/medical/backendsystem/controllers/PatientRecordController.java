@@ -2,6 +2,7 @@ package com.medical.backendsystem.controllers;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,8 @@ public class PatientRecordController {
     private PatientService patientService;
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse> create(@RequestBody String email) {
+    public ResponseEntity<BaseResponse> create(@RequestBody Map<String, String> requestBody) {
+        String email = requestBody.get("email");
         BaseResponse response = new BaseResponse();
         logger.info("Create patient record request");
         // Check email exist
@@ -55,7 +57,8 @@ public class PatientRecordController {
     }
 
     @PostMapping("/read")
-    public ResponseEntity<BaseResponse> read(@RequestBody String email) {
+    public ResponseEntity<BaseResponse> read(@RequestBody Map<String, String> requestBody) {
+        String email = requestBody.get("email");
         BaseResponse response = new BaseResponse();
         logger.info("Read patient record request");
         // Check email exist
@@ -99,7 +102,8 @@ public class PatientRecordController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<BaseResponse> delete(@RequestBody String email) {
+    public ResponseEntity<BaseResponse> delete(@RequestBody Map<String, String> requestBody) {
+        String email = requestBody.get("email");
         BaseResponse response = new BaseResponse();
         logger.info("Delete patient record request");
         // Check email exist

@@ -1,7 +1,6 @@
 package com.medical.backendsystem.services;
 
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,24 +29,24 @@ public class PatientService {
     }
 
     public PatientEntity create(String email){
-        PatientEntity patientEntity = patientRepository.findByEmail(email).get(0);
+        PatientEntity patientEntity = patientRepository.findFirstByEmail(email);
         patientEntity.setIsDeleted(false);
         return patientRepository.save(patientEntity);
     }
 
     //Read
     public PatientEntity findByEmail(String email) {
-        return patientRepository.findByEmail(email).get(0);
+        return patientRepository.findFirstByEmail(email);
     }
 
     public PatientEntity findByEmailAndIsDeleted(String email, Boolean isDeleted) {
-        return patientRepository.findByEmailAndIsDeleted(email, isDeleted).get(0);
+        return patientRepository.findFirstByEmailAndIsDeleted(email, isDeleted);
     }
     //Update
     public PatientEntity update(String fullName, Date birthday, Boolean gender, String address, String phonenumber,
             String email, String identificationcard, String allergy) {
 
-        PatientEntity patientEntity = patientRepository.findByEmail(email).get(0);
+        PatientEntity patientEntity = patientRepository.findFirstByEmail(email);
         //
         patientEntity.setFullName(fullName);
         patientEntity.setBirthday(birthday);
@@ -61,16 +60,16 @@ public class PatientService {
     }
     //Delete
     public PatientEntity delete(String email) {
-        PatientEntity patientEntity = patientRepository.findByEmail(email).get(0);
+        PatientEntity patientEntity = patientRepository.findFirstByEmail(email);
         patientEntity.setIsDeleted(true);
         return patientRepository.save(patientEntity);
     }
     //Other
     public Boolean isexistsByEmail(String email) {
-        return patientRepository.findByEmail(email).size() > 0 ? true : false;
+        return patientRepository.existsByEmail(email);
     }
 
     public Boolean isexistsByEmailAndIsDeleted(String email, Boolean isDeleted) {
-        return patientRepository.findByEmailAndIsDeleted(email, isDeleted).size() > 0 ? true : false;
+        return patientRepository.existsByEmailAndIsDeleted(email, isDeleted);
     }
 }
