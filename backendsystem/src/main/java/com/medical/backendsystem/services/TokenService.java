@@ -53,7 +53,7 @@ public class TokenService {
         return token;
     }
 
-    //
+    //delete token
     public Boolean deleteToken(String token) {
         try {
             this.tokenRepository.deleteByToken(token);
@@ -61,5 +61,10 @@ public class TokenService {
         } catch (Exception e) {
             return false;
         }
+    }
+    
+    //check token
+    public Boolean isExistsByToken(String token) {
+        return this.tokenRepository.existsByToken(token);
     }
 }

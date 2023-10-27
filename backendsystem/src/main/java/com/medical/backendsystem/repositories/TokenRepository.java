@@ -7,4 +7,6 @@ import com.medical.backendsystem.models.entity.TokenEntity;
 public interface TokenRepository extends MongoRepository<TokenEntity, String> {
 
     void deleteByToken(String token);
+    Boolean existsByToken(String token);
+    
 }
