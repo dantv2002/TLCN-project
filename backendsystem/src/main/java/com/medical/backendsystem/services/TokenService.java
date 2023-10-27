@@ -3,7 +3,6 @@ package com.medical.backendsystem.services;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import com.medical.backendsystem.models.entity.AccountEntity;
 import com.medical.backendsystem.models.entity.TokenEntity;
 import com.medical.backendsystem.repositories.TokenRepository;
-
 
 /**
  * Token
@@ -45,17 +43,19 @@ public class TokenService {
                 .subject(userName)
                 .claim("authorities", authorities)
                 .build();
-        
+
         String token = this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
         //
-        TokenEntity tokenEntity = new TokenEntity(BCrypt.hashpw(token, BCrypt.gensalt(10)), expiresAt, accountEntity.getId());
+        TokenEntity tokenEntity = new TokenEntity(token, expiresAt,
+                accountEntity.getId());
         this.tokenRepository.save(tokenEntity);
+        //
         return token;
     }
+
     //
-    public Boolean deleteToken(String token, String email){        
+    public Boolean deleteToken(String token) {
         try {
-            TokenEntity tokenEntities = this.tokenRepository.findFirstByAccountId(email);
             this.tokenRepository.deleteByToken(token);
             return true;
         } catch (Exception e) {
