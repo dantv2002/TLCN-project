@@ -1,7 +1,6 @@
 package com.medical.backendsystem.controllers;
 
 import java.util.HashMap;
-import java.util.List;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;

@@ -1,6 +1,5 @@
 package com.medical.backendsystem.test;
 
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

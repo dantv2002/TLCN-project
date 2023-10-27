@@ -1,6 +1,5 @@
 package com.medical.backendsystem.repositories;
 
-import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
