@@ -5,6 +5,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Document(collection = "PatientRecords")
 public class PatientEntity {
 
@@ -13,6 +15,7 @@ public class PatientEntity {
     @Field
     private String fullName;
     @Field
+    @JsonFormat(pattern = "MM/dd/yyyy")
     private Date birthday;
     @Field
     private Boolean gender; // Nam = 1, Nữ = 0
