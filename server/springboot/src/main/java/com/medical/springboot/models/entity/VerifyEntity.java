@@ -1,5 +1,7 @@
 package com.medical.springboot.models.entity;
 
+import java.time.Instant;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -13,6 +15,8 @@ public class VerifyEntity {
     private String email;
     @Field
     private String verifycode;
+    @Field
+    private Instant expiresAt;
 
     public VerifyEntity() {
     }
@@ -41,9 +45,17 @@ public class VerifyEntity {
         this.verifycode = verifycode;
     }
 
+    public Instant getExpiresAt() {
+        return expiresAt;
+    }
+
+    public void setExpiresAt(Instant expiresAt) {
+        this.expiresAt = expiresAt;
+    }
+
     @Override
     public String toString() {
-        return "VerifyModel [email=" + email + ", id=" + id + ", verifycode=" + verifycode + "]";
+        return "VerifyEntity [email=" + email + ", expiresAt=" + expiresAt + ", id=" + id + ", verifycode=" + verifycode
+                + "]";
     }
-    
 }

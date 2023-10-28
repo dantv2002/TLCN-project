@@ -37,7 +37,7 @@ public class EmailController {
 
     // API Send Email Verify Code for Sign Up
     @PostMapping("/sendEmailSignUp")
-    public ResponseEntity<BaseResponse> sendEmailSignUp(@RequestBody EmailsignupRequest request) {
+    public ResponseEntity<BaseResponse> sendEmailSignUp(@RequestBody EmailsignupRequest request) throws Exception {
         BaseResponse response = new BaseResponse();
         //
         if (accountService.isExistsByEmail(request.getToemail())) {
@@ -51,46 +51,33 @@ public class EmailController {
 
     // API Send Email Verify Code for Reset Password
     @PostMapping("/sendEmailResetPass")
-    public ResponseEntity<BaseResponse> sendEmailResetPass(@RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<BaseResponse> sendEmailResetPass(@RequestBody Map<String, String> requestBody) throws Exception {
         String email = requestBody.get("email");
         BaseResponse response = new BaseResponse();
         logger.info("ResetPass request");
         logger.info("Email: " + email);
         //
-        try {
-            if (!accountService.isExistsByEmail(email)) {
-                response.setMessage("Email does not exist");
-                response.setData(null);
-                return ResponseEntity.status(400).body(response);
-            }
-            //
-            PatientEntity patient = patientService.findByEmail(email); // result empty exception
-            return sendEmail(patient.getEmail(), patient.getFullName());
-        } catch (Exception e) {
-            logger.error("Error: " + e.getMessage());
-            response.setMessage("Internal Server Error");
+        if (!accountService.isExistsByEmail(email)) {
+            response.setMessage("Email does not exist");
             response.setData(null);
-            return ResponseEntity.status(500).body(response);
+            return ResponseEntity.status(400).body(response);
         }
+        //
+        PatientEntity patient = patientService.findByEmail(email);
+        return sendEmail(patient.getEmail(), patient.getFullName());
     }
 
     // Method Send Email Verify Code
-    public ResponseEntity<BaseResponse> sendEmail(String toemail, String username) {
+    public ResponseEntity<BaseResponse> sendEmail(String toemail, String username) throws Exception {
         //
         BaseResponse response = new BaseResponse();
         logger.info("Method SendEmail");
         logger.info("To email: " + toemail);
         logger.info("User name: " + username);
         //
-        try {
-            emailService.sendEmail(toemail, username,
-                    verifyService.create(toemail));
-        } catch (Exception e) {
-            logger.error("Error: " + e.getMessage());
-            response.setMessage("Internal Server Error");
-            response.setData(null);
-            return ResponseEntity.status(500).body(response);
-        }
+        emailService.sendEmail(toemail, username,
+                verifyService.create(toemail));
+
         //
         logger.info("Email sent successfully");
         response.setMessage("Email sent successfully");

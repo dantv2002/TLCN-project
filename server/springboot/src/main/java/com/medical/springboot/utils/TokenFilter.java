@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 
 import com.medical.springboot.services.TokenService;
 
@@ -24,7 +24,7 @@ public class TokenFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain chain) throws IOException, ServletException {
+            FilterChain chain) throws IOException, ServletException, AuthenticationException {
         logger.info("TokenFilter doFilter");
         String token = ((HttpServletRequest) request).getHeader("Authorization");
         if (token == null) {
@@ -36,7 +36,7 @@ public class TokenFilter implements Filter {
         logger.info("Token: {}", token);
         if (!this.tokenService.isExistsByToken(token)) {
             logger.info("Token is not exists");
-            throw new ServletException(new AccessDeniedException("Access Denied"));
+            throw new TempAuthenticationException("Access Token Denied");
         }
         chain.doFilter(request, response);
     }

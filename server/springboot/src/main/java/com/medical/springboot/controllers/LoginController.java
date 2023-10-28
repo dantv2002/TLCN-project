@@ -41,42 +41,37 @@ public class LoginController {
 
     // API Login
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse> generateToken(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<BaseResponse> generateToken(@RequestBody LoginRequest loginRequest) throws Exception {
         BaseResponse response = new BaseResponse();
         logger.info("Login request");
 
         if (accountService.isExistsByEmail(loginRequest.getEmail())) {
-            try {
-                AccountEntity account = accountService.findByEmail(loginRequest.getEmail());
-                String DecryptPass = cryptographyRSAService.Decrypt(loginRequest.getPassword()); // Encrypt password string body request changed
-                if (!BCrypt.checkpw(DecryptPass, account.getPassword())) {
-                    logger.info("Password not match");
-                    response.setMessage("The Username or Password is Incorrect");
-                    response.setData(null);
-                    return ResponseEntity.status(401).body(response);
-                }
-                //
-                String token = tokenService.generateToken(account);
-                logger.info("Token generated: {}", token);
-                logger.info("For Username: {}", loginRequest.getEmail());
-                //
-                PatientEntity patient = patientService.findByEmail(loginRequest.getEmail());
-                response.setMessage("Create token successfully");
-                response.setData(new HashMap<String, Object>() {
-                    {
-                        put("token", token);
-                        put("fullname", patient.getFullName());
-                        put("email", loginRequest.getEmail());
-                        put("role", account.getRole());
-                    }
-                });
-                //
-                return ResponseEntity.status(200).body(response);
-            } catch (Exception e) {
-                response.setMessage("Internal Server Error");
+            AccountEntity account = accountService.findByEmail(loginRequest.getEmail());
+            String DecryptPass = cryptographyRSAService.Decrypt(loginRequest.getPassword()); // Encrypt password string
+                                                                                             // body request changed
+            if (!BCrypt.checkpw(DecryptPass, account.getPassword())) {
+                logger.info("Password not match");
+                response.setMessage("The Username or Password is Incorrect");
                 response.setData(null);
-                return ResponseEntity.status(500).body(response);
+                return ResponseEntity.status(401).body(response);
             }
+            //
+            String token = tokenService.generateToken(account);
+            logger.info("Token generated: {}", token);
+            logger.info("For Username: {}", loginRequest.getEmail());
+            //
+            PatientEntity patient = patientService.findByEmail(loginRequest.getEmail());
+            response.setMessage("Create token successfully");
+            response.setData(new HashMap<String, Object>() {
+                {
+                    put("token", token);
+                    put("fullname", patient.getFullName());
+                    put("email", loginRequest.getEmail());
+                    put("role", account.getRole());
+                }
+            });
+            //
+            return ResponseEntity.status(200).body(response);
         }
         logger.info("Email not match");
         response.setMessage("The Username or Password is Incorrect");

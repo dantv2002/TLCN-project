@@ -22,6 +22,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.medical.springboot.utils.DelegatedAuthenticationEntryPoint;
 import com.medical.springboot.utils.KeycloakRealmRoleConverter;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -36,6 +37,8 @@ import com.nimbusds.jose.proc.SecurityContext;
 public class SecurityConfig {
     @Autowired
     private RsaKeyConfig rsaKeyConfig;
+    @Autowired
+    private DelegatedAuthenticationEntryPoint delegatedAuthenticationEntryPoint;
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
@@ -59,6 +62,7 @@ public class SecurityConfig {
                 .and().oauth2ResourceServer(OAuth2 -> OAuth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().exceptionHandling().authenticationEntryPoint(delegatedAuthenticationEntryPoint)
                 .and().build();
 
     }

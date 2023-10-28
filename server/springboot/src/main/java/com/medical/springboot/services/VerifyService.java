@@ -1,5 +1,6 @@
 package com.medical.springboot.services;
 
+import java.time.Instant;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ public class VerifyService {
 
     // Create
     public String create(String email) {
+        delete(email);
         String verifyCode = "";
         Random random = new Random();
         for (int i = 0; i < 6; i++) {
@@ -24,7 +26,7 @@ public class VerifyService {
         VerifyEntity verifyEntity = new VerifyEntity();
         verifyEntity.setEmail(email);
         verifyEntity.setVerifycode(verifyCode);
-
+        verifyEntity.setExpiresAt(Instant.now().plusSeconds(60 * 5)); // 5 minutes
         verifyRepository.save(verifyEntity);
         return verifyCode;
     }
@@ -41,6 +43,21 @@ public class VerifyService {
 
     // Other
     public boolean verifyCode(String email, String verifyCode) {
-        return verifyRepository.existsByEmailAndVerifycode(email, verifyCode);
+        if (!verifyRepository.existsByEmailAndVerifycode(email, verifyCode) || !isCheckTimeExpire(email)) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isCheckTimeExpire(String email) {
+        VerifyEntity verifyEntity = verifyRepository.findFirstByEmail(email);
+        if (verifyEntity == null) {
+            return false;
+        }
+        boolean isCheck = verifyEntity.getExpiresAt().isAfter(Instant.now()); // true if not expire
+        if (!isCheck) {
+            verifyRepository.delete(verifyEntity);
+        }
+        return isCheck;
     }
 }

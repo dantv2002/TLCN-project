@@ -37,42 +37,40 @@ public class SignupController {
     private CryptographyService cryptographyRSAService;
 
     @PostMapping("/signup")
-    public ResponseEntity<BaseResponse> signUp(@RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<BaseResponse> signUp(@RequestBody SignupRequest signupRequest) throws Exception {
         BaseResponse response = new BaseResponse();
 
         logger.info("SignUp request");
         logger.info("Username: " + signupRequest.getFullname());
         //
-        try {
-            // Verify code
-            if (!verifyService.verifyCode(signupRequest.getEmail(), signupRequest.getVerifycode())) {
-                response.setMessage("Verify code is incorrect");
-                response.setData(null);
-                return ResponseEntity.status(400).body(response);
-            }
-            // Create account
-            String encryptPass = BCrypt.hashpw(cryptographyRSAService.Decrypt(signupRequest.getPassword()), // Encrypt password string body request changed
-                    BCrypt.gensalt(10));
-            AccountEntity account = accountService
-                    .create(signupRequest.getEmail(), encryptPass, "PATIENT", true);
-            //
-            PatientEntity patient = patientService.create(signupRequest.getFullname(), signupRequest.getBirthday(),
-                    signupRequest.getAddress(), signupRequest.getPhonenumber(), signupRequest.getEmail());
-            //
-            response.setData( new HashMap<String, Object>() {
-                {
-                    account.setPassword(null);
-                    put("account", account);
-                    put("patient", patient);
-                }
-            });
-            //delete verify code
-            verifyService.delete(signupRequest.getEmail());
-        } catch (Exception e) {
-            response.setMessage("Internal Server Error");
+        // Verify code
+        if (!verifyService.verifyCode(signupRequest.getEmail(), signupRequest.getVerifycode())) {
+            response.setMessage("Verify code is incorrect");
             response.setData(null);
-            return ResponseEntity.status(500).body(response);
+            return ResponseEntity.status(400).body(response);
         }
+        // Create account
+        String encryptPass = BCrypt.hashpw(cryptographyRSAService.Decrypt(signupRequest.getPassword()), // Encrypt
+                                                                                                        // password
+                                                                                                        // string body
+                                                                                                        // request
+                                                                                                        // changed
+                BCrypt.gensalt(10));
+        AccountEntity account = accountService
+                .create(signupRequest.getEmail(), encryptPass, "PATIENT", true);
+        //
+        PatientEntity patient = patientService.create(signupRequest.getFullname(), signupRequest.getBirthday(),
+                signupRequest.getAddress(), signupRequest.getPhonenumber(), signupRequest.getEmail());
+        //
+        response.setData(new HashMap<String, Object>() {
+            {
+                account.setPassword(null);
+                put("account", account);
+                put("patient", patient);
+            }
+        });
+        // delete verify code
+        verifyService.delete(signupRequest.getEmail());
 
         logger.info("Sign up successfully");
         response.setMessage("Sign up successfully");

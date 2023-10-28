@@ -38,88 +38,86 @@ public class ResetpassController {
 
     // API Reset Password
     @PostMapping("/resetPass")
-    public ResponseEntity<BaseResponse> resetPass(@RequestBody ResetpassRequest resetPassRequest) {
+    public ResponseEntity<BaseResponse> resetPass(@RequestBody ResetpassRequest resetPassRequest) throws Exception {
         BaseResponse response = new BaseResponse();
         logger.info("ResetPass request");
-        //
-        try {
-            // Check email exists
-            if (!accountService.isExistsByEmail(resetPassRequest.getEmail())) {
-                logger.info("Email not exists");
-                response.setMessage("Email not exists");
-                response.setData(null);
-                return ResponseEntity.status(400).body(response);
-            }
-            // Verify code
-            if (!verifyService.verifyCode(resetPassRequest.getEmail(), resetPassRequest.getVerifycode())) {
-                logger.info("Verify code is incorrect");
-                response.setMessage("Verify code is incorrect");
-                response.setData(null);
-                return ResponseEntity.status(400).body(response);
-            }
-            // Update password
-            // decrypt RSA and encrypt password
-            AccountEntity accountModelResult = accountService.update(resetPassRequest.getEmail(), BCrypt.hashpw(cryptographyRSAService.Decrypt(resetPassRequest.getPassword()),// Encrypt password string body request changed
-                    BCrypt.gensalt(10)));
-            response.setData(new HashMap<String, Object>() {
-                {
-                    accountModelResult.setPassword(null);
-                    put("account", accountModelResult);
-                }
-            });
-            // delete verify code
-            verifyService.delete(resetPassRequest.getEmail());
-        } catch (Exception e) {
-            logger.error("Error: " + e.getMessage());
-            response.setMessage("Internal Server Error");
+        // // Check email exists
+        if (!accountService.isExistsByEmail(resetPassRequest.getEmail())) {
+            logger.info("Email not exists");
+            response.setMessage("Email not exists");
             response.setData(null);
-            return ResponseEntity.status(500).body(response);
+            return ResponseEntity.status(400).body(response);
         }
+        // Verify code
+        if (!verifyService.verifyCode(resetPassRequest.getEmail(), resetPassRequest.getVerifycode())) {
+            logger.info("Verify code is incorrect");
+            response.setMessage("Verify code is incorrect");
+            response.setData(null);
+            return ResponseEntity.status(400).body(response);
+        }
+        // Update password
+        // decrypt RSA and encrypt password
+        AccountEntity accountModelResult = accountService.update(resetPassRequest.getEmail(),
+                BCrypt.hashpw(cryptographyRSAService.Decrypt(resetPassRequest.getPassword()), // Encrypt password string
+                                                                                              // body request changed
+                        BCrypt.gensalt(10)));
+        response.setData(new HashMap<String, Object>() {
+            {
+                accountModelResult.setPassword(null);
+                put("account", accountModelResult);
+            }
+        });
+        // delete verify code
+        verifyService.delete(resetPassRequest.getEmail());
+
         logger.info("Update password successfully");
         response.setMessage("Update password successfully");
         return ResponseEntity.status(200).body(response);
     }
 
-    //API Change Password auth
+    // API Change Password auth
     @PostMapping("/auth/changePass")
-    public ResponseEntity<BaseResponse> changePass(@RequestBody ChangePasswordRequest changePasswordRequest){
+    public ResponseEntity<BaseResponse> changePass(@RequestBody ChangePasswordRequest changePasswordRequest)
+            throws Exception {
         BaseResponse response = new BaseResponse();
         logger.info("ChangePass request");
         //
-        try {
-            // Check email exists
-            if (!accountService.isExistsByEmail(changePasswordRequest.getEmail())) {
-                logger.info("Email not exists");
-                response.setMessage("Email not exists");
-                response.setData(null);
-                return ResponseEntity.status(400).body(response);
-            }
-            // Verify password old
-            String passOld = accountService.findByEmail(changePasswordRequest.getEmail()).getPassword();
-            String DecryptPassOld = cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordOld()); // Encrypt password string body request changed
-            if (!BCrypt.checkpw(DecryptPassOld, passOld)) {
-                logger.info("Password not match");
-                response.setMessage("Password is Incorrect");
-                response.setData(null);
-                return ResponseEntity.status(401).body(response);
-            }
-            // Update password new
-            // decrypt RSA and encrypt password new
-            AccountEntity accountModelResult = accountService.update(changePasswordRequest.getEmail(), BCrypt.hashpw(cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordNew()),// Encrypt password string body request changed
-                    BCrypt.gensalt(10)));
-            response.setData(new HashMap<String, Object>() {
-                {
-                    accountModelResult.setPassword(null);
-                    put("account", accountModelResult);
-                }
-            });
-            
-        } catch (Exception e) {
-            logger.error("Error: " + e.getMessage());
-            response.setMessage("Internal Server Error");
+        // Check email exists
+        if (!accountService.isExistsByEmail(changePasswordRequest.getEmail())) {
+            logger.info("Email not exists");
+            response.setMessage("Email not exists");
             response.setData(null);
-            return ResponseEntity.status(500).body(response);
+            return ResponseEntity.status(400).body(response);
         }
+        // Verify password old
+        String passOld = accountService.findByEmail(changePasswordRequest.getEmail()).getPassword();
+        String DecryptPassOld = cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordOld()); // Encrypt
+                                                                                                        // password
+                                                                                                        // string
+                                                                                                        // body
+                                                                                                        // request
+                                                                                                        // changed
+        if (!BCrypt.checkpw(DecryptPassOld, passOld)) {
+            logger.info("Password not match");
+            response.setMessage("Password is Incorrect");
+            response.setData(null);
+            return ResponseEntity.status(401).body(response);
+        }
+        // Update password new
+        // decrypt RSA and encrypt password new
+        AccountEntity accountModelResult = accountService.update(changePasswordRequest.getEmail(),
+                BCrypt.hashpw(cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordNew()), // Encrypt
+                                                                                                      // password
+                                                                                                      // string body
+                                                                                                      // request
+                                                                                                      // changed
+                        BCrypt.gensalt(10)));
+        response.setData(new HashMap<String, Object>() {
+            {
+                accountModelResult.setPassword(null);
+                put("account", accountModelResult);
+            }
+        });
         return ResponseEntity.status(200).body(response);
     }
 }
