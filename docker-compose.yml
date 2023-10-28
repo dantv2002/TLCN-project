@@ -12,10 +12,10 @@ services:
     container_name: JavaAPI
     build:
       dockerfile: Dockerfile
-      context: ./backendsystem/
+      context: ./server/springboot
     ports:
       - "8080:8080"
     volumes:
-      - ./backendsystem:/app
+      - ./server/springboot:/app
     networks:
       - springboot-app-network
