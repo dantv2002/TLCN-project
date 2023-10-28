@@ -22,7 +22,7 @@ import com.medical.springboot.services.PatientService;
  * PapatientRecordController
  */
 @RestController
-@RequestMapping("/api/PatientRecord")
+@RequestMapping("/api/auth/PatientRecord")
 public class PatientRecordController {
 
     private static final Logger logger = LoggerFactory.getLogger(PatientRecordController.class);

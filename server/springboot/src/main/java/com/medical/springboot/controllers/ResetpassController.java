@@ -80,7 +80,7 @@ public class ResetpassController {
         return ResponseEntity.status(200).body(response);
     }
 
-    //API Change Password
+    //API Change Password auth
     @PostMapping("/auth/changePass")
     public ResponseEntity<BaseResponse> changePass(@RequestBody ChangePasswordRequest changePasswordRequest){
         BaseResponse response = new BaseResponse();
