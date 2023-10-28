@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.medical.springboot.models.entity.AccountEntity;
+import com.medical.springboot.models.request.ChangePasswordRequest;
 import com.medical.springboot.models.request.ResetpassRequest;
 import com.medical.springboot.models.response.BaseResponse;
 import com.medical.springboot.services.AccountService;
@@ -76,6 +77,49 @@ public class ResetpassController {
         }
         logger.info("Update password successfully");
         response.setMessage("Update password successfully");
+        return ResponseEntity.status(200).body(response);
+    }
+
+    //API Change Password
+    @PostMapping("/auth/changePass")
+    public ResponseEntity<BaseResponse> changePass(@RequestBody ChangePasswordRequest changePasswordRequest){
+        BaseResponse response = new BaseResponse();
+        logger.info("ChangePass request");
+        //
+        try {
+            // Check email exists
+            if (!accountService.isExistsByEmail(changePasswordRequest.getEmail())) {
+                logger.info("Email not exists");
+                response.setMessage("Email not exists");
+                response.setData(null);
+                return ResponseEntity.status(400).body(response);
+            }
+            // Verify password old
+            String passOld = accountService.findByEmail(changePasswordRequest.getEmail()).getPassword();
+            String DecryptPassOld = cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordOld()); // Encrypt password string body request changed
+            if (!BCrypt.checkpw(DecryptPassOld, passOld)) {
+                logger.info("Password not match");
+                response.setMessage("Password is Incorrect");
+                response.setData(null);
+                return ResponseEntity.status(401).body(response);
+            }
+            // Update password new
+            // decrypt RSA and encrypt password new
+            AccountEntity accountModelResult = accountService.update(changePasswordRequest.getEmail(), BCrypt.hashpw(cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordNew()),// Encrypt password string body request changed
+                    BCrypt.gensalt(10)));
+            response.setData(new HashMap<String, Object>() {
+                {
+                    accountModelResult.setPassword(null);
+                    put("account", accountModelResult);
+                }
+            });
+            
+        } catch (Exception e) {
+            logger.error("Error: " + e.getMessage());
+            response.setMessage("Internal Server Error");
+            response.setData(null);
+            return ResponseEntity.status(500).body(response);
+        }
         return ResponseEntity.status(200).body(response);
     }
 }

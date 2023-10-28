@@ -14,7 +14,7 @@ import com.medical.springboot.models.response.BaseResponse;
 import com.medical.springboot.services.TokenService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 public class LogoutController {
     private static final Logger LOGGER = LoggerFactory.getLogger(LogoutController.class);
     @Autowired
