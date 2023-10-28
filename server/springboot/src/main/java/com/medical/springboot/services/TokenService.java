@@ -46,14 +46,17 @@ public class TokenService {
 
         String token = this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
         //
-        TokenEntity tokenEntity = new TokenEntity(token, expiresAt,
-                accountEntity.getId());
+        TokenEntity tokenEntity = new TokenEntity();
+        tokenEntity.setToken(token);
+        tokenEntity.setExpiresAt(expiresAt);
+        tokenEntity.setAccountId(accountEntity.getId());
+
         this.tokenRepository.save(tokenEntity);
         //
         return token;
     }
 
-    //delete token
+    // delete token
     public Boolean deleteToken(String token) {
         try {
             this.tokenRepository.deleteByToken(token);
@@ -62,8 +65,8 @@ public class TokenService {
             return false;
         }
     }
-    
-    //check token
+
+    // check token
     public Boolean isExistsByToken(String token) {
         return this.tokenRepository.existsByToken(token);
     }

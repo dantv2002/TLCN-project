@@ -25,6 +25,8 @@ public class PatientService {
         patientEntity.setIdentificationCard(null);
         patientEntity.setAllergy(null);
         patientEntity.setIsDeleted(true);
+        patientEntity.setHealthInsurance(null);
+        patientEntity.setMedicalRecords(null);
         return patientRepository.save(patientEntity);
     }
 

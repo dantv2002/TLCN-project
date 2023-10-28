@@ -21,13 +21,6 @@ public class AccountEntity {
     public AccountEntity() {
     }
 
-    public AccountEntity(String email, String password, String role, Boolean status) {
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.status = status;
-    }
-
     public String getId() {
         return id;
     }

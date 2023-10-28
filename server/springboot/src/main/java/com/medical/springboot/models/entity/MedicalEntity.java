@@ -1,9 +1,10 @@
 package com.medical.springboot.models.entity;
 
 import java.util.Date;
-import java.awt.image.BufferedImage;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -11,24 +12,106 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Document(collection = "MedicalRecords")
 public class MedicalEntity {
-    
+
     @Id
     private String id;
     @Field
-    private String department;
+    private String department; // Khoa
     @Field
-    private String clinics;
+    private String clinics; // Phòng khám
     @Field
     @JsonFormat(pattern = "MM/dd/yyyy")
-    private Date date;
+    private Date date; // Ngày khám
     @Field
-    private String doctor;
+    private String doctorId; // Id bác sĩ khám
     @Field
-    private String result;
+    private String clinicalDiagnosis; // Chẩn đoán lâm sàng
+    @DBRef(lazy = true)
+    private List<DiagnosticImageEntity> diagnosticImages; // Chẩn đoán hình ảnh
     @Field
-    private String urlImage;
+    private String diagnosis; // Chẩn đoán
     @Field
-    private String patientId;
-    
+    private String patientId; // Id hồ sơ bệnh nhân
 
+    public MedicalEntity() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getClinics() {
+        return clinics;
+    }
+
+    public void setClinics(String clinics) {
+        this.clinics = clinics;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
+    }
+
+    public String getClinicalDiagnosis() {
+        return clinicalDiagnosis;
+    }
+
+    public void setClinicalDiagnosis(String clinicalDiagnosis) {
+        this.clinicalDiagnosis = clinicalDiagnosis;
+    }
+
+    public List<DiagnosticImageEntity> getDiagnosticImages() {
+        return diagnosticImages;
+    }
+
+    public void setDiagnosticImages(List<DiagnosticImageEntity> diagnosticImages) {
+        this.diagnosticImages = diagnosticImages;
+    }
+
+    public String getDiagnosis() {
+        return diagnosis;
+    }
+
+    public void setDiagnosis(String diagnosis) {
+        this.diagnosis = diagnosis;
+    }
+
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
+    }
+
+    @Override
+    public String toString() {
+        return "Medical [id=" + id + ", department=" + department + ", clinics=" + clinics + ", date=" + date
+                + ", doctorId=" + doctorId + ", clinicalDiagnosis=" + clinicalDiagnosis + ", diagnosticImages="
+                + diagnosticImages + ", diagnosis=" + diagnosis + ", patientId=" + patientId + "]";
+    }
 }

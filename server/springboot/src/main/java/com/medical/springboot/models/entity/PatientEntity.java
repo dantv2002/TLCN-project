@@ -1,119 +1,27 @@
 package com.medical.springboot.models.entity;
 
-import java.util.Date;
-import org.springframework.data.annotation.Id;
+import java.util.List;
+
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 @Document(collection = "PatientRecords")
-public class PatientEntity {
+public class PatientEntity extends PersonAbstractEntity {
 
-    @Id
-    private String id;
-    @Field
-    private String fullName;
-    @Field
-    @JsonFormat(pattern = "MM/dd/yyyy")
-    private Date birthday;
-    @Field
-    private Boolean gender; // Nam = 1, Nữ = 0
-    @Field
-    private String address;
-    @Field
-    private String phoneNumber;
-    @Field
-    private String email;
-    @Field
-    private String identificationCard; // CCCD
     @Field
     private String allergy; // Dị ứng
+    @Field
+    private String healthInsurance; // Bảo hiểm y tế
 
     //
     @Field
-    private Boolean isDeleted;
+    private Boolean isDeleted; // Đã xóa
+    //
+    @DBRef(lazy = true)
+    private List<MedicalEntity> medicalRecords; // Hồ sơ bệnh án
 
     public PatientEntity() {
-    }
-
-    public PatientEntity(String fullName, Date birthday, Boolean gender, String address, String phoneNumber,
-            String email, String identificationCard, String allergy, Boolean isDeleted) {
-        this.fullName = fullName;
-        this.birthday = birthday;
-        this.gender = gender;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.identificationCard = identificationCard;
-        this.allergy = allergy;
-        this.isDeleted = isDeleted;
-    }
-
-    
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
-
-    public Boolean getGender() {
-        return gender;
-    }
-
-    public void setGender(Boolean gender) {
-        this.gender = gender;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getIdentificationCard() {
-        return identificationCard;
-    }
-
-    public void setIdentificationCard(String identificationCard) {
-        this.identificationCard = identificationCard;
     }
 
     public String getAllergy() {
@@ -130,6 +38,31 @@ public class PatientEntity {
 
     public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public String getHealthInsurance() {
+        return healthInsurance;
+    }
+
+    public void setHealthInsurance(String healthInsurance) {
+        this.healthInsurance = healthInsurance;
+    }
+
+    public List<MedicalEntity> getMedicalRecords() {
+        return medicalRecords;
+    }
+
+    public void setMedicalRecords(List<MedicalEntity> medicalRecords) {
+        this.medicalRecords = medicalRecords;
+    }
+
+    @Override
+    public String toString() {
+        return "PatientEntity [id=" + this.getId() + ", fullname=" + this.getFullName() + ", birthday="
+                + this.getBirthday() + ", gender=" + this.getGender() + ", address=" + this.getAddress()
+                + ", phoneNumber=" + this.getPhoneNumber() + ", email=" + this.getEmail() + ", identificationCard="
+                + this.getIdentificationCard() + ", allergy=" + allergy + ", healthInsurance=" + healthInsurance
+                + ", isDeleted=" + isDeleted + ", medicalRecords=" + medicalRecords + "]";
     }
 
 }

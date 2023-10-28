@@ -17,11 +17,6 @@ public class VerifyEntity {
     public VerifyEntity() {
     }
 
-    public VerifyEntity(String email, String verifycode) {
-        this.email = email;
-        this.verifycode = verifycode;
-    }
-
     public String getId() {
         return id;
     }

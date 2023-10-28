@@ -67,6 +67,7 @@ public class LoginController {
                         put("token", token);
                         put("fullname", patient.getFullName());
                         put("email", loginRequest.getEmail());
+                        put("role", account.getRole());
                     }
                 });
                 //
