@@ -29,7 +29,7 @@ public class MedicalEntity {
     @DBRef(lazy = true)
     private List<DiagnosticImageEntity> diagnosticImages; // Chẩn đoán hình ảnh
     @Field
-    private String diagnosis; // Chẩn đoán
+    private String diagnosis; // Kết luận chẩn đoán
     @Field
     private String patientId; // Id hồ sơ bệnh nhân
 

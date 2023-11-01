@@ -27,16 +27,18 @@ public class TokenFilter implements Filter {
             FilterChain chain) throws IOException, ServletException, AuthenticationException {
         logger.info("TokenFilter doFilter");
         String token = ((HttpServletRequest) request).getHeader("Authorization");
+        //
         if (token == null) {
             logger.info("Token is null");
             chain.doFilter(request, response);
             return;
         }
+        //
         token = token.substring(7);
         logger.info("Token: {}", token);
         if (!this.tokenService.isExistsByToken(token)) {
             logger.info("Token is not exists");
-            throw new TempAuthenticationException("Access Token Denied");
+            throw new TempAuthenticationException("Unauthorized");
         }
         chain.doFilter(request, response);
     }

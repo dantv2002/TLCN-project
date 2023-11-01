@@ -18,9 +18,9 @@ public class Exceptionhandler {
     public ResponseEntity<BaseResponse> handleException(Exception exception) {
 
         if (exception instanceof AuthenticationException) {
-            logger.error("Bad Credentials", exception);
+            logger.error("Unauthorized", exception);
             BaseResponse response = new BaseResponse();
-            response.setMessage("Bad Credentials");
+            response.setMessage("Unauthorized");
             response.setData(null);
             return ResponseEntity.status(401).body(response);
         }

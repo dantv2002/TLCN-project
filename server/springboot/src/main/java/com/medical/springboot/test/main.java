@@ -9,6 +9,7 @@ public class main {
         // // boolean valuate = BCrypt.checkpw(password,
         // "$2a$12$OFOICietLS3.qRtzIe6jE.vF.fmtL22DqIZ18WNMmQ.8nS7Frq5aO");
         // // System.out.println(valuate);
+        // JwtAuthenticationProvider jwtAuthenticationProvider = new JwtAuthenticationProvider();
     }
 
 }
