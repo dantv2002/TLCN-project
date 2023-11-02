@@ -13,8 +13,8 @@ import com.medical.springboot.services.CryptographyService;
 
 @Configuration
 public class MailConfiguration {
-    
-     @Value("${spring.mail.host}")
+
+    @Value("${spring.mail.host}")
     private String mailServerHost;
 
     @Value("${spring.mail.port}")
@@ -36,7 +36,7 @@ public class MailConfiguration {
     private CryptographyService cryptographyService;
 
     @Bean
-    public JavaMailSender getJavaMailSender(){
+    public JavaMailSender getJavaMailSender() {
         //
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", mailServerAuth);
@@ -45,10 +45,10 @@ public class MailConfiguration {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(mailServerHost);
         mailSender.setPort(mailServerPort);
-        try{
-        mailSender.setUsername(cryptographyService.Decrypt(mailServerUsername));
-        mailSender.setPassword(cryptographyService.Decrypt(mailServerPassword));
-        }catch(Exception e){
+        try {
+            mailSender.setUsername(cryptographyService.Decrypt(mailServerUsername));
+            mailSender.setPassword(cryptographyService.Decrypt(mailServerPassword));
+        } catch (Exception e) {
             e.printStackTrace();
         }
         mailSender.setJavaMailProperties(properties);

@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "Tokens")
 public class TokenEntity {
-    
+
     @Id
     private String id;
     @Field
@@ -20,7 +20,13 @@ public class TokenEntity {
 
     public TokenEntity() {
     }
-    
+
+    public TokenEntity(String token, Instant expiresAt, String accountId) {
+        this.token = token;
+        this.expiresAt = expiresAt;
+        this.accountId = accountId;
+    }
+
     public String getId() {
         return id;
     }

@@ -21,7 +21,8 @@ public class CryptographyService {
         byte[] encryptByte = cipher.doFinal(messageBytes);
         return encode(encryptByte);
     }
-    private String encode(byte[] data){
+
+    private String encode(byte[] data) {
         return Base64.getEncoder().encodeToString(data);
     }
 
@@ -32,7 +33,8 @@ public class CryptographyService {
         byte[] decryptMessage = cipher.doFinal(decryptBytes);
         return new String(decryptMessage, "UTF-8");
     }
-    private byte[] decode(String data){
+
+    private byte[] decode(String data) {
         return Base64.getDecoder().decode(data);
     }
 }

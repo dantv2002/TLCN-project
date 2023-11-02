@@ -51,7 +51,8 @@ public class EmailController {
 
     // API Send Email Verify Code for Reset Password
     @PostMapping("/sendEmailResetPass")
-    public ResponseEntity<BaseResponse> sendEmailResetPass(@RequestBody Map<String, String> requestBody) throws Exception {
+    public ResponseEntity<BaseResponse> sendEmailResetPass(@RequestBody Map<String, String> requestBody)
+            throws Exception {
         String email = requestBody.get("email");
         BaseResponse response = new BaseResponse();
         logger.info("ResetPass request");

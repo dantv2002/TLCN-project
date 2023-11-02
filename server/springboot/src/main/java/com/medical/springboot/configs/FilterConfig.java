@@ -8,7 +8,7 @@ import com.medical.springboot.utils.TokenFilter;
 
 @Configuration
 public class FilterConfig {
-    
+
     @Bean
     public FilterRegistrationBean<TokenFilter> tokenFilter() {
         FilterRegistrationBean<TokenFilter> registrationBean = new FilterRegistrationBean<>();

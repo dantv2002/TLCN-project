@@ -21,6 +21,12 @@ public class VerifyEntity {
     public VerifyEntity() {
     }
 
+    public VerifyEntity(String email, String verifycode, Instant expiresAt) {
+        this.email = email;
+        this.verifycode = verifycode;
+        this.expiresAt = expiresAt;
+    }
+
     public String getId() {
         return id;
     }

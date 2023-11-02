@@ -1,5 +1,7 @@
 package com.medical.springboot.models.entity;
 
+import java.util.Date;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -12,6 +14,18 @@ public class DoctorEntity extends PersonAbstractEntity {
     private String title; // Chức danh
 
     public DoctorEntity() {
+    }
+
+    public DoctorEntity(String fullName, Date birthday, Boolean gender, String address, String phoneNumber,
+            String email, String identificationCard, String department, String title) {
+        super(fullName, birthday, gender, address, phoneNumber, email, identificationCard);
+        this.department = department;
+        this.title = title;
+    }
+
+    public DoctorEntity(String department, String title) {
+        this.department = department;
+        this.title = title;
     }
 
     public String getDepartment() {

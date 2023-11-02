@@ -26,51 +26,80 @@ public abstract class PersonAbstractEntity {
     @Field
     private String identificationCard; // CCCD
 
+    public PersonAbstractEntity() {
+    }
+
+    public PersonAbstractEntity(String fullName, Date birthday, Boolean gender, String address, String phoneNumber,
+            String email, String identificationCard) {
+        this.fullName = fullName;
+        this.birthday = birthday;
+        this.gender = gender;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.identificationCard = identificationCard;
+    }
+
     public String getId() {
         return id;
     }
+
     public void setId(String id) {
         this.id = id;
     }
+
     public String getFullName() {
         return fullName;
     }
+
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
+
     public Date getBirthday() {
         return birthday;
     }
+
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
+
     public Boolean getGender() {
         return gender;
     }
+
     public void setGender(Boolean gender) {
         this.gender = gender;
     }
+
     public String getAddress() {
         return address;
     }
+
     public void setAddress(String address) {
         this.address = address;
     }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
+
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
     public String getEmail() {
         return email;
     }
+
     public void setEmail(String email) {
         this.email = email;
     }
+
     public String getIdentificationCard() {
         return identificationCard;
     }
+
     public void setIdentificationCard(String identificationCard) {
         this.identificationCard = identificationCard;
     }

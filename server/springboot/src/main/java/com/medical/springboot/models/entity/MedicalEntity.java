@@ -36,6 +36,18 @@ public class MedicalEntity {
     public MedicalEntity() {
     }
 
+    public MedicalEntity(String department, String clinics, Date date, String doctorId, String clinicalDiagnosis,
+            List<DiagnosticImageEntity> diagnosticImages, String diagnosis, String patientId) {
+        this.department = department;
+        this.clinics = clinics;
+        this.date = date;
+        this.doctorId = doctorId;
+        this.clinicalDiagnosis = clinicalDiagnosis;
+        this.diagnosticImages = diagnosticImages;
+        this.diagnosis = diagnosis;
+        this.patientId = patientId;
+    }
+
     public String getId() {
         return id;
     }

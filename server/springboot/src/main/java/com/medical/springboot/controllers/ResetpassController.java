@@ -57,10 +57,17 @@ public class ResetpassController {
         }
         // Update password
         // decrypt RSA and encrypt password
-        AccountEntity accountModelResult = accountService.update(resetPassRequest.getEmail(),
-                BCrypt.hashpw(cryptographyRSAService.Decrypt(resetPassRequest.getPassword()), // Encrypt password string
-                                                                                              // body request changed
+        AccountEntity accountModelResult = accountService.findByEmail(resetPassRequest.getEmail()).map(account -> {
+            try {
+                account.setPassword(BCrypt.hashpw(cryptographyRSAService.Decrypt(resetPassRequest.getPassword()),
                         BCrypt.gensalt(10)));
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+                throw new RuntimeException("Error: RSA decrypt password");
+            }
+            return accountService.update(account);
+        }).orElseThrow(() -> new Exception("Account not found"));
+
         response.setData(new HashMap<String, Object>() {
             {
                 accountModelResult.setPassword(null);
@@ -90,13 +97,8 @@ public class ResetpassController {
             return ResponseEntity.status(400).body(response);
         }
         // Verify password old
-        String passOld = accountService.findByEmail(changePasswordRequest.getEmail()).getPassword();
-        String DecryptPassOld = cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordOld()); // Encrypt
-                                                                                                        // password
-                                                                                                        // string
-                                                                                                        // body
-                                                                                                        // request
-                                                                                                        // changed
+        String passOld = accountService.findByEmail(changePasswordRequest.getEmail()).get().getPassword();
+        String DecryptPassOld = cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordOld());
         if (!BCrypt.checkpw(DecryptPassOld, passOld)) {
             logger.info("Password not match");
             response.setMessage("Password is Incorrect");
@@ -105,13 +107,18 @@ public class ResetpassController {
         }
         // Update password new
         // decrypt RSA and encrypt password new
-        AccountEntity accountModelResult = accountService.update(changePasswordRequest.getEmail(),
-                BCrypt.hashpw(cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordNew()), // Encrypt
-                                                                                                      // password
-                                                                                                      // string body
-                                                                                                      // request
-                                                                                                      // changed
-                        BCrypt.gensalt(10)));
+        AccountEntity accountModelResult = accountService.findByEmail(changePasswordRequest.getEmail()).map(account -> {
+            try {
+                account.setPassword(
+                        BCrypt.hashpw(cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordNew()),
+                                BCrypt.gensalt(10)));
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+                throw new RuntimeException("Error: RSA decrypt password");
+            }
+            return accountService.update(account);
+        }).orElseThrow(() -> new Exception("Account not found"));
+
         response.setData(new HashMap<String, Object>() {
             {
                 accountModelResult.setPassword(null);

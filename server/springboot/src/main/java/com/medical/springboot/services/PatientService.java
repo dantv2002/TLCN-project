@@ -1,7 +1,9 @@
 package com.medical.springboot.services;
 
-import java.util.Date;
+import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,34 +11,32 @@ import com.medical.springboot.models.entity.PatientEntity;
 import com.medical.springboot.repositories.PatientRepository;
 
 @Service
-public class PatientService {
+public class PatientService implements IDao<PatientEntity> {
+    private static final Logger logger = LoggerFactory.getLogger(PatientService.class);
     @Autowired
     private PatientRepository patientRepository;
 
-    //Create
-    public PatientEntity create(String fullname, Date birthday, String address, String phonenumber, String email) {
-        PatientEntity patientEntity = new PatientEntity();
-        patientEntity.setFullName(fullname);
-        patientEntity.setBirthday(birthday);
-        patientEntity.setGender(null);
-        patientEntity.setAddress(address);
-        patientEntity.setPhoneNumber(phonenumber);
-        patientEntity.setEmail(email);
-        patientEntity.setIdentificationCard(null);
-        patientEntity.setAllergy(null);
-        patientEntity.setIsDeleted(true);
-        patientEntity.setHealthInsurance(null);
-        patientEntity.setMedicalRecords(null);
-        return patientRepository.save(patientEntity);
+    // Create
+    @Override
+    public PatientEntity create(PatientEntity t) {
+        logger.debug("create patient: {}", t);
+        return patientRepository.save(t);
     }
 
-    public PatientEntity create(String email){
+    public PatientEntity create(String email) {
         PatientEntity patientEntity = patientRepository.findFirstByEmail(email);
         patientEntity.setIsDeleted(false);
         return patientRepository.save(patientEntity);
     }
 
-    //Read
+    // Read all
+    @Override
+    public List<PatientEntity> read() {
+        logger.debug("read all patients");
+        return patientRepository.findAll();
+    }
+
+    // Read one
     public PatientEntity findByEmail(String email) {
         return patientRepository.findFirstByEmail(email);
     }
@@ -44,29 +44,30 @@ public class PatientService {
     public PatientEntity findByEmailAndIsDeleted(String email, Boolean isDeleted) {
         return patientRepository.findFirstByEmailAndIsDeleted(email, isDeleted);
     }
-    //Update
-    public PatientEntity update(String fullName, Date birthday, Boolean gender, String address, String phonenumber,
-            String email, String identificationcard, String allergy) {
 
-        PatientEntity patientEntity = patientRepository.findFirstByEmail(email);
-        //
-        patientEntity.setFullName(fullName);
-        patientEntity.setBirthday(birthday);
-        patientEntity.setGender(gender);
-        patientEntity.setAddress(address);
-        patientEntity.setPhoneNumber(phonenumber);
-        patientEntity.setIdentificationCard(identificationcard);
-        patientEntity.setAllergy(allergy);
-        //
-        return patientRepository.save(patientEntity);
+    // Update
+    @Override
+    public PatientEntity update(PatientEntity t) {
+        logger.debug("update patient: {}", t);
+        return patientRepository.save(t);
     }
-    //Delete
-    public PatientEntity delete(String email) {
-        PatientEntity patientEntity = patientRepository.findFirstByEmail(email);
-        patientEntity.setIsDeleted(true);
-        return patientRepository.save(patientEntity);
+
+    // Delete
+    @Override
+    public boolean delete(String key) { // set isDeleted = true
+        try {
+            PatientEntity patientEntity = patientRepository.findFirstByEmail(key);
+            patientEntity.setIsDeleted(true);
+            logger.debug("delete patient by id: {}", key);
+            return true;
+        } catch (Exception e) {
+            logger.error("delete patient by id: {}", key);
+            logger.error(e.getMessage());
+            return false;
+        }
     }
-    //Other
+
+    // Other
     public Boolean isexistsByEmail(String email) {
         return patientRepository.existsByEmail(email);
     }

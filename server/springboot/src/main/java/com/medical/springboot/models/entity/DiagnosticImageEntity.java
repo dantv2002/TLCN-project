@@ -30,6 +30,16 @@ public class DiagnosticImageEntity {
     public DiagnosticImageEntity() {
     }
 
+    public DiagnosticImageEntity(String method, String content, String doctorIdPerform, List<String> urlImage,
+            String conclude, String medicalId) {
+        this.method = method;
+        this.content = content;
+        this.doctorIdPerform = doctorIdPerform;
+        this.urlImage = urlImage;
+        this.conclude = conclude;
+        this.medicalId = medicalId;
+    }
+
     public String getId() {
         return id;
     }
@@ -85,7 +95,7 @@ public class DiagnosticImageEntity {
     public void setMedicalId(String medicalId) {
         this.medicalId = medicalId;
     }
-    
+
     @Override
     public String toString() {
         return "DiagnosticImageEntity [id=" + id + ", method=" + method + ", content=" + content + ", doctorIdPerform="

@@ -20,7 +20,6 @@ public class DatabaseConfiguration extends AbstractMongoClientConfiguration {
     @Autowired
     private CryptographyService cryptographyRSAService;
 
-
     @Override
     protected String getDatabaseName() {
         return database;

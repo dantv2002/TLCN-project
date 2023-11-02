@@ -1,5 +1,6 @@
 package com.medical.springboot.models.entity;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -22,6 +23,24 @@ public class PatientEntity extends PersonAbstractEntity {
     private List<MedicalEntity> medicalRecords; // Hồ sơ bệnh án
 
     public PatientEntity() {
+    }
+
+    public PatientEntity(String fullName, Date birthday, Boolean gender, String address, String phoneNumber,
+            String email, String identificationCard, String allergy, String healthInsurance, Boolean isDeleted,
+            List<MedicalEntity> medicalRecords) {
+        super(fullName, birthday, gender, address, phoneNumber, email, identificationCard);
+        this.allergy = allergy;
+        this.healthInsurance = healthInsurance;
+        this.isDeleted = isDeleted;
+        this.medicalRecords = medicalRecords;
+    }
+
+    public PatientEntity(String allergy, String healthInsurance, Boolean isDeleted,
+            List<MedicalEntity> medicalRecords) {
+        this.allergy = allergy;
+        this.healthInsurance = healthInsurance;
+        this.isDeleted = isDeleted;
+        this.medicalRecords = medicalRecords;
     }
 
     public String getAllergy() {

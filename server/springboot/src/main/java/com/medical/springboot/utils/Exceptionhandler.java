@@ -32,6 +32,13 @@ public class Exceptionhandler {
             response.setData(null);
             return ResponseEntity.status(403).body(response);
         }
+        if (exception instanceof RuntimeException) {
+            logger.error("Bad Request", exception);
+            BaseResponse response = new BaseResponse();
+            response.setMessage("Bad Request");
+            response.setData(null);
+            return ResponseEntity.status(400).body(response);
+        }
 
         logger.error("Internal Server Error", exception);
         BaseResponse response = new BaseResponse();

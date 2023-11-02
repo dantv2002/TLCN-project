@@ -46,7 +46,7 @@ public class LoginController {
         logger.info("Login request");
 
         if (accountService.isExistsByEmail(loginRequest.getEmail())) {
-            AccountEntity account = accountService.findByEmail(loginRequest.getEmail());
+            AccountEntity account = accountService.findByEmail(loginRequest.getEmail()).get();
             String DecryptPass = cryptographyRSAService.Decrypt(loginRequest.getPassword()); // Encrypt password string
                                                                                              // body request changed
             if (!BCrypt.checkpw(DecryptPass, account.getPassword())) {

@@ -57,10 +57,12 @@ public class SignupController {
                                                                                                         // changed
                 BCrypt.gensalt(10));
         AccountEntity account = accountService
-                .create(signupRequest.getEmail(), encryptPass, "PATIENT", true);
+                .create(new AccountEntity(signupRequest.getEmail(), encryptPass, "PATIENT", true));
         //
-        PatientEntity patient = patientService.create(signupRequest.getFullname(), signupRequest.getBirthday(),
-                signupRequest.getAddress(), signupRequest.getPhonenumber(), signupRequest.getEmail());
+        PatientEntity patient = patientService
+                .create(new PatientEntity(signupRequest.getFullname(), signupRequest.getBirthday(), null,
+                        signupRequest.getAddress(), signupRequest.getPhonenumber(), signupRequest.getEmail(), null,
+                        null, null, true, null));
         //
         response.setData(new HashMap<String, Object>() {
             {

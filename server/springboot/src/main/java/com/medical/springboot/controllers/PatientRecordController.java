@@ -86,13 +86,17 @@ public class PatientRecordController {
             return ResponseEntity.status(400).body(response);
         }
         // update patient record
-        PatientEntity patientResult = patientService.update(patientRequest.getFullname(), patientRequest.getBirthday(),
-                patientRequest.getGender(), patientRequest.getAddress(), patientRequest.getPhonenumber(),
-                patientRequest.getEmail(), patientRequest.getIdentificationCard(), patientRequest.getAllergy());
-        response.setMessage("Update patient record successfully");
+        // PatientEntity patientResult =
+        // patientService.update(patientRequest.getFullname(),
+        // patientRequest.getBirthday(),
+        // patientRequest.getGender(), patientRequest.getAddress(),
+        // patientRequest.getPhonenumber(),
+        // patientRequest.getEmail(), patientRequest.getIdentificationCard(),
+        // patientRequest.getAllergy());
+        // response.setMessage("Update patient record successfully");
         response.setData(new HashMap<String, Object>() {
             {
-                put("patient", patientResult);
+                // put("patient", patientResult);
             }
         });
         return ResponseEntity.status(200).body(response);
@@ -110,11 +114,11 @@ public class PatientRecordController {
             return ResponseEntity.status(400).body(response);
         }
         // update isDeleted = true
-        PatientEntity patientResult = patientService.delete(email);
+        // PatientEntity patientResult = patientService.delete(email);
         response.setMessage("Delete patient record successfully");
         response.setData(new HashMap<String, Object>() {
             {
-                put("patient", patientResult);
+                // put("patient", patientResult);
             }
         });
         return ResponseEntity.status(200).body(response);
