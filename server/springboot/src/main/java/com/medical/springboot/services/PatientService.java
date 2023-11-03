@@ -24,27 +24,14 @@ public class PatientService implements IDao<PatientEntity> {
         return patientRepository.save(t);
     }
 
-    public PatientEntity activate(String email) {
-        PatientEntity patientEntity = patientRepository.findFirstByEmail(email);
-        patientEntity.setIsDeleted(false);
-        return patientRepository.save(patientEntity);
-    }
-
     // Read all
     @Override
-    public List<PatientEntity> read(String key) {
+    public List<PatientEntity> readAll() {
         throw new UnsupportedOperationException("Not supported read all patients");
-        // logger.debug("read all patients");
-        // return patientRepository.findAll();
     }
 
-    // Read one
-    public Optional<PatientEntity> findByEmail(String email) {
-        return Optional.ofNullable(patientRepository.findFirstByEmail(email));
-    }
-
-    public PatientEntity findByEmailAndIsDeleted(String email, Boolean isDeleted) {
-        return patientRepository.findFirstByEmailAndIsDeleted(email, isDeleted);
+    public PatientEntity findFirstById(String id) {
+        return patientRepository.findFirstById(id);
     }
 
     // Update
@@ -56,25 +43,46 @@ public class PatientService implements IDao<PatientEntity> {
 
     // Delete
     @Override
-    public boolean delete(String key) { // set isDeleted = true
+    public boolean delete(String id) { // set isDeleted = true
         try {
-            PatientEntity patientEntity = patientRepository.findFirstByEmail(key);
+            PatientEntity patientEntity = patientRepository.findFirstById(id);
             patientEntity.setIsDeleted(true);
-            logger.debug("delete patient by id: {}", key);
+            logger.debug("delete patient by id: {}", id);
             return true;
         } catch (Exception e) {
-            logger.error("delete patient by id: {}", key);
+            logger.error("delete patient by id: {}", id);
             logger.error(e.getMessage());
             return false;
         }
     }
 
     // Other methods
+    public Optional<PatientEntity> findByEmail(String email) {
+        return Optional.ofNullable(patientRepository.findFirstByEmail(email));
+    }
+
     public Boolean isexistsByEmail(String email) {
         return patientRepository.existsByEmail(email);
     }
 
-    public Boolean isexistsByEmailAndIsDeleted(String email, Boolean isDeleted) {
-        return patientRepository.existsByEmailAndIsDeleted(email, isDeleted);
+    public Boolean isexistsById(String id) {
+        return patientRepository.existsById(id);
+    }
+
+    public Boolean isexistsByIdAndIsDeleted(String id, Boolean isDeleted) {
+        return patientRepository.existsByIdAndIsDeleted(id, isDeleted);
+    }
+
+    public PatientEntity activate(String email) {
+        PatientEntity patientEntity = patientRepository.findFirstByEmail(email);
+        if (patientEntity == null) {
+            throw new NullPointerException("Patient record does not exist");
+        }
+        patientEntity.setIsDeleted(false);
+        patientEntity.setGender(null);
+        patientEntity.setIdentificationCard(null);
+        patientEntity.setAllergy(null);
+        patientEntity.setHealthInsurance(null);
+        return patientRepository.save(patientEntity);
     }
 }

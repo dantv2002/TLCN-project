@@ -54,16 +54,7 @@ public class MedicalController {
         return ResponseEntity.status(400).body(response);
     }
 
-    // Read medicals for doctor
-    @GetMapping("/read/{id}")
-    public ResponseEntity<BaseResponse> read(@PathVariable("id") String patientId) {
-        String doctorId = authenticationFacade.getAuthentication().getName();
-        LOGGER.info("Read medicals for doctor request");
-        LOGGER.info("Doctor id: {}", doctorId);
-        return readMedical(patientId);
-    }
-
-    // Read medicals for patient
+    // Read medicals
     @GetMapping("/read/me")
     public ResponseEntity<BaseResponse> read() {
         String patientId = authenticationFacade.getAuthentication().getName();
@@ -72,15 +63,21 @@ public class MedicalController {
         return readMedical(patientId);
     }
 
+    @GetMapping("/read/{id}")
+    public ResponseEntity<BaseResponse> read(@PathVariable("id") String patientId) {
+        LOGGER.info("Read medicals for doctor request");
+        return readMedical(patientId);
+    }
+
     // Read medicals of patientId
-    public ResponseEntity<BaseResponse> readMedical(String patientId) {
+    private ResponseEntity<BaseResponse> readMedical(String patientId) {
         BaseResponse response = new BaseResponse();
         LOGGER.info("Read medicals request");
         LOGGER.info("Patient id: {}", patientId);
         response.setMessage("Read medicals success");
         response.setData(new HashMap<>() {
             {
-                put("medicals", medicalService.read(patientId));
+                put("medicals", medicalService.readAllByPatientId(patientId));
             }
         });
         return ResponseEntity.status(200).body(response);
@@ -152,4 +149,6 @@ public class MedicalController {
         response.setData(null);
         return ResponseEntity.status(400).body(response);
     }
+    // Image diagnosis
+
 }

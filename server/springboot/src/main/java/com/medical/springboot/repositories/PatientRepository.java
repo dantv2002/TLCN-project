@@ -8,10 +8,10 @@ public interface PatientRepository extends MongoRepository<PatientEntity, String
 
     public PatientEntity findFirstByEmail(String email);
 
-    public PatientEntity findFirstByEmailAndIsDeleted(String email, Boolean isDeleted);
+    public PatientEntity findFirstById(String id);
 
     public Boolean existsByEmail(String email);
 
-    public Boolean existsByEmailAndIsDeleted(String email, Boolean isDeleted);
+    public Boolean existsByIdAndIsDeleted(String id, Boolean isDeleted);
 
 }

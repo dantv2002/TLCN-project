@@ -26,7 +26,7 @@ public class AccountService implements IDao<AccountEntity> {
 
     // Read all by key = email
     @Override
-    public List<AccountEntity> read(String key) {
+    public List<AccountEntity> readAll() {
         throw new UnsupportedOperationException("Not supported read all accounts by email");
         // logger.debug("read all accounts by email: {}", key);
         // return accountRepository.findByEmail(key);
@@ -36,6 +36,11 @@ public class AccountService implements IDao<AccountEntity> {
     public Optional<AccountEntity> findFirstByEmail(String email) {
         logger.debug("read account by email: {}", email);
         return Optional.ofNullable(accountRepository.findFirstByEmail(email));
+    }
+
+    public Optional<AccountEntity> findById(String id) {
+        logger.debug("read account by id: {}", id);
+        return accountRepository.findById(id);
     }
 
     // Update
@@ -48,21 +53,51 @@ public class AccountService implements IDao<AccountEntity> {
     // Delete
     @Override
     public boolean delete(String key) {
-        throw new UnsupportedOperationException("Not supported delete account by id");
-        // try {
-        //     accountRepository.deleteById(key);
-        //     logger.debug("delete account by id: {}", key);
-        //     return true;
-        // } catch (Exception e) {
-        //     logger.error("delete account by id: {}", key);
-        //     logger.error(e.getMessage());
-        //     return false;
-        // }
+        try {
+            accountRepository.deleteById(key);
+            logger.debug("delete account by id: {}", key);
+            return true;
+        } catch (Exception e) {
+            logger.error("delete account by id: {}", key);
+            logger.error(e.getMessage());
+            return false;
+        }
     }
 
     // Other methods
     public Boolean isExistsByEmail(String email) {
         logger.debug("check exists account by email: {}", email);
         return accountRepository.existsByEmail(email);
+    }
+    public Boolean isExistsByEmailAndStatus(String email, Boolean status) {
+        logger.debug("check status account of email: {} - {}", email, status);
+        return accountRepository.existsByEmailAndStatus(email, status);
+    }
+
+    public Boolean isExistsById(String id) {
+        logger.debug("check exists account by id: {}", id);
+        return accountRepository.existsById(id);
+    }
+
+    // Active account
+    public Boolean activeAccount(String id) {
+        logger.debug("active account by id: {}", id);
+        AccountEntity account = accountRepository.findById(id).orElseGet(null);
+        if (account == null)
+            return false;
+        account.setStatus(true);
+        accountRepository.save(account);
+        return true;
+    }
+
+    // Deactive account
+    public Boolean deactiveAccount(String id) {
+        logger.debug("deactivate account by id: {}", id);
+        AccountEntity account = accountRepository.findById(id).orElseGet(null);
+        if (account == null)
+            return false;
+        account.setStatus(false);
+        accountRepository.save(account);
+        return true;
     }
 }

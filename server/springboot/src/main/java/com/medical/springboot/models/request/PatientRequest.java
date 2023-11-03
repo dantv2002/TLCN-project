@@ -87,5 +87,5 @@ public class PatientRequest {
     public void setHealthinsurance(String healthinsurance) {
         this.healthinsurance = healthinsurance;
     }
-    
+
 }

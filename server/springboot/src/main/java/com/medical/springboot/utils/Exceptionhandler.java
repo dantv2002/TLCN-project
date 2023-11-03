@@ -39,6 +39,13 @@ public class Exceptionhandler {
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
+        if(exception instanceof NullPointerException){
+            logger.error("Not Found", exception);
+            BaseResponse response = new BaseResponse();
+            response.setMessage("Not Found");
+            response.setData(null);
+            return ResponseEntity.status(404).body(response);
+        }
 
         logger.error("Internal Server Error", exception);
         BaseResponse response = new BaseResponse();

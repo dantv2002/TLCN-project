@@ -6,7 +6,7 @@ public interface IDao<T> {
 
     public T create(T t);
 
-    public List<T> read(String key); //read by key
+    public List<T> readAll();
 
     public T update(T t);
 

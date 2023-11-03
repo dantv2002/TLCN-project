@@ -4,7 +4,7 @@ package com.medical.springboot.models.entity;
  * DiagnosticImageEntity
  */
 public class DiagnosticImageEntity {
-
+    private String id;
     private String method; // Phương pháp: CT, MRI, X-Quang
     private String content; // Nội dung yêu cầu
     private String doctorIdPerform; // Id bác sĩ thực hiện
@@ -21,6 +21,14 @@ public class DiagnosticImageEntity {
         this.doctorIdPerform = doctorIdPerform;
         this.urlImage = urlImage;
         this.conclude = conclude;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getMethod() {
@@ -65,7 +73,7 @@ public class DiagnosticImageEntity {
 
     @Override
     public String toString() {
-        return "DiagnosticImageEntity [method=" + method + ", content=" + content + ", doctorIdPerform="
+        return "DiagnosticImageEntity [id=" + id + ", method=" + method + ", content=" + content + ", doctorIdPerform="
                 + doctorIdPerform + ", urlImage=" + urlImage + ", conclude=" + conclude + "]";
     }
 

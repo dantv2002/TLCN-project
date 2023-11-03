@@ -63,6 +63,12 @@ public class EmailController {
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
+        if (accountService.isExistsByEmailAndStatus(email, false)) {
+            logger.info("Email already exists but not active");
+            response.setMessage("Account has been locked");
+            response.setData(null);
+            return ResponseEntity.status(400).body(response);
+        }
         //
         PatientEntity patient = patientService.findByEmail(email).orElseThrow(() -> new Exception("Patient not found"));
         return sendEmail(patient.getEmail(), patient.getFullName());

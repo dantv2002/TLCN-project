@@ -96,6 +96,12 @@ public class ResetpassController {
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
+        if (accountService.isExistsByEmailAndStatus(changePasswordRequest.getEmail(), false)) {
+            logger.info("Email already exists but not active");
+            response.setMessage("Account has been locked");
+            response.setData(null);
+            return ResponseEntity.status(400).body(response);
+        }
         // Verify password old
         String passOld = accountService.findFirstByEmail(changePasswordRequest.getEmail()).get().getPassword();
         String DecryptPassOld = cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordOld());
@@ -107,17 +113,18 @@ public class ResetpassController {
         }
         // Update password new
         // decrypt RSA and encrypt password new
-        AccountEntity accountModelResult = accountService.findFirstByEmail(changePasswordRequest.getEmail()).map(account -> {
-            try {
-                account.setPassword(
-                        BCrypt.hashpw(cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordNew()),
-                                BCrypt.gensalt(10)));
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-                throw new RuntimeException("Error: RSA decrypt password");
-            }
-            return accountService.update(account);
-        }).orElseThrow(() -> new Exception("Account not found"));
+        AccountEntity accountModelResult = accountService.findFirstByEmail(changePasswordRequest.getEmail())
+                .map(account -> {
+                    try {
+                        account.setPassword(
+                                BCrypt.hashpw(cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordNew()),
+                                        BCrypt.gensalt(10)));
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
+                        throw new RuntimeException("Error: RSA decrypt password");
+                    }
+                    return accountService.update(account);
+                }).orElseThrow(() -> new Exception("Account not found"));
 
         response.setData(new HashMap<String, Object>() {
             {

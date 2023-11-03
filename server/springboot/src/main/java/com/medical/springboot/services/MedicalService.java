@@ -27,11 +27,16 @@ public class MedicalService implements IDao<MedicalEntity> {
 
     // Read medicals of patient
     @Override
-    public List<MedicalEntity> read(String key) {
-        logger.info("read all medicals");
-        return medicalRepository.findByPatientId(key);
+    public List<MedicalEntity> readAll() {
+        throw new UnsupportedOperationException("Not supported read all medicals");
+        // logger.info("read all medicals");
+        // return medicalRepository.findAll();
     }
-
+    // Read medicals of patient
+    public List<MedicalEntity> readAllByPatientId(String patientId) {
+        logger.info("read all medicals of patient: {}", patientId);
+        return medicalRepository.findByPatientId(patientId);
+    }
     // Read one
     public Optional<MedicalEntity> findById(String key) {
         logger.info("read one medical");
@@ -58,5 +63,6 @@ public class MedicalService implements IDao<MedicalEntity> {
         }
     }
     // Other methods
-
+    // Image disagnosis
+    
 }

@@ -2,8 +2,6 @@ package com.medical.springboot.controllers;
 
 import java.util.HashMap;
 
-import javax.print.Doc;
-
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.medical.springboot.models.entity.AccountEntity;
+import com.medical.springboot.models.entity.DoctorEntity;
 import com.medical.springboot.models.entity.PatientEntity;
 import com.medical.springboot.models.request.LoginRequest;
 import com.medical.springboot.models.response.BaseResponse;
@@ -51,6 +50,12 @@ public class LoginController {
         logger.info("Login request");
 
         if (accountService.isExistsByEmail(loginRequest.getEmail())) {
+            if (accountService.isExistsByEmailAndStatus(loginRequest.getEmail(), false)) {
+                logger.info("Email already exists but not active");
+                response.setMessage("Account has been locked");
+                response.setData(null);
+                return ResponseEntity.status(400).body(response);
+            }
             AccountEntity account = accountService.findFirstByEmail(loginRequest.getEmail()).get();
             String DecryptPass = cryptographyRSAService.Decrypt(loginRequest.getPassword()); // Encrypt password string
                                                                                              // body request changed
@@ -71,17 +76,17 @@ public class LoginController {
                     break;
                 case "DOCTOR":
                     logger.info("Role: {}", account.getRole());
-                    person_FullName = doctorService.findByEmail(loginRequest.getEmail())
-                            .get().getFullName();
-                    person_Id = doctorService.findByEmail(loginRequest.getEmail())
-                            .orElseThrow(() -> new Exception("Doctor not found")).getId();
+                    DoctorEntity doctor = doctorService.findByEmail(loginRequest.getEmail()).orElseThrow(
+                            () -> new NullPointerException("Doctor not found"));
+                    person_FullName = doctor.getFullName();
+                    person_Id = doctor.getId();
                     break;
                 case "PATIENT":
                     logger.info("Role: {}", account.getRole());
-                    person_FullName = patientService.findByEmail(loginRequest.getEmail())
-                            .get().getFullName();
-                    person_Id = patientService.findByEmail(loginRequest.getEmail())
-                            .orElseThrow(() -> new Exception("Patient not found")).getId();
+                    PatientEntity patient = patientService.findByEmail(loginRequest.getEmail())
+                            .orElseThrow(() -> new NullPointerException("Patient not found"));
+                    person_FullName = patient.getFullName();
+                    person_Id = patient.getId();
                     break;
                 default:
                     break;

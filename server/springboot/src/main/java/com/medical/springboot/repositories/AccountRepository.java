@@ -11,10 +11,10 @@ import com.medical.springboot.models.entity.AccountEntity;
  */
 public interface AccountRepository extends MongoRepository<AccountEntity, String> {
 
-   public AccountEntity findFirstByEmail(String email);
+    public AccountEntity findFirstByEmail(String email);
 
     public Boolean existsByEmail(String email);
 
-    public List<AccountEntity> findByEmail(String email);
+    public Boolean existsByEmailAndStatus(String email, Boolean status);
 
 }
