@@ -1,7 +1,5 @@
 package com.medical.springboot.repositories;
 
-import java.util.List;
-
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.medical.springboot.models.entity.AccountEntity;
