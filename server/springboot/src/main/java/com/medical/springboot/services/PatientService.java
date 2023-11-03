@@ -1,6 +1,7 @@
 package com.medical.springboot.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ public class PatientService implements IDao<PatientEntity> {
         return patientRepository.save(t);
     }
 
-    public PatientEntity create(String email) {
+    public PatientEntity activate(String email) {
         PatientEntity patientEntity = patientRepository.findFirstByEmail(email);
         patientEntity.setIsDeleted(false);
         return patientRepository.save(patientEntity);
@@ -31,14 +32,15 @@ public class PatientService implements IDao<PatientEntity> {
 
     // Read all
     @Override
-    public List<PatientEntity> read() {
-        logger.debug("read all patients");
-        return patientRepository.findAll();
+    public List<PatientEntity> read(String key) {
+        throw new UnsupportedOperationException("Not supported read all patients");
+        // logger.debug("read all patients");
+        // return patientRepository.findAll();
     }
 
     // Read one
-    public PatientEntity findByEmail(String email) {
-        return patientRepository.findFirstByEmail(email);
+    public Optional<PatientEntity> findByEmail(String email) {
+        return Optional.ofNullable(patientRepository.findFirstByEmail(email));
     }
 
     public PatientEntity findByEmailAndIsDeleted(String email, Boolean isDeleted) {
@@ -67,7 +69,7 @@ public class PatientService implements IDao<PatientEntity> {
         }
     }
 
-    // Other
+    // Other methods
     public Boolean isexistsByEmail(String email) {
         return patientRepository.existsByEmail(email);
     }

@@ -14,6 +14,7 @@ public class PatientRequest {
     private String email;
     private String identificationCard;
     private String allergy;
+    private String healthinsurance;
 
     public String getFullname() {
         return fullname;
@@ -79,4 +80,12 @@ public class PatientRequest {
         this.allergy = allergy;
     }
 
+    public String getHealthinsurance() {
+        return healthinsurance;
+    }
+
+    public void setHealthinsurance(String healthinsurance) {
+        this.healthinsurance = healthinsurance;
+    }
+    
 }

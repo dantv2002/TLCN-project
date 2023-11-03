@@ -62,7 +62,7 @@ public class SignupController {
         PatientEntity patient = patientService
                 .create(new PatientEntity(signupRequest.getFullname(), signupRequest.getBirthday(), null,
                         signupRequest.getAddress(), signupRequest.getPhonenumber(), signupRequest.getEmail(), null,
-                        null, null, true, null));
+                        null, null, true));
         //
         response.setData(new HashMap<String, Object>() {
             {

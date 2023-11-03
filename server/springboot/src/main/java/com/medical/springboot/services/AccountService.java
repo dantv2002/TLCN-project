@@ -24,15 +24,16 @@ public class AccountService implements IDao<AccountEntity> {
         return accountRepository.save(t);
     }
 
-    // Read all
+    // Read all by key = email
     @Override
-    public List<AccountEntity> read() {
-        logger.debug("read all accounts");
-        return accountRepository.findAll();
+    public List<AccountEntity> read(String key) {
+        throw new UnsupportedOperationException("Not supported read all accounts by email");
+        // logger.debug("read all accounts by email: {}", key);
+        // return accountRepository.findByEmail(key);
     }
 
     // Read one
-    public Optional<AccountEntity> findByEmail(String email) {
+    public Optional<AccountEntity> findFirstByEmail(String email) {
         logger.debug("read account by email: {}", email);
         return Optional.ofNullable(accountRepository.findFirstByEmail(email));
     }
@@ -47,18 +48,19 @@ public class AccountService implements IDao<AccountEntity> {
     // Delete
     @Override
     public boolean delete(String key) {
-        try {
-            accountRepository.deleteById(key);
-            logger.debug("delete account by id: {}", key);
-            return true;
-        } catch (Exception e) {
-            logger.error("delete account by id: {}", key);
-            logger.error(e.getMessage());
-            return false;
-        }
+        throw new UnsupportedOperationException("Not supported delete account by id");
+        // try {
+        //     accountRepository.deleteById(key);
+        //     logger.debug("delete account by id: {}", key);
+        //     return true;
+        // } catch (Exception e) {
+        //     logger.error("delete account by id: {}", key);
+        //     logger.error(e.getMessage());
+        //     return false;
+        // }
     }
 
-    // Other
+    // Other methods
     public Boolean isExistsByEmail(String email) {
         logger.debug("check exists account by email: {}", email);
         return accountRepository.existsByEmail(email);

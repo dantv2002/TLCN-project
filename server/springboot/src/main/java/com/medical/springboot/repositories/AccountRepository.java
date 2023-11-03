@@ -1,5 +1,7 @@
 package com.medical.springboot.repositories;
 
+import java.util.List;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.medical.springboot.models.entity.AccountEntity;
@@ -9,8 +11,10 @@ import com.medical.springboot.models.entity.AccountEntity;
  */
 public interface AccountRepository extends MongoRepository<AccountEntity, String> {
 
-    AccountEntity findFirstByEmail(String email);
+   public AccountEntity findFirstByEmail(String email);
 
-    Boolean existsByEmail(String email);
+    public Boolean existsByEmail(String email);
+
+    public List<AccountEntity> findByEmail(String email);
 
 }

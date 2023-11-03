@@ -6,8 +6,8 @@ import com.medical.springboot.models.entity.TokenEntity;
 
 public interface TokenRepository extends MongoRepository<TokenEntity, String> {
 
-    void deleteByToken(String token);
+    public void deleteByToken(String token);
 
-    Boolean existsByToken(String token);
+    public Boolean existsByToken(String token);
 
 }

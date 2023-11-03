@@ -57,7 +57,7 @@ public class ResetpassController {
         }
         // Update password
         // decrypt RSA and encrypt password
-        AccountEntity accountModelResult = accountService.findByEmail(resetPassRequest.getEmail()).map(account -> {
+        AccountEntity accountModelResult = accountService.findFirstByEmail(resetPassRequest.getEmail()).map(account -> {
             try {
                 account.setPassword(BCrypt.hashpw(cryptographyRSAService.Decrypt(resetPassRequest.getPassword()),
                         BCrypt.gensalt(10)));
@@ -97,7 +97,7 @@ public class ResetpassController {
             return ResponseEntity.status(400).body(response);
         }
         // Verify password old
-        String passOld = accountService.findByEmail(changePasswordRequest.getEmail()).get().getPassword();
+        String passOld = accountService.findFirstByEmail(changePasswordRequest.getEmail()).get().getPassword();
         String DecryptPassOld = cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordOld());
         if (!BCrypt.checkpw(DecryptPassOld, passOld)) {
             logger.info("Password not match");
@@ -107,7 +107,7 @@ public class ResetpassController {
         }
         // Update password new
         // decrypt RSA and encrypt password new
-        AccountEntity accountModelResult = accountService.findByEmail(changePasswordRequest.getEmail()).map(account -> {
+        AccountEntity accountModelResult = accountService.findFirstByEmail(changePasswordRequest.getEmail()).map(account -> {
             try {
                 account.setPassword(
                         BCrypt.hashpw(cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordNew()),

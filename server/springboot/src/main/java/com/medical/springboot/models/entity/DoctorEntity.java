@@ -23,11 +23,6 @@ public class DoctorEntity extends PersonAbstractEntity {
         this.title = title;
     }
 
-    public DoctorEntity(String department, String title) {
-        this.department = department;
-        this.title = title;
-    }
-
     public String getDepartment() {
         return department;
     }

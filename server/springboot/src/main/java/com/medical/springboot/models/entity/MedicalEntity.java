@@ -4,11 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Document(collection = "MedicalRecords")
 public class MedicalEntity {
@@ -20,13 +17,12 @@ public class MedicalEntity {
     @Field
     private String clinics; // Phòng khám
     @Field
-    @JsonFormat(pattern = "MM/dd/yyyy")
     private Date date; // Ngày khám
     @Field
     private String doctorId; // Id bác sĩ khám
     @Field
     private String clinicalDiagnosis; // Chẩn đoán lâm sàng
-    @DBRef(lazy = true)
+    @Field
     private List<DiagnosticImageEntity> diagnosticImages; // Chẩn đoán hình ảnh
     @Field
     private String diagnosis; // Kết luận chẩn đoán

@@ -64,7 +64,7 @@ public class EmailController {
             return ResponseEntity.status(400).body(response);
         }
         //
-        PatientEntity patient = patientService.findByEmail(email);
+        PatientEntity patient = patientService.findByEmail(email).orElseThrow(() -> new Exception("Patient not found"));
         return sendEmail(patient.getEmail(), patient.getFullName());
     }
 

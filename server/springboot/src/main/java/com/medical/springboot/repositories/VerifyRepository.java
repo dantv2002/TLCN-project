@@ -6,8 +6,8 @@ import com.medical.springboot.models.entity.VerifyEntity;
 
 public interface VerifyRepository extends MongoRepository<VerifyEntity, String> {
 
-    VerifyEntity findFirstByEmail(String email);
+    public VerifyEntity findFirstByEmail(String email);
 
-    Boolean existsByEmailAndVerifycode(String email, String verifycode);
+    public Boolean existsByEmailAndVerifycode(String email, String verifycode);
 
 }

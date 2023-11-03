@@ -27,20 +27,20 @@ public class TokenService {
     @Autowired
     private TokenRepository tokenRepository;
 
-    public String generateToken(AccountEntity accountEntity) {
+    // Create token
+    public String generateToken(AccountEntity accountEntity, String personId) {
         Instant now = Instant.now();
         Instant expiresAt = now.plus(7, ChronoUnit.DAYS);
         String authorities = accountEntity.getRole();
-        String userName = accountEntity.getEmail();
 
         logger.debug("authorities: {}", authorities);
-        logger.debug("userName: {}", userName);
+        logger.debug("personId: {}", personId);
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(expiresAt)
-                .subject(userName)
+                .subject(personId)
                 .claim("authorities", authorities)
                 .build();
 
@@ -56,7 +56,7 @@ public class TokenService {
         return token;
     }
 
-    // delete token
+    // Delete token
     public Boolean deleteToken(String token) {
         try {
             this.tokenRepository.deleteByToken(token);
@@ -66,7 +66,7 @@ public class TokenService {
         }
     }
 
-    // check token
+    // Check token
     public Boolean isExistsByToken(String token) {
         return this.tokenRepository.existsByToken(token);
     }

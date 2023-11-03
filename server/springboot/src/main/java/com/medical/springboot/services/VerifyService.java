@@ -41,7 +41,7 @@ public class VerifyService {
         }
     }
 
-    // Other
+    // Other methods
     public boolean verifyCode(String email, String verifyCode) {
         if (!verifyRepository.existsByEmailAndVerifycode(email, verifyCode) || !isCheckTimeExpire(email)) {
             return false;

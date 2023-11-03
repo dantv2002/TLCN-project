@@ -2,6 +2,8 @@ package com.medical.springboot.controllers;
 
 import java.util.HashMap;
 
+import javax.print.Doc;
+
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import com.medical.springboot.models.request.LoginRequest;
 import com.medical.springboot.models.response.BaseResponse;
 import com.medical.springboot.services.AccountService;
 import com.medical.springboot.services.CryptographyService;
+import com.medical.springboot.services.DoctorService;
 import com.medical.springboot.services.PatientService;
 import com.medical.springboot.services.TokenService;
 
@@ -38,6 +41,8 @@ public class LoginController {
     private AccountService accountService;
     @Autowired
     private PatientService patientService;
+    @Autowired
+    private DoctorService doctorService;
 
     // API Login
     @PostMapping("/login")
@@ -46,7 +51,7 @@ public class LoginController {
         logger.info("Login request");
 
         if (accountService.isExistsByEmail(loginRequest.getEmail())) {
-            AccountEntity account = accountService.findByEmail(loginRequest.getEmail()).get();
+            AccountEntity account = accountService.findFirstByEmail(loginRequest.getEmail()).get();
             String DecryptPass = cryptographyRSAService.Decrypt(loginRequest.getPassword()); // Encrypt password string
                                                                                              // body request changed
             if (!BCrypt.checkpw(DecryptPass, account.getPassword())) {
@@ -56,16 +61,42 @@ public class LoginController {
                 return ResponseEntity.status(401).body(response);
             }
             //
-            String token = tokenService.generateToken(account);
+            String person_FullName = "";
+            String person_Id = "";
+            switch (account.getRole()) {
+                case "ADMIN":
+                    logger.info("Role: {}", account.getRole());
+                    person_FullName = "Admin";
+                    person_Id = "Admin";
+                    break;
+                case "DOCTOR":
+                    logger.info("Role: {}", account.getRole());
+                    person_FullName = doctorService.findByEmail(loginRequest.getEmail())
+                            .get().getFullName();
+                    person_Id = doctorService.findByEmail(loginRequest.getEmail())
+                            .orElseThrow(() -> new Exception("Doctor not found")).getId();
+                    break;
+                case "PATIENT":
+                    logger.info("Role: {}", account.getRole());
+                    person_FullName = patientService.findByEmail(loginRequest.getEmail())
+                            .get().getFullName();
+                    person_Id = patientService.findByEmail(loginRequest.getEmail())
+                            .orElseThrow(() -> new Exception("Patient not found")).getId();
+                    break;
+                default:
+                    break;
+            }
+
+            String token = tokenService.generateToken(account, person_Id);
             logger.info("Token generated: {}", token);
             logger.info("For Username: {}", loginRequest.getEmail());
             //
-            PatientEntity patient = patientService.findByEmail(loginRequest.getEmail());
+            String userName = person_FullName;
             response.setMessage("Create token successfully");
-            response.setData(new HashMap<String, Object>() {
+            response.setData(new HashMap<String, String>() {
                 {
                     put("token", token);
-                    put("fullname", patient.getFullName());
+                    put("fullname", userName);
                     put("email", loginRequest.getEmail());
                     put("role", account.getRole());
                 }

@@ -6,12 +6,12 @@ import com.medical.springboot.models.entity.PatientEntity;
 
 public interface PatientRepository extends MongoRepository<PatientEntity, String> {
 
-    PatientEntity findFirstByEmail(String email);
+    public PatientEntity findFirstByEmail(String email);
 
-    PatientEntity findFirstByEmailAndIsDeleted(String email, Boolean isDeleted);
+    public PatientEntity findFirstByEmailAndIsDeleted(String email, Boolean isDeleted);
 
-    Boolean existsByEmail(String email);
+    public Boolean existsByEmail(String email);
 
-    Boolean existsByEmailAndIsDeleted(String email, Boolean isDeleted);
+    public Boolean existsByEmailAndIsDeleted(String email, Boolean isDeleted);
 
 }

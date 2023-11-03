@@ -1,0 +1,62 @@
+package com.medical.springboot.services;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.medical.springboot.models.entity.MedicalEntity;
+import com.medical.springboot.repositories.MedicalRepository;
+
+@Service
+public class MedicalService implements IDao<MedicalEntity> {
+
+    private static final Logger logger = LoggerFactory.getLogger(MedicalService.class);
+    @Autowired
+    private MedicalRepository medicalRepository;
+
+    // Create
+    @Override
+    public MedicalEntity create(MedicalEntity t) {
+        logger.info("create medical: {}", t);
+        return medicalRepository.save(t);
+    }
+
+    // Read medicals of patient
+    @Override
+    public List<MedicalEntity> read(String key) {
+        logger.info("read all medicals");
+        return medicalRepository.findByPatientId(key);
+    }
+
+    // Read one
+    public Optional<MedicalEntity> findById(String key) {
+        logger.info("read one medical");
+        return medicalRepository.findById(key);
+    }
+
+    // Update
+    @Override
+    public MedicalEntity update(MedicalEntity t) {
+        logger.info("update medical: {}", t);
+        return medicalRepository.save(t);
+    }
+
+    // Delete
+    @Override
+    public boolean delete(String key) {
+        try {
+        medicalRepository.deleteById(key);
+        logger.info("delete medical by id: {}", key);
+        return true;
+        } catch (Exception e) {
+        logger.error(e.getMessage());
+        return false;
+        }
+    }
+    // Other methods
+
+}
