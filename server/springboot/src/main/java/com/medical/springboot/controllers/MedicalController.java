@@ -1,7 +1,6 @@
 package com.medical.springboot.controllers;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,6 +148,4 @@ public class MedicalController {
         response.setData(null);
         return ResponseEntity.status(400).body(response);
     }
-    // Image diagnosis
-
 }

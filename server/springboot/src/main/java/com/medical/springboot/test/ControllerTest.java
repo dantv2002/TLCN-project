@@ -1,15 +1,27 @@
 package com.medical.springboot.test;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.print.Doc;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.medical.springboot.models.response.BaseResponse;
 import com.medical.springboot.services.CryptographyService;
+import com.medical.springboot.services.DoctorService;
 
 @RestController
 @RequestMapping("/api")
@@ -18,6 +30,8 @@ public class ControllerTest {
     private static final Logger logger = LoggerFactory.getLogger(ControllerTest.class);
     @Autowired
     private CryptographyService cryptographyRSAService;
+    @Autowired
+    private DoctorService doctorService;
 
     // @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -34,10 +48,10 @@ public class ControllerTest {
 
     @GetMapping("/callhello")
     public String callhello() {
-        String url = "http://localhost:8080/api/hello";
-        RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject(url, String.class);
-        return result;
+
+        String urlImage = "https://www.researchgate.net/publication/307548318/figure/fig2/AS:654401588977680@1533032905854/X-ray-chest-PA-view-showing-LV-left-ventricular-enlargement-a-large-convex-left.png";
+
+        return doctorService.diagnosisImage(urlImage);
     }
 
     @GetMapping("/RSA")

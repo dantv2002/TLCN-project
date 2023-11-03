@@ -23,7 +23,7 @@ public class MedicalEntity {
     @Field
     private String clinicalDiagnosis; // Chẩn đoán lâm sàng
     @Field
-    private List<DiagnosticImageEntity> diagnosticImages; // Chẩn đoán hình ảnh
+    private DiagnosticImageEntity diagnosticImages; // Chẩn đoán hình ảnh
     @Field
     private String diagnosis; // Kết luận chẩn đoán
     @Field
@@ -33,7 +33,7 @@ public class MedicalEntity {
     }
 
     public MedicalEntity(String department, String clinics, Date date, String doctorId, String clinicalDiagnosis,
-            List<DiagnosticImageEntity> diagnosticImages, String diagnosis, String patientId) {
+            DiagnosticImageEntity diagnosticImages, String diagnosis, String patientId) {
         this.department = department;
         this.clinics = clinics;
         this.date = date;
@@ -92,11 +92,11 @@ public class MedicalEntity {
         this.clinicalDiagnosis = clinicalDiagnosis;
     }
 
-    public List<DiagnosticImageEntity> getDiagnosticImages() {
+    public DiagnosticImageEntity getDiagnosticImages() {
         return diagnosticImages;
     }
 
-    public void setDiagnosticImages(List<DiagnosticImageEntity> diagnosticImages) {
+    public void setDiagnosticImages(DiagnosticImageEntity diagnosticImages) {
         this.diagnosticImages = diagnosticImages;
     }
 
