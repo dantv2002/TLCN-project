@@ -85,4 +85,11 @@ public class PatientService implements IDao<PatientEntity> {
         patientEntity.setHealthInsurance(null);
         return patientRepository.save(patientEntity);
     }
+
+    // Search
+    public List<PatientEntity> searchIdByRegexpFullNameOrRegexpIdentificationCard(String keyword) {
+        logger.debug("search patients");
+        keyword = ".*" + keyword + ".*";
+        return patientRepository.findIdByRegexpFullNameOrRegexpIdentificationCard(keyword);
+    }
 }

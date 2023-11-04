@@ -1,7 +1,13 @@
 package com.medical.springboot.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.print.Doc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +20,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.medical.springboot.models.entity.MedicalEntity;
 import com.medical.springboot.models.entity.PatientEntity;
 import com.medical.springboot.models.request.PatientRequest;
 import com.medical.springboot.models.response.BaseResponse;
+import com.medical.springboot.models.response.PatientSearchResponse;
+import com.medical.springboot.services.DoctorService;
+import com.medical.springboot.services.MedicalService;
 import com.medical.springboot.services.PatientService;
 import com.medical.springboot.utils.IAuthenticationFacade;
 
@@ -33,6 +44,10 @@ public class PatientController {
 
     @Autowired
     private PatientService patientService;
+    @Autowired
+    private MedicalService medicalService;
+    @Autowired
+    private DoctorService doctorService;
     @Autowired
     private IAuthenticationFacade authenticationFacade;
 
@@ -158,5 +173,77 @@ public class PatientController {
         response.setMessage("Delete patient record failed");
         response.setData(null);
         return ResponseEntity.status(400).body(response);
+    }
+
+    // API Search patient record
+    @GetMapping("/search")
+    public ResponseEntity<BaseResponse> search(
+            @RequestParam(name = "keyword", defaultValue = "", required = false) String keyword,
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "5", required = false) int size,
+            @RequestParam(name = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = "asc", required = false) String sortDir) {
+        BaseResponse response = new BaseResponse();
+        logger.info("Search patient records request");
+        logger.info("Keyword: {}", keyword);
+        List<PatientSearchResponse> resuList = new ArrayList<>();
+        // search
+        patientService.searchIdByRegexpFullNameOrRegexpIdentificationCard(keyword).stream().forEach(patient -> {
+            logger.info("Patient id: {}", patient.getId());
+            PatientSearchResponse patientSearchResponse = new PatientSearchResponse();
+            patientSearchResponse.setIdPatient(patient.getId());
+            patientSearchResponse.setName(patient.getFullName());
+            patientSearchResponse.setYearBirthday(String.valueOf(patient.getBirthday().getYear()));
+            medicalService.readAllByPatientId(patient.getId()).stream().forEach(medical -> {
+                patientSearchResponse.setMedicals(new HashMap<String, Object>() {
+                    {
+                        put("doctorName", doctorService.findFullNameById(medical.getDoctorId()));
+                        put("diagnosis", medical.getDiagnosis());
+                        put("date", medical.getDate());
+                    }
+                });
+            });
+            resuList.add(patientSearchResponse);
+        });
+        if (!resuList.isEmpty()) {
+            response.setMessage("Search patient records successfully");
+            response.setData(new HashMap<String, Object>() {
+                {
+                    put("item", resuList);
+                }
+            });
+            return ResponseEntity.status(200).body(response);
+        }
+        // Search by diagnosis
+        List<MedicalEntity> medicals = medicalService.searchByDiagnosis(keyword);
+        //
+        Set<String> patientIds = medicals.stream().map(medical -> medical.getPatientId()).collect(Collectors.toSet());
+        //
+        patientIds.stream().forEach(patientId -> {
+            PatientSearchResponse patientSearchResponse = new PatientSearchResponse();
+            //
+            PatientEntity patient = patientService.findFirstById(patientId);
+            patientSearchResponse.setIdPatient(patient.getId());
+            patientSearchResponse.setName(patient.getFullName());
+            patientSearchResponse.setYearBirthday(String.valueOf(patient.getBirthday().getYear()));
+            //
+            medicals.stream().filter(medical -> medical.getPatientId().equals(patientId)).forEach(medical -> {
+                patientSearchResponse.setMedicals(new HashMap<String, Object>() {
+                    {
+                        put("doctorName", doctorService.findFullNameById(medical.getDoctorId()));
+                        put("diagnosis", medical.getDiagnosis());
+                        put("date", medical.getDate());
+                    }
+                });
+            });
+            resuList.add(patientSearchResponse);
+        });
+        response.setMessage("Search patient records successfully");
+        response.setData(new HashMap<String, Object>() {
+            {
+                put("item", resuList);
+            }
+        });
+        return ResponseEntity.status(200).body(response);
     }
 }

@@ -34,4 +34,9 @@ public class DatabaseConfiguration extends AbstractMongoClientConfiguration {
         }
         return MongoClients.create(uri + "/" + database + "?retryWrites=true&w=majority");
     }
+
+    @Override
+    protected boolean autoIndexCreation() {
+        return true;
+    }
 }

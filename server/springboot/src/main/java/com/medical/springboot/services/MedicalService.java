@@ -47,6 +47,11 @@ public class MedicalService implements IDao<MedicalEntity> {
         return medicalRepository.findByPatientId(patientId, pageable);
     }
 
+    public List<MedicalEntity> readAllByPatientId(String patientId) {
+        logger.info("read all medicals of patient: {}", patientId);
+        return medicalRepository.findByPatientId(patientId);
+    }
+
     // Read one
     public Optional<MedicalEntity> findById(String key) {
         logger.info("read one medical");
@@ -72,7 +77,23 @@ public class MedicalService implements IDao<MedicalEntity> {
             return false;
         }
     }
-    // Other methods
-    // Image disagnosis
 
+    // Other methods
+    // Search
+    public Page<MedicalEntity> search(String keyword, String patientId, int page, int size, String sortBy,
+            String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        logger.info("search medicals");
+        keyword = "\"" + keyword + "\"";
+        return medicalRepository.find(keyword, patientId, pageable);
+    }
+
+    // Search by diagnosis
+    public List<MedicalEntity> searchByDiagnosis(String keyword) {
+        logger.info("search medicals by diagnosis");
+        keyword = ".*" + keyword + ".*";
+        return medicalRepository.findByRegexpDiagnosis(keyword);
+    }
 }

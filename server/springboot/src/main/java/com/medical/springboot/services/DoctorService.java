@@ -24,6 +24,10 @@ public class DoctorService {
     // Create
     // Read all
     // Read one
+    // find fullName by id
+    public String findFullNameById(String id) {
+        return doctorRepository.findFullNameById(id);
+    }
     // Update
     // Delete
     // Others methods

@@ -5,8 +5,6 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -159,5 +157,27 @@ public class MedicalController {
         response.setMessage("Delete medical failed");
         response.setData(null);
         return ResponseEntity.status(400).body(response);
+    }
+
+    // Search medicals
+    @GetMapping("/search/me")
+    public ResponseEntity<BaseResponse> search(
+            @RequestParam(name = "keyword", defaultValue = "", required = false) String keyword,
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "5", required = false) int size,
+            @RequestParam(name = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = "asc", required = false) String sortDir) {
+        BaseResponse response = new BaseResponse();
+        LOGGER.info("Search medicals request");
+        LOGGER.info("Keyword: {}", keyword);
+        //
+        String patientId = authenticationFacade.getAuthentication().getName();
+        response.setMessage("Search medicals success");
+        response.setData(new HashMap<>() {
+            {
+                put("medicals", medicalService.search(keyword, patientId, page, size, sortBy, sortDir));
+            }
+        });
+        return ResponseEntity.status(200).body(response);
     }
 }
