@@ -5,6 +5,8 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.medical.springboot.models.entity.MedicalEntity;
@@ -55,28 +58,37 @@ public class MedicalController {
 
     // Read medicals
     @GetMapping("/read/me")
-    public ResponseEntity<BaseResponse> read() {
+    public ResponseEntity<BaseResponse> read(
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "5", required = false) int size,
+            @RequestParam(name = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = "asc", required = false) String sortDir) {
         String patientId = authenticationFacade.getAuthentication().getName();
         LOGGER.info("Read medicals for patient request");
         LOGGER.info("Patient id: {}", patientId);
-        return readMedical(patientId);
+        return readMedical(patientId, page, size, sortBy, sortDir);
     }
 
     @GetMapping("/read/{id}")
-    public ResponseEntity<BaseResponse> read(@PathVariable("id") String patientId) {
+    public ResponseEntity<BaseResponse> read(@PathVariable("id") String patientId,
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "5", required = false) int size,
+            @RequestParam(name = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = "asc", required = false) String sortDir) {
         LOGGER.info("Read medicals for doctor request");
-        return readMedical(patientId);
+        return readMedical(patientId, page, size, sortBy, sortDir);
     }
 
     // Read medicals of patientId
-    private ResponseEntity<BaseResponse> readMedical(String patientId) {
+    private ResponseEntity<BaseResponse> readMedical(String patientId, int page, int size, String sortBy,
+            String sortDir) {
         BaseResponse response = new BaseResponse();
         LOGGER.info("Read medicals request");
         LOGGER.info("Patient id: {}", patientId);
         response.setMessage("Read medicals success");
         response.setData(new HashMap<>() {
             {
-                put("medicals", medicalService.readAllByPatientId(patientId));
+                put("medicals", medicalService.readAllByPatientId(patientId, page, size, sortBy, sortDir));
             }
         });
         return ResponseEntity.status(200).body(response);

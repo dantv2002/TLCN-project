@@ -6,6 +6,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.medical.springboot.models.entity.MedicalEntity;
@@ -32,11 +36,17 @@ public class MedicalService implements IDao<MedicalEntity> {
         // logger.info("read all medicals");
         // return medicalRepository.findAll();
     }
+
     // Read medicals of patient
-    public List<MedicalEntity> readAllByPatientId(String patientId) {
+    public Page<MedicalEntity> readAllByPatientId(String patientId, int page, int size, String sortBy,
+            String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
         logger.info("read all medicals of patient: {}", patientId);
-        return medicalRepository.findByPatientId(patientId);
+        return medicalRepository.findByPatientId(patientId, pageable);
     }
+
     // Read one
     public Optional<MedicalEntity> findById(String key) {
         logger.info("read one medical");
@@ -54,15 +64,15 @@ public class MedicalService implements IDao<MedicalEntity> {
     @Override
     public boolean delete(String key) {
         try {
-        medicalRepository.deleteById(key);
-        logger.info("delete medical by id: {}", key);
-        return true;
+            medicalRepository.deleteById(key);
+            logger.info("delete medical by id: {}", key);
+            return true;
         } catch (Exception e) {
-        logger.error(e.getMessage());
-        return false;
+            logger.error(e.getMessage());
+            return false;
         }
     }
     // Other methods
     // Image disagnosis
-    
+
 }
