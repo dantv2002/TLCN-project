@@ -6,4 +6,4 @@ RUN pip install -r requirements.txt
 COPY ./src ./src
 
 ENV FLASK_APP=./src/server.py
-CMD [ "flask", "run", "--host", "PythonAPI" ]
+CMD [ "flask", "run", "--host", "PythonAPI","--debug"]
