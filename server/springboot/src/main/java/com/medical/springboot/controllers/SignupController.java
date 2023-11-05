@@ -60,8 +60,8 @@ public class SignupController {
                 .create(new AccountEntity(signupRequest.getEmail(), encryptPass, "PATIENT", true));
         //
         PatientEntity patient = patientService
-                .create(new PatientEntity(signupRequest.getFullname(), signupRequest.getBirthday(), null,
-                        signupRequest.getAddress(), signupRequest.getPhonenumber(), signupRequest.getEmail(), null,
+                .create(new PatientEntity(signupRequest.getFullname(), null, null,
+                        null, null, signupRequest.getEmail(), null,
                         null, null, true));
         //
         response.setData(new HashMap<String, Object>() {

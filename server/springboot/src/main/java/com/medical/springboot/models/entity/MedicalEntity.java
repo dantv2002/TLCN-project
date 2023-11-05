@@ -13,8 +13,6 @@ public class MedicalEntity {
     @Id
     private String id;
     @Field
-    private String department; // Khoa
-    @Field
     private String clinics; // Phòng khám
     @Field
     private Date date; // Ngày khám
@@ -32,9 +30,8 @@ public class MedicalEntity {
     public MedicalEntity() {
     }
 
-    public MedicalEntity(String department, String clinics, Date date, String doctorId, String clinicalDiagnosis,
+    public MedicalEntity(String clinics, Date date, String doctorId, String clinicalDiagnosis,
             DiagnosticImageEntity diagnosticImages, String diagnosis, String patientId) {
-        this.department = department;
         this.clinics = clinics;
         this.date = date;
         this.doctorId = doctorId;
@@ -50,14 +47,6 @@ public class MedicalEntity {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
     }
 
     public String getClinics() {
@@ -118,7 +107,7 @@ public class MedicalEntity {
 
     @Override
     public String toString() {
-        return "Medical [id=" + id + ", department=" + department + ", clinics=" + clinics + ", date=" + date
+        return "Medical [id=" + id + ", clinics=" + clinics + ", date=" + date
                 + ", doctorId=" + doctorId + ", clinicalDiagnosis=" + clinicalDiagnosis + ", diagnosticImages="
                 + diagnosticImages + ", diagnosis=" + diagnosis + ", patientId=" + patientId + "]";
     }

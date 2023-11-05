@@ -54,7 +54,7 @@ public class AccountController {
         response.setData(new HashMap<String, String>() {
             {
                 put("email", email);
-                put("password", password);
+                // put("password", password);
             }
         });
         return ResponseEntity.status(200).body(response);

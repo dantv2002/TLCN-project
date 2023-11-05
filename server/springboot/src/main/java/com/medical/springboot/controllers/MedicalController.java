@@ -40,14 +40,13 @@ public class MedicalController {
         BaseResponse response = new BaseResponse();
         LOGGER.info("Create medical request");
         LOGGER.info("Medical of patient: {}", request.getPatientId());
-        MedicalEntity medicalResult = medicalService.create(new MedicalEntity(request.getDepartment(),
-                request.getClinics(), request.getDate(), doctorId, request.getClinicalDiagnosis(), null,
-                request.getDiagnosis(), request.getPatientId()));
+        MedicalEntity medicalResult = medicalService.create(new MedicalEntity(request.getClinics(), request.getDate(),
+                doctorId, request.getClinicalDiagnosis(), null,
+                null, request.getPatientId()));
         if (medicalResult != null) {
             response.setMessage("Create medical success for patient: " + request.getPatientId());
             response.setData(request);
             return ResponseEntity.status(200).body(response);
-
         }
         response.setMessage("Create medical failed");
         response.setData(null);
@@ -117,7 +116,6 @@ public class MedicalController {
         LOGGER.info("Update medical of patient request");
         LOGGER.info("Medical of patient: {}", request.getPatientId());
         MedicalEntity medicalResult = medicalService.findById(request.getId()).map(medical -> {
-            medical.setDepartment(request.getDepartment());
             medical.setClinics(request.getClinics());
             medical.setDate(request.getDate());
             medical.setDoctorId(doctorId);

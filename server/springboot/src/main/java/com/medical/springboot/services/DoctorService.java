@@ -28,6 +28,7 @@ public class DoctorService {
     public String findFullNameById(String id) {
         return doctorRepository.findFullNameById(id);
     }
+
     // Update
     // Delete
     // Others methods
@@ -39,7 +40,8 @@ public class DoctorService {
 
     // Diagnosis image
     public String diagnosisImage(String urlImage) {
-        String url = "http://localhost:8081/image/predict";
+        // String url = "http://localhost:5000/image/predict"; // url nomal
+        String url = "http://PythonAPI:5000/image/predict"; // url docker
         //
         RestTemplate restTemplate = new RestTemplate();
         //

@@ -8,6 +8,7 @@ networks:
 #SERVICES
 services:
   # Backend
+  # Springboot
   java-springboot:
     container_name: JavaAPI
     build:
@@ -17,5 +18,17 @@ services:
       - "8080:8080"
     volumes:
       - ./server/springboot:/app
+    networks:
+      - springboot-app-network
+  # Flask
+  flask-python:
+    container_name: PythonAPI
+    build:
+      dockerfile: Dockerfile
+      context: ./server/flask
+    # ports:
+    #   - "5000:5000"
+    volumes:
+      - ./server/flask:/app
     networks:
       - springboot-app-network

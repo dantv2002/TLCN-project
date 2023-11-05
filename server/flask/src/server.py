@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 
 app = Flask(__name__)
 
@@ -10,8 +10,8 @@ def predict():
     # Run model
     result = "nomal"
     # Return result
-    return result, 500
+    return result, 200
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8081)
+    app.run(debug=True)

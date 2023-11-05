@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.medical.springboot.services.CryptographyService;
@@ -33,7 +34,7 @@ public class ControllerTest {
         return "hello";
     }
 
-    @GetMapping("/callhello")
+    @PostMapping("/callhello")
     public String callhello() {
 
         String urlImage = "https://www.researchgate.net/publication/307548318/figure/fig2/AS:654401588977680@1533032905854/X-ray-chest-PA-view-showing-LV-left-ventricular-enlargement-a-large-convex-left.png";
