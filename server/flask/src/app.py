@@ -8,27 +8,26 @@ sys.path.insert(0, project_root)
 from flask import Flask, request
 
 from src.services.predictService import predictService
-from src.models import deseaseModels
+from src.models.deseaseModels import deseaseModels
 
 app = Flask(__name__)
-@app._got_first_request
-def run_before_first_request():
-    # Instantiate and run your custom class
-    my_instance = deseaseModels()
-    my_instance.run()
+
+global singleton_instance
+singleton_instance = deseaseModels()
 
 @app.route("/image/predict", methods=["POST"])
 def predict():
-    try:
-        image = request.get_json()["imageURL"]
-        print(image)
+    # try:
+        global singleton_instance
+        imageURL = request.get_json()["imageURL"]
+        print(imageURL)
         # Run model
-        testURL = "https://firebasestorage.googleapis.com/v0/b/practicefirebase-f0570.appspot.com/o/images%2F01.jpeg?alt=media&token=e3fe96f2-18be-4f05-befc-98a8dcf1c354"
-        predictSv = predictService(testURL)
+        # testURL = "https://firebasestorage.googleapis.com/v0/b/practicefirebase-f0570.appspot.com/o/images%2F01.jpeg?alt=media&token=e3fe96f2-18be-4f05-befc-98a8dcf1c354"
+        predictSv = predictService(imageURL, singleton_instance)
         result = predictSv.predict()
         # Return result
         return result, 200
-    except:
+    # except:
         return "Error", 500
 
 

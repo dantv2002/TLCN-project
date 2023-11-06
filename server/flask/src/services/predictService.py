@@ -1,10 +1,10 @@
 import numpy as np
-from src.models.deseaseModels import deseaseModels
-from tensorflow.keras.preprocessing.image import ImageDataGenerator, load_img, img_to_array
-from tensorflow.keras.utils import get_file
+import os
+import shutil
+import tensorflow as tf
 
 class predictService:
-    def __init__(self, url):
+    def __init__(self, url, model):
         """
         Create a new predict service.
 
@@ -13,7 +13,7 @@ class predictService:
         """
         self.imageURL = url
         self.result = None
-        self.models = deseaseModels()
+        self.models = model
         
     def predict(self):
         """
@@ -22,15 +22,22 @@ class predictService:
         Returns:
             The result.
         """
-        predictions = self.models.weightModel.predict(self.preprocessImage())
+        image = self.preprocessImage()
+        predictions = self.models.weightModel.predict(image)
         predicted_class = np.argmax(predictions)
-        self.result = self.models.labels[predicted_class]["name"]
+        # print(predicted_class)
+        if predicted_class in self.models.labels:
+            self.result = self.models.labels[predicted_class]
+        else:
+            self.result = "Not in desease list!!!"
         return self.result
     
     def preprocessImage(self):
-        file_name = 'predict_image'
-        image = load_img(get_file(file_name, self.imageURL), target_size=(200, 200), color_mode = "grayscale")
-        image_array = img_to_array(image)
+        cache_subdir = os.path.join(os.getcwd(), "caches/")
+        image = tf.keras.preprocessing.image.load_img(tf.keras.utils.get_file(origin=self.imageURL, cache_subdir=cache_subdir), target_size=(200, 200), color_mode = "grayscale")
+        image_array = tf.keras.preprocessing.image.img_to_array(image)
         image_array = np.expand_dims(image_array, axis=0)
         image_array = image_array / 255.0
+        shutil.rmtree(cache_subdir)
+        # print(image_array)
         return image_array
