@@ -25,5 +25,7 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
+/env
+**/model_weights.h5
 LICENSE
 README.md

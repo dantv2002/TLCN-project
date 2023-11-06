@@ -8,5 +8,3 @@ Werkzeug==3.0.1
 tensorflow[and-cuda]
 gdown==4.7.1
 Pillow
-os
-shutil

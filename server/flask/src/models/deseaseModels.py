@@ -2,6 +2,7 @@ import tensorflow as tf
 import csv
 import os
 import gdown
+import platform
 
 class deseaseModels:
     _instance = None
@@ -15,7 +16,12 @@ class deseaseModels:
         '''
             Init model
         '''
-        path = os.path.join(os.getcwd(), "datas/")
+        if os.path.exists("/.dockerenv"):
+            # when run by docker
+            path = os.path.join(os.getcwd(), "src/datas/")
+        else:
+            # when run by local
+            path = os.path.join(os.getcwd(), "datas/")
         self.labels = {}
         with open(path + 'images/names.csv', newline='') as f:
             reader = csv.DictReader(f)
