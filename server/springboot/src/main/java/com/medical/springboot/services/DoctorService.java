@@ -1,6 +1,7 @@
 package com.medical.springboot.services;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -16,7 +17,7 @@ import com.medical.springboot.models.entity.DoctorEntity;
 import com.medical.springboot.repositories.DoctorRepository;
 
 @Service
-public class DoctorService {
+public class DoctorService implements IDao<DoctorEntity> {
     private static final Logger logger = LoggerFactory.getLogger(DoctorService.class);
     @Autowired
     private DoctorRepository doctorRepository;
@@ -57,5 +58,29 @@ public class DoctorService {
         HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
         //
         return restTemplate.postForObject(url, request, String.class);
+    }
+
+    @Override
+    public DoctorEntity create(DoctorEntity t) {
+        return doctorRepository.save(t);
+        
+    }
+
+    @Override
+    public List<DoctorEntity> readAll() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'readAll'");
+    }
+
+    @Override
+    public DoctorEntity update(DoctorEntity t) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    }
+
+    @Override
+    public boolean delete(String key) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'delete'");
     }
 }

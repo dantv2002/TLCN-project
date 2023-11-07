@@ -50,8 +50,16 @@ public class PatientService implements IDao<PatientEntity> {
     public boolean delete(String id) { // set isDeleted = true
         try {
             PatientEntity patientEntity = patientRepository.findFirstById(id);
+            patientEntity.setBirthday(null);
+            patientEntity.setGender(null);
+            patientEntity.setAddress(null);
+            patientEntity.setPhoneNumber(null);
+            patientEntity.setIdentificationCard(null);
+            patientEntity.setAllergy(null);
+            patientEntity.setHealthInsurance(null);
             patientEntity.setIsDeleted(true);
             logger.debug("delete patient by id: {}", id);
+            patientRepository.save(patientEntity);
             return true;
         } catch (Exception e) {
             logger.error("delete patient by id: {}", id);

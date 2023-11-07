@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -75,10 +76,11 @@ public class PatientController {
     // API Read patient record
     @GetMapping("/read/me")
     public ResponseEntity<BaseResponse> read() {
-        String personId = authenticationFacade.getAuthentication().getName();
+        String personId = authenticationFacade.getAuthentication().getName().split(",")[0];
         return readPatient(personId);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     @GetMapping("/read/{id}")
     public ResponseEntity<BaseResponse> read(@PathVariable("id") String personId) {
         return readPatient(personId);
@@ -109,10 +111,11 @@ public class PatientController {
     // API Update patient record
     @PutMapping("/update/me")
     public ResponseEntity<BaseResponse> update(@RequestBody PatientRequest patientRequest) {
-        String personId = authenticationFacade.getAuthentication().getName();
+        String personId = authenticationFacade.getAuthentication().getName().split(",")[0];
         return updatePatient(personId, patientRequest);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     @PutMapping("/update/{id}")
     public ResponseEntity<BaseResponse> update(@PathVariable("id") String personId,
             @RequestBody PatientRequest patientRequest) {
@@ -152,6 +155,7 @@ public class PatientController {
         return ResponseEntity.status(200).body(response);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<BaseResponse> delete(@PathVariable("id") String id) {
         BaseResponse response = new BaseResponse();
@@ -174,6 +178,7 @@ public class PatientController {
     }
 
     // API Search patient record
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     @GetMapping("/search")
     public ResponseEntity<BaseResponse> search(
             @RequestParam(name = "keyword", defaultValue = "", required = false) String keyword,

@@ -18,8 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.medical.springboot.models.entity.AccountEntity;
+import com.medical.springboot.models.entity.DoctorEntity;
+import com.medical.springboot.models.request.DoctorRequest;
 import com.medical.springboot.models.response.BaseResponse;
 import com.medical.springboot.services.AccountService;
+import com.medical.springboot.services.DoctorService;
 
 @RestController
 @RequestMapping("/api/account")
@@ -27,34 +30,33 @@ public class AccountController {
     private static final Logger logger = LoggerFactory.getLogger(EmailController.class);
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private DoctorService doctorService;
 
     // Create account
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse> doctorCreate(@RequestBody Map<String, String> request) throws Exception {
+    public ResponseEntity<BaseResponse> doctorCreate(@RequestBody DoctorRequest request) throws Exception {
         logger.info("doctorCreate");
-        String email = request.get("email");
-        String password = request.get("password");
         BaseResponse response = new BaseResponse();
         // Check email exists
-        if (accountService.isExistsByEmail(email)) {
+        if (accountService.isExistsByEmail(request.getEmail())) {
             logger.info("Email already exists");
             response.setMessage("Email already exists");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
         // Encrypt password
-        String encryptPass = BCrypt.hashpw(password,
+        String encryptPass = BCrypt.hashpw(request.getPassword(),
                 BCrypt.gensalt(10));
         // Create account
-        accountService.create(new AccountEntity(email, encryptPass, "DOCTOR", true));
+        accountService.create(new AccountEntity(request.getEmail(), encryptPass, "DOCTOR", true));
         response.setMessage("Create account successfully");
-        response.setData(new HashMap<String, String>() {
-            {
-                put("email", email);
-                // put("password", password);
-            }
-        });
-        return ResponseEntity.status(200).body(response);
+        // Create doctor
+        doctorService.create(new DoctorEntity(request.getFullName(), request.getBirthday(), request.getGender(),
+                request.getAddress(), request.getPhoneNumber(), request.getEmail(), request.getIdentificationCard(),
+                request.getDepartment(), request.getTitle()));
+        response.setData(null);
+        return ResponseEntity.status(201).body(response);
     }
 
     // Delete account
@@ -112,9 +114,9 @@ public class AccountController {
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
-        
+
         // Reset password
-        AccountEntity accountModelResult = accountService.findById(id).map(account ->{
+        AccountEntity accountModelResult = accountService.findById(id).map(account -> {
             try {
                 account.setPassword(
                         BCrypt.hashpw(password,

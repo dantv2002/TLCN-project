@@ -53,7 +53,7 @@ public class DiagnosisImageController {
     @PostMapping("/save/{id}")
     public ResponseEntity<BaseResponse> save(@RequestBody DiagnosticImageRequest request,
             @PathVariable("id") String id) {
-        String personId = authenticationFacade.getAuthentication().getName();
+        String personId = authenticationFacade.getAuthentication().getName().split(",")[0];
         BaseResponse response = new BaseResponse();
         logger.info("Save result predict image");
         // Create object diagnosis image

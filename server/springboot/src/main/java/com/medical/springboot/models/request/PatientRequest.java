@@ -11,6 +11,7 @@ public class PatientRequest {
     private Boolean gender; // Nam = 1, Nữ = 0
     private String address;
     private String phonenumber;
+    private String email;
     private String identificationCard;
     private String allergy;
     private String healthinsurance;
@@ -55,6 +56,7 @@ public class PatientRequest {
         this.phonenumber = phonenumber;
     }
 
+
     public String getIdentificationCard() {
         return identificationCard;
     }
@@ -77,6 +79,14 @@ public class PatientRequest {
 
     public void setHealthinsurance(String healthinsurance) {
         this.healthinsurance = healthinsurance;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }

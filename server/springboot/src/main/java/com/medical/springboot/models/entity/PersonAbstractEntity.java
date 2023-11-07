@@ -5,15 +5,12 @@ import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 public abstract class PersonAbstractEntity {
     @Id
     private String id;
     @Field
     private String fullName; // Họ và tên
     @Field
-    @JsonFormat(pattern = "MM/dd/yyyy")
     private Date birthday; // Ngày sinh
     @Field
     private Boolean gender; // Nam = 1, Nữ = 0

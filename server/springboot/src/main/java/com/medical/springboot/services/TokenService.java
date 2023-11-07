@@ -40,7 +40,7 @@ public class TokenService {
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(expiresAt)
-                .subject(personId)
+                .subject(personId + "," + accountEntity.getId())
                 .claim("authorities", authorities)
                 .build();
 

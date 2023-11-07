@@ -111,7 +111,7 @@ public class MedicalController {
     // Update medical for doctor
     @PutMapping("/update")
     public ResponseEntity<BaseResponse> update(@RequestBody UpdateMedicalRequest request) {
-        String doctorId = authenticationFacade.getAuthentication().getName();
+        String doctorId = authenticationFacade.getAuthentication().getName().split(",")[0];
         BaseResponse response = new BaseResponse();
         LOGGER.info("Update medical of patient request");
         LOGGER.info("Medical of patient: {}", request.getPatientId());
@@ -169,7 +169,7 @@ public class MedicalController {
         LOGGER.info("Search medicals request");
         LOGGER.info("Keyword: {}", keyword);
         //
-        String patientId = authenticationFacade.getAuthentication().getName();
+        String patientId = authenticationFacade.getAuthentication().getName().split(",")[0];
         response.setMessage("Search medicals success");
         response.setData(new HashMap<>() {
             {

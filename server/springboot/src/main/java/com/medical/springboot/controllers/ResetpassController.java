@@ -18,6 +18,7 @@ import com.medical.springboot.models.request.ResetpassRequest;
 import com.medical.springboot.models.response.BaseResponse;
 import com.medical.springboot.services.AccountService;
 import com.medical.springboot.services.VerifyService;
+import com.medical.springboot.utils.IAuthenticationFacade;
 
 /**
  * ResetpassController
@@ -32,6 +33,8 @@ public class ResetpassController {
     private VerifyService verifyService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private IAuthenticationFacade authenticationFacade;
 
     // API Reset Password
     @PostMapping("/resetpass")
@@ -80,27 +83,16 @@ public class ResetpassController {
     }
 
     // API Change Password auth
-    @PostMapping("/auth/changepass")
-    public ResponseEntity<BaseResponse> changePass(@RequestBody ChangePasswordRequest changePasswordRequest)
+    @PostMapping("/auth/changepass/me")
+    private ResponseEntity<BaseResponse> changePass(@RequestBody ChangePasswordRequest changePasswordRequest)
             throws Exception {
+        String id = authenticationFacade.getAuthentication().getName().split(",")[1];
         BaseResponse response = new BaseResponse();
         logger.info("ChangePass request");
         //
-        // Check email exists
-        if (!accountService.isExistsByEmail(changePasswordRequest.getEmail())) {
-            logger.info("Email not exists");
-            response.setMessage("Email not exists");
-            response.setData(null);
-            return ResponseEntity.status(400).body(response);
-        }
-        if (accountService.isExistsByEmailAndStatus(changePasswordRequest.getEmail(), false)) {
-            logger.info("Email already exists but not active");
-            response.setMessage("Account has been locked");
-            response.setData(null);
-            return ResponseEntity.status(400).body(response);
-        }
         // Verify password old
-        String passOld = accountService.findFirstByEmail(changePasswordRequest.getEmail()).get().getPassword();
+        String passOld = accountService.findById(id).orElseThrow(() -> new RuntimeException("Error: account not found"))
+                .getPassword();
         if (!BCrypt.checkpw(changePasswordRequest.getPasswordOld(), passOld)) {
             logger.info("Password not match");
             response.setMessage("Password is Incorrect");
@@ -108,17 +100,11 @@ public class ResetpassController {
             return ResponseEntity.status(401).body(response);
         }
         // Update password new
-        // decrypt RSA and encrypt password new
-        AccountEntity accountModelResult = accountService.findFirstByEmail(changePasswordRequest.getEmail())
+        AccountEntity accountModelResult = accountService.findById(id)
                 .map(account -> {
-                    try {
-                        account.setPassword(
-                                BCrypt.hashpw(changePasswordRequest.getPasswordNew(),
-                                        BCrypt.gensalt(10)));
-                    } catch (Exception e) {
-                        logger.error(e.getMessage());
-                        throw new RuntimeException("Error: RSA decrypt password");
-                    }
+                    account.setPassword(
+                            BCrypt.hashpw(changePasswordRequest.getPasswordNew(),
+                                    BCrypt.gensalt(10)));
                     return accountService.update(account);
                 }).orElseThrow(() -> new Exception("Account not found"));
 
