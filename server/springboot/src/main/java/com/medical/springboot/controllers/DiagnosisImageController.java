@@ -22,7 +22,7 @@ import com.medical.springboot.services.MedicalService;
 import com.medical.springboot.utils.IAuthenticationFacade;
 
 @RestController
-@RequestMapping("/api/diagnosisImage")
+@RequestMapping("/api/diagnosisimage")
 public class DiagnosisImageController {
     private static final Logger logger = LoggerFactory.getLogger(DiagnosisImageController.class);
     @Autowired

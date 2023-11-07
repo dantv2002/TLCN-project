@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.medical.springboot.models.entity.AccountEntity;
 import com.medical.springboot.models.response.BaseResponse;
 import com.medical.springboot.services.AccountService;
-import com.medical.springboot.services.CryptographyService;
 
 @RestController
 @RequestMapping("/api/account")
@@ -28,8 +27,6 @@ public class AccountController {
     private static final Logger logger = LoggerFactory.getLogger(EmailController.class);
     @Autowired
     private AccountService accountService;
-    @Autowired
-    private CryptographyService cryptographyRSAService;
 
     // Create account
     @PostMapping("/create")
@@ -46,7 +43,7 @@ public class AccountController {
             return ResponseEntity.status(400).body(response);
         }
         // Encrypt password
-        String encryptPass = BCrypt.hashpw(cryptographyRSAService.Decrypt(password),
+        String encryptPass = BCrypt.hashpw(password,
                 BCrypt.gensalt(10));
         // Create account
         accountService.create(new AccountEntity(email, encryptPass, "DOCTOR", true));
@@ -120,7 +117,7 @@ public class AccountController {
         AccountEntity accountModelResult = accountService.findById(id).map(account ->{
             try {
                 account.setPassword(
-                        BCrypt.hashpw(cryptographyRSAService.Decrypt(password),
+                        BCrypt.hashpw(password,
                                 BCrypt.gensalt(10)));
             } catch (Exception e) {
                 logger.error(e.getMessage());

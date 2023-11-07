@@ -18,7 +18,6 @@ import com.medical.springboot.models.entity.PatientEntity;
 import com.medical.springboot.models.request.LoginRequest;
 import com.medical.springboot.models.response.BaseResponse;
 import com.medical.springboot.services.AccountService;
-import com.medical.springboot.services.CryptographyService;
 import com.medical.springboot.services.DoctorService;
 import com.medical.springboot.services.PatientService;
 import com.medical.springboot.services.TokenService;
@@ -34,8 +33,6 @@ public class LoginController {
 
     @Autowired
     private TokenService tokenService;
-    @Autowired
-    private CryptographyService cryptographyRSAService;
     @Autowired
     private AccountService accountService;
     @Autowired
@@ -57,9 +54,7 @@ public class LoginController {
                 return ResponseEntity.status(400).body(response);
             }
             AccountEntity account = accountService.findFirstByEmail(loginRequest.getEmail()).get();
-            String DecryptPass = cryptographyRSAService.Decrypt(loginRequest.getPassword()); // Encrypt password string
-                                                                                             // body request changed
-            if (!BCrypt.checkpw(DecryptPass, account.getPassword())) {
+            if (!BCrypt.checkpw(loginRequest.getPassword(), account.getPassword())) {
                 logger.info("Password not match");
                 response.setMessage("The Username or Password is Incorrect");
                 response.setData(null);

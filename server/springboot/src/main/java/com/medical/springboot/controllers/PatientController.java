@@ -35,7 +35,7 @@ import com.medical.springboot.utils.IAuthenticationFacade;
  * PapatientRecordController
  */
 @RestController
-@RequestMapping("/api/auth/PatientRecord")
+@RequestMapping("/api/auth/patientrecord")
 public class PatientController {
 
     private static final Logger logger = LoggerFactory.getLogger(PatientController.class);
@@ -69,7 +69,7 @@ public class PatientController {
                 put("patient", patientResult);
             }
         });
-        return ResponseEntity.status(200).body(response);
+        return ResponseEntity.status(201).body(response);
     }
 
     // API Read patient record
@@ -125,13 +125,13 @@ public class PatientController {
         logger.info("Patient id: {}", id);
         // Check patient record exists
         if (!patientService.isexistsByIdAndIsDeleted(id, false)) {
-            response.setMessage("Patient record of " + patientRequest.getEmail() + " does not exist. "
+            response.setMessage("Patient record of " + id + " does not exist. "
                     + "Please create new patient record");
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
         // update patient record
-        PatientEntity patientResult = patientService.findByEmail(patientRequest.getEmail()).map(patient -> {
+        PatientEntity patientResult = patientService.findById(id).map(patient -> {
             patient.setFullName(patientRequest.getFullname());
             patient.setBirthday(patientRequest.getBirthday());
             patient.setGender(patientRequest.getGender());

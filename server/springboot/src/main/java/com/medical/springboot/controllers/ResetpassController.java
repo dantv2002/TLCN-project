@@ -17,7 +17,6 @@ import com.medical.springboot.models.request.ChangePasswordRequest;
 import com.medical.springboot.models.request.ResetpassRequest;
 import com.medical.springboot.models.response.BaseResponse;
 import com.medical.springboot.services.AccountService;
-import com.medical.springboot.services.CryptographyService;
 import com.medical.springboot.services.VerifyService;
 
 /**
@@ -32,12 +31,10 @@ public class ResetpassController {
     @Autowired
     private VerifyService verifyService;
     @Autowired
-    private CryptographyService cryptographyRSAService;
-    @Autowired
     private AccountService accountService;
 
     // API Reset Password
-    @PostMapping("/resetPass")
+    @PostMapping("/resetpass")
     public ResponseEntity<BaseResponse> resetPass(@RequestBody ResetpassRequest resetPassRequest) throws Exception {
         BaseResponse response = new BaseResponse();
         logger.info("ResetPass request");
@@ -59,7 +56,7 @@ public class ResetpassController {
         // decrypt RSA and encrypt password
         AccountEntity accountModelResult = accountService.findFirstByEmail(resetPassRequest.getEmail()).map(account -> {
             try {
-                account.setPassword(BCrypt.hashpw(cryptographyRSAService.Decrypt(resetPassRequest.getPassword()),
+                account.setPassword(BCrypt.hashpw(resetPassRequest.getPassword(),
                         BCrypt.gensalt(10)));
             } catch (Exception e) {
                 logger.error(e.getMessage());
@@ -83,7 +80,7 @@ public class ResetpassController {
     }
 
     // API Change Password auth
-    @PostMapping("/auth/changePass")
+    @PostMapping("/auth/changepass")
     public ResponseEntity<BaseResponse> changePass(@RequestBody ChangePasswordRequest changePasswordRequest)
             throws Exception {
         BaseResponse response = new BaseResponse();
@@ -104,8 +101,7 @@ public class ResetpassController {
         }
         // Verify password old
         String passOld = accountService.findFirstByEmail(changePasswordRequest.getEmail()).get().getPassword();
-        String DecryptPassOld = cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordOld());
-        if (!BCrypt.checkpw(DecryptPassOld, passOld)) {
+        if (!BCrypt.checkpw(changePasswordRequest.getPasswordOld(), passOld)) {
             logger.info("Password not match");
             response.setMessage("Password is Incorrect");
             response.setData(null);
@@ -117,7 +113,7 @@ public class ResetpassController {
                 .map(account -> {
                     try {
                         account.setPassword(
-                                BCrypt.hashpw(cryptographyRSAService.Decrypt(changePasswordRequest.getPasswordNew()),
+                                BCrypt.hashpw(changePasswordRequest.getPasswordNew(),
                                         BCrypt.gensalt(10)));
                     } catch (Exception e) {
                         logger.error(e.getMessage());

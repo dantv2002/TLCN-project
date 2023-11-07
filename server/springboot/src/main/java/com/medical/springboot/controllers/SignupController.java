@@ -17,7 +17,6 @@ import com.medical.springboot.models.entity.PatientEntity;
 import com.medical.springboot.models.request.SignupRequest;
 import com.medical.springboot.models.response.BaseResponse;
 import com.medical.springboot.services.AccountService;
-import com.medical.springboot.services.CryptographyService;
 import com.medical.springboot.services.PatientService;
 import com.medical.springboot.services.VerifyService;
 
@@ -33,8 +32,6 @@ public class SignupController {
     private AccountService accountService;
     @Autowired
     private PatientService patientService;
-    @Autowired
-    private CryptographyService cryptographyRSAService;
 
     @PostMapping("/signup")
     public ResponseEntity<BaseResponse> signUp(@RequestBody SignupRequest signupRequest) throws Exception {
@@ -50,32 +47,18 @@ public class SignupController {
             return ResponseEntity.status(400).body(response);
         }
         // Create account
-        String encryptPass = BCrypt.hashpw(cryptographyRSAService.Decrypt(signupRequest.getPassword()), // Encrypt
-                                                                                                        // password
-                                                                                                        // string body
-                                                                                                        // request
-                                                                                                        // changed
-                BCrypt.gensalt(10));
-        AccountEntity account = accountService
-                .create(new AccountEntity(signupRequest.getEmail(), encryptPass, "PATIENT", true));
+        String encryptPass = BCrypt.hashpw(signupRequest.getPassword(), BCrypt.gensalt(10));
+        accountService.create(new AccountEntity(signupRequest.getEmail(), encryptPass, "PATIENT", true));
         //
-        PatientEntity patient = patientService
-                .create(new PatientEntity(signupRequest.getFullname(), null, null,
-                        null, null, signupRequest.getEmail(), null,
-                        null, null, true));
-        //
-        response.setData(new HashMap<String, Object>() {
-            {
-                account.setPassword(null);
-                put("account", account);
-                put("patient", patient);
-            }
-        });
+        patientService.create(new PatientEntity(signupRequest.getFullname(), null, null,
+                null, null, signupRequest.getEmail(), null,
+                null, null, true));
         // delete verify code
         verifyService.delete(signupRequest.getEmail());
 
         logger.info("Sign up successfully");
         response.setMessage("Sign up successfully");
-        return ResponseEntity.status(200).body(response);
+        response.setData(null);
+        return ResponseEntity.status(201).body(response);
     }
 }

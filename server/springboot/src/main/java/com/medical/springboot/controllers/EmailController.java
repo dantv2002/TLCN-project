@@ -36,7 +36,7 @@ public class EmailController {
     private static final Logger logger = LoggerFactory.getLogger(EmailController.class);
 
     // API Send Email Verify Code for Sign Up
-    @PostMapping("/sendEmailSignUp")
+    @PostMapping("/sendemailsignup")
     public ResponseEntity<BaseResponse> sendEmailSignUp(@RequestBody EmailsignupRequest request) throws Exception {
         BaseResponse response = new BaseResponse();
         //
@@ -50,7 +50,7 @@ public class EmailController {
     }
 
     // API Send Email Verify Code for Reset Password
-    @PostMapping("/sendEmailResetPass")
+    @PostMapping("/sendemailresetpass")
     public ResponseEntity<BaseResponse> sendEmailResetPass(@RequestBody Map<String, String> requestBody)
             throws Exception {
         String email = requestBody.get("email");
@@ -88,12 +88,7 @@ public class EmailController {
         //
         logger.info("Email sent successfully");
         response.setMessage("Email sent successfully");
-        response.setData(new HashMap<String, Object>() {
-            {
-                put("email", toemail);
-                put("username", username);
-            }
-        });
+        response.setData(null);
         return ResponseEntity.status(200).body(response);
     }
 }
