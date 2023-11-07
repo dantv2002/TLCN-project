@@ -34,6 +34,10 @@ public class PatientService implements IDao<PatientEntity> {
         return patientRepository.findFirstById(id);
     }
 
+    public Optional<PatientEntity> findById(String id) {
+        return patientRepository.findById(id);
+    }
+
     // Update
     @Override
     public PatientEntity update(PatientEntity t) {
