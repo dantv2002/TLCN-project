@@ -9,7 +9,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.medical.springboot.models.response.BaseResponse; 
+import com.medical.springboot.models.response.BaseResponse;
 
 @ControllerAdvice
 public class Exceptionhandler {
@@ -40,7 +40,7 @@ public class Exceptionhandler {
             response.setData(null);
             return ResponseEntity.status(400).body(response);
         }
-        if (exception instanceof NullPointerException || exception instanceof HttpRequestMethodNotSupportedException) {
+        if(exception instanceof NullPointerException || exception instanceof HttpRequestMethodNotSupportedException){
             logger.error("Not Found", exception);
             BaseResponse response = new BaseResponse();
             response.setMessage("Not Found");
