@@ -30,6 +30,11 @@ public class DoctorService implements IDao<DoctorEntity> {
         return doctorRepository.findFullNameById(id);
     }
 
+    public Optional<DoctorEntity> findById(String id) {
+        logger.debug("find doctor by id: {}", id);
+        return doctorRepository.findById(id);
+    }
+
     // Update
     // Delete
     // Others methods

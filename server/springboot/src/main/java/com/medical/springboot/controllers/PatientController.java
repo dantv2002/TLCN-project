@@ -50,6 +50,7 @@ public class PatientController {
     @Autowired
     private IAuthenticationFacade authenticationFacade;
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR', 'ROLE_PATIENT')")
     @PostMapping("/create")
     public ResponseEntity<BaseResponse> create(@RequestBody Map<String, String> requestBody) {
         String email = requestBody.get("email");
@@ -74,6 +75,7 @@ public class PatientController {
     }
 
     // API Read patient record
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/read/me")
     public ResponseEntity<BaseResponse> read() {
         String personId = authenticationFacade.getAuthentication().getName().split(",")[0];
@@ -109,6 +111,7 @@ public class PatientController {
     }
 
     // API Update patient record
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PutMapping("/update/me")
     public ResponseEntity<BaseResponse> update(@RequestBody PatientRequest patientRequest) {
         String personId = authenticationFacade.getAuthentication().getName().split(",")[0];

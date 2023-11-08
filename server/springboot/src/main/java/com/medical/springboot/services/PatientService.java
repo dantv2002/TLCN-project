@@ -104,4 +104,6 @@ public class PatientService implements IDao<PatientEntity> {
         keyword = ".*" + keyword + ".*";
         return patientRepository.findIdByRegexpFullNameOrRegexpIdentificationCard(keyword);
     }
+
+    
 }

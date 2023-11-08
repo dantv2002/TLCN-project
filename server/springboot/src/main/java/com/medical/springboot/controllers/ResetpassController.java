@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -83,6 +84,7 @@ public class ResetpassController {
     }
 
     // API Change Password auth
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR', 'ROLE_PATIENT')")
     @PostMapping("/auth/changepass/me")
     private ResponseEntity<BaseResponse> changePass(@RequestBody ChangePasswordRequest changePasswordRequest)
             throws Exception {
@@ -100,20 +102,15 @@ public class ResetpassController {
             return ResponseEntity.status(401).body(response);
         }
         // Update password new
-        AccountEntity accountModelResult = accountService.findById(id)
+        accountService.findById(id)
                 .map(account -> {
                     account.setPassword(
                             BCrypt.hashpw(changePasswordRequest.getPasswordNew(),
                                     BCrypt.gensalt(10)));
                     return accountService.update(account);
                 }).orElseThrow(() -> new Exception("Account not found"));
-
-        response.setData(new HashMap<String, Object>() {
-            {
-                accountModelResult.setPassword(null);
-                put("account", accountModelResult);
-            }
-        });
+        response.setMessage("Change password successfully");
+        response.setData(null);
         return ResponseEntity.status(200).body(response);
     }
 }

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,7 @@ import com.medical.springboot.services.MedicalService;
 import com.medical.springboot.utils.IAuthenticationFacade;
 
 @RestController
-@RequestMapping("/api/diagnosisimage")
+@RequestMapping("/api/auth/diagnosisimage")
 public class DiagnosisImageController {
     private static final Logger logger = LoggerFactory.getLogger(DiagnosisImageController.class);
     @Autowired
@@ -32,6 +33,7 @@ public class DiagnosisImageController {
     @Autowired
     private IAuthenticationFacade authenticationFacade;
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     @PostMapping("/predict")
     public ResponseEntity<BaseResponse> predict(@RequestBody Map<String, String> request) {
         String urlImage = request.get("image");
@@ -50,6 +52,7 @@ public class DiagnosisImageController {
     }
 
     // Save result to database
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     @PostMapping("/save/{id}")
     public ResponseEntity<BaseResponse> save(@RequestBody DiagnosticImageRequest request,
             @PathVariable("id") String id) {

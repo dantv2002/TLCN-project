@@ -5,7 +5,9 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,23 +22,31 @@ import com.medical.springboot.models.entity.MedicalEntity;
 import com.medical.springboot.models.request.CreateMedicalRequest;
 import com.medical.springboot.models.request.UpdateMedicalRequest;
 import com.medical.springboot.models.response.BaseResponse;
+import com.medical.springboot.models.response.MedicalResponse;
+import com.medical.springboot.services.DoctorService;
 import com.medical.springboot.services.MedicalService;
+import com.medical.springboot.services.PatientService;
 import com.medical.springboot.utils.IAuthenticationFacade;
 
 // MedicalController
 @RestController
-@RequestMapping("/api/medical")
+@RequestMapping("/api/auth/medical")
 public class MedicalController {
     private static final Logger LOGGER = LoggerFactory.getLogger(LogoutController.class);
     @Autowired
     private MedicalService medicalService;
     @Autowired
+    private PatientService patientService;
+    @Autowired
+    private DoctorService doctorService;
+    @Autowired
     private IAuthenticationFacade authenticationFacade;
 
     // Doctor create for patient
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     @PostMapping("/create")
     public ResponseEntity<BaseResponse> create(@RequestBody CreateMedicalRequest request) {
-        String doctorId = authenticationFacade.getAuthentication().getName();
+        String doctorId = authenticationFacade.getAuthentication().getName().split(",")[0];
         BaseResponse response = new BaseResponse();
         LOGGER.info("Create medical request");
         LOGGER.info("Medical of patient: {}", request.getPatientId());
@@ -54,18 +64,20 @@ public class MedicalController {
     }
 
     // Read medicals
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/read/me")
     public ResponseEntity<BaseResponse> read(
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
             @RequestParam(name = "size", defaultValue = "5", required = false) int size,
             @RequestParam(name = "sortBy", defaultValue = "id", required = false) String sortBy,
             @RequestParam(name = "sortDir", defaultValue = "asc", required = false) String sortDir) {
-        String patientId = authenticationFacade.getAuthentication().getName();
+        String patientId = authenticationFacade.getAuthentication().getName().split(",")[0];
         LOGGER.info("Read medicals for patient request");
         LOGGER.info("Patient id: {}", patientId);
         return readMedical(patientId, page, size, sortBy, sortDir);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     @GetMapping("/read/{id}")
     public ResponseEntity<BaseResponse> read(@PathVariable("id") String patientId,
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
@@ -83,15 +95,27 @@ public class MedicalController {
         LOGGER.info("Read medicals request");
         LOGGER.info("Patient id: {}", patientId);
         response.setMessage("Read medicals success");
+        Page<MedicalEntity> result = medicalService.readAllByPatientId(patientId, page, size, sortBy, sortDir);
+
         response.setData(new HashMap<>() {
             {
-                put("medicals", medicalService.readAllByPatientId(patientId, page, size, sortBy, sortDir));
+                put("count", result.getNumberOfElements());
+                put("total", result.getTotalElements());
+                put("medicals", result.getContent().stream().map(medical -> {
+                    String namePatient = patientService.findById(medical.getPatientId())
+                            .orElseThrow(() -> new RuntimeException("Patient not found")).getFullName();
+                    String nameDoctor = medical.getDoctorId().equals("ADMIN") ? "ADMIN"
+                            : doctorService.findById(medical.getDoctorId())
+                                    .orElseThrow(() -> new RuntimeException("Doctor not found")).getFullName();
+                    return new MedicalResponse(medical.getId(), medical.getDate(), namePatient, nameDoctor);
+                }));
             }
         });
         return ResponseEntity.status(200).body(response);
     }
 
     // Read medicals detail
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR', 'ROLE_PATIENT')")
     @PostMapping("/read/detail/{id}")
     public ResponseEntity<BaseResponse> readDetail(@PathVariable("id") String medicalId) {
         BaseResponse response = new BaseResponse();
@@ -109,6 +133,7 @@ public class MedicalController {
     }
 
     // Update medical for doctor
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     @PutMapping("/update")
     public ResponseEntity<BaseResponse> update(@RequestBody UpdateMedicalRequest request) {
         String doctorId = authenticationFacade.getAuthentication().getName().split(",")[0];
@@ -140,6 +165,7 @@ public class MedicalController {
     }
 
     // Delete medical
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<BaseResponse> delete(@PathVariable("id") String medicalId) {
         BaseResponse response = new BaseResponse();
@@ -158,8 +184,9 @@ public class MedicalController {
     }
 
     // Search medicals
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/search/me")
-    public ResponseEntity<BaseResponse> search(
+    public ResponseEntity<BaseResponse> searchPatient(
             @RequestParam(name = "keyword", defaultValue = "", required = false) String keyword,
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
             @RequestParam(name = "size", defaultValue = "5", required = false) int size,
@@ -174,6 +201,27 @@ public class MedicalController {
         response.setData(new HashMap<>() {
             {
                 put("medicals", medicalService.search(keyword, patientId, page, size, sortBy, sortDir));
+            }
+        });
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
+    @GetMapping("/search")
+    public ResponseEntity<BaseResponse> search(
+            @RequestParam(name = "keyword", defaultValue = "", required = false) String keyword,
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "5", required = false) int size,
+            @RequestParam(name = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = "asc", required = false) String sortDir) {
+        BaseResponse response = new BaseResponse();
+        LOGGER.info("Search medicals request");
+        LOGGER.info("Keyword: {}", keyword);
+        //
+        response.setMessage("Search medicals success");
+        response.setData(new HashMap<>() {
+            {
+                put("medicals", medicalService.search(keyword, page, size, sortBy, sortDir));
             }
         });
         return ResponseEntity.status(200).body(response);

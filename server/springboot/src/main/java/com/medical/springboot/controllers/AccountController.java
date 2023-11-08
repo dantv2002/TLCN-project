@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +26,7 @@ import com.medical.springboot.services.AccountService;
 import com.medical.springboot.services.DoctorService;
 
 @RestController
-@RequestMapping("/api/account")
+@RequestMapping("/api/auth/account")
 public class AccountController {
     private static final Logger logger = LoggerFactory.getLogger(EmailController.class);
     @Autowired
@@ -34,6 +35,7 @@ public class AccountController {
     private DoctorService doctorService;
 
     // Create account
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<BaseResponse> doctorCreate(@RequestBody DoctorRequest request) throws Exception {
         logger.info("doctorCreate");
@@ -60,6 +62,7 @@ public class AccountController {
     }
 
     // Delete account
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<BaseResponse> delete(@PathVariable("id") String id) {
         BaseResponse response = new BaseResponse();
@@ -74,6 +77,7 @@ public class AccountController {
     }
 
     // Set active account
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/active/{id}")
     public ResponseEntity<BaseResponse> setActive(@PathVariable("id") String id) {
         BaseResponse response = new BaseResponse();
@@ -88,6 +92,7 @@ public class AccountController {
     }
 
     // Set deactive account
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/deactive/{id}")
     public ResponseEntity<BaseResponse> setDeactive(@PathVariable("id") String id) {
         BaseResponse response = new BaseResponse();
@@ -102,6 +107,7 @@ public class AccountController {
     }
 
     // Reset password
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("password/reset/{id}")
     public ResponseEntity<BaseResponse> resetPassword(@PathVariable("id") String id,
             @RequestBody Map<String, String> request) throws Exception {

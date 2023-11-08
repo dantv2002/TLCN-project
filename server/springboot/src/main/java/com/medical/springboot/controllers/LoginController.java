@@ -66,8 +66,8 @@ public class LoginController {
             switch (account.getRole()) {
                 case "ADMIN":
                     logger.info("Role: {}", account.getRole());
-                    person_FullName = "Admin";
-                    person_Id = "Admin";
+                    person_FullName = "ADMIN";
+                    person_Id = "ADMIN";
                     break;
                 case "DOCTOR":
                     logger.info("Role: {}", account.getRole());

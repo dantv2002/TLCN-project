@@ -74,7 +74,7 @@ public class EmailController {
     }
 
     // Method Send Email Verify Code
-    public ResponseEntity<BaseResponse> sendEmail(String toemail, String username) throws Exception {
+    private ResponseEntity<BaseResponse> sendEmail(String toemail, String username) throws Exception {
         //
         BaseResponse response = new BaseResponse();
         logger.info("Method SendEmail");
