@@ -134,9 +134,8 @@ public class MedicalController {
                     .orElseThrow(() -> new RuntimeException("Patient not found")).getFullName());
             medicalDetail.setClinicalDiagnosis(medical.getClinicalDiagnosis());
             medicalDetail.setDiagnosis(medical.getDiagnosis());
-            medicalDetail.setDiagnosticImages(new HashMap<>() {
+            medicalDetail.setDiagnosticImages(medical.getDiagnosticImages() == null ? null : new HashMap<>() {
                 {
-                    put("id", medical.getDiagnosticImages().getId());
                     put("method", medical.getDiagnosticImages().getMethod());
                     put("content", medical.getDiagnosticImages().getContent());
                     put("doctor", doctorService.findById(medical.getDiagnosticImages().getDoctorIdPerform())

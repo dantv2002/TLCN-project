@@ -7,6 +7,10 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.medical.springboot.models.entity.AccountEntity;
@@ -59,6 +64,30 @@ public class AccountController {
                 request.getDepartment(), request.getTitle()));
         response.setData(null);
         return ResponseEntity.status(201).body(response);
+    }
+
+    // Read all account
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/reads")
+    public ResponseEntity<BaseResponse> readAll(
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "5", required = false) int size,
+            @RequestParam(name = "sortBy", defaultValue = "id", required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = "asc", required = false) String sortDir) {
+        BaseResponse response = new BaseResponse();
+        response.setMessage("Read all account successfully");
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<AccountEntity> result = accountService.readAll(pageable);
+        response.setData(new HashMap<String, Object>() {
+            {
+                put("count", result.getNumberOfElements());
+                put("total", result.getTotalElements());
+                put("medicals", result.getContent());
+            }
+        });
+        return ResponseEntity.status(200).body(response);
     }
 
     // Delete account
@@ -122,19 +151,14 @@ public class AccountController {
         }
 
         // Reset password
-        AccountEntity accountModelResult = accountService.findById(id).map(account -> {
+        accountService.findById(id).map(account -> {
             account.setPassword(
                     BCrypt.hashpw(password,
                             BCrypt.gensalt(10)));
             return accountService.update(account);
         }).orElseThrow(() -> new Exception("Account not found"));
         response.setMessage("Reset password successfully");
-        response.setData(new HashMap<String, Object>() {
-            {
-                accountModelResult.setPassword(null);
-                put("account", accountModelResult);
-            }
-        });
+        response.setData(null);
         return ResponseEntity.status(200).body(response);
     }
 }

@@ -17,6 +17,6 @@ public interface PatientRepository extends MongoRepository<PatientEntity, String
 
     public Boolean existsByIdAndIsDeleted(String id, Boolean isDeleted);
 
-    @Query("{ 'fullName' : { $regex: ?0 , $options: 'i' }, 'identificationCard' : { $regex: ?0 , $options: 'i' } }")
+    @Query("{ $or: [ { 'fullName' : { $regex: ?0 , $options: 'i' } }, {'identificationCard' : { $regex: ?0 , $options: 'i' } } ] }")
     public Page<PatientEntity> search(String keyword, Pageable pageable);
 }

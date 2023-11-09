@@ -1,6 +1,5 @@
 package com.medical.springboot.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -30,9 +29,9 @@ public class PatientService implements IDao<PatientEntity> {
 
     // Read all
     @Override
-    public List<PatientEntity> readAll() {
+    public Page<PatientEntity> readAll(Pageable pageable) {
         logger.debug("read all patients");
-        return patientRepository.findAll();
+        return patientRepository.findAll(pageable);
     }
 
     public PatientEntity findFirstById(String id) {
@@ -100,6 +99,5 @@ public class PatientService implements IDao<PatientEntity> {
         keyword = ".*" + keyword + ".*";
         return patientRepository.search(keyword, pageable);
     }
-
     
 }

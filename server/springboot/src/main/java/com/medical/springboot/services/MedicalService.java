@@ -31,10 +31,8 @@ public class MedicalService implements IDao<MedicalEntity> {
 
     // Read medicals of patient
     @Override
-    public List<MedicalEntity> readAll() {
+    public Page<MedicalEntity> readAll(Pageable pageable) {
         throw new UnsupportedOperationException("Not supported read all medicals");
-        // logger.info("read all medicals");
-        // return medicalRepository.findAll();
     }
 
     // Read medicals of patient

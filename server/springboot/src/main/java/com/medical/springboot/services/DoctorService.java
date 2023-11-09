@@ -1,13 +1,14 @@
 package com.medical.springboot.services;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpEntity;
@@ -56,7 +57,7 @@ public class DoctorService implements IDao<DoctorEntity> {
         //
         Map<String, String> body = new HashMap<>() {
             {
-                put("image", urlImage);
+                put("imageURL", urlImage);
             }
         };
         //
@@ -72,7 +73,7 @@ public class DoctorService implements IDao<DoctorEntity> {
     }
 
     @Override
-    public List<DoctorEntity> readAll() {
+    public Page<DoctorEntity> readAll(Pageable pageable) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'readAll'");
     }

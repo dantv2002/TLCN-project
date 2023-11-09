@@ -1,11 +1,12 @@
 package com.medical.springboot.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.medical.springboot.models.entity.AccountEntity;
@@ -26,10 +27,9 @@ public class AccountService implements IDao<AccountEntity> {
 
     // Read all by key = email
     @Override
-    public List<AccountEntity> readAll() {
-        throw new UnsupportedOperationException("Not supported read all accounts by email");
-        // logger.debug("read all accounts by email: {}", key);
-        // return accountRepository.findByEmail(key);
+    public Page<AccountEntity> readAll(Pageable pageable) {
+        logger.debug("read all account");
+        return accountRepository.findAll(pageable);
     }
 
     // Read one
@@ -69,6 +69,7 @@ public class AccountService implements IDao<AccountEntity> {
         logger.debug("check exists account by email: {}", email);
         return accountRepository.existsByEmail(email);
     }
+
     public Boolean isExistsByEmailAndStatus(String email, Boolean status) {
         logger.debug("check status account of email: {} - {}", email, status);
         return accountRepository.existsByEmailAndStatus(email, status);
@@ -82,22 +83,28 @@ public class AccountService implements IDao<AccountEntity> {
     // Active account
     public Boolean activeAccount(String id) {
         logger.debug("active account by id: {}", id);
-        AccountEntity account = accountRepository.findById(id).orElseGet(null);
-        if (account == null)
+        try {
+            AccountEntity account = accountRepository.findById(id).get();
+            account.setStatus(true);
+            accountRepository.save(account);
+            return true;
+        } catch (Exception e) {
+            logger.error("active account by id: {}", id);
             return false;
-        account.setStatus(true);
-        accountRepository.save(account);
-        return true;
+        }
     }
 
     // Deactive account
     public Boolean deactiveAccount(String id) {
         logger.debug("deactivate account by id: {}", id);
-        AccountEntity account = accountRepository.findById(id).orElseGet(null);
-        if (account == null)
+        try {
+            AccountEntity account = accountRepository.findById(id).get();
+            account.setStatus(false);
+            accountRepository.save(account);
+            return true;
+        } catch (Exception e) {
+            logger.error("deactivate account by id: {}", id);
             return false;
-        account.setStatus(false);
-        accountRepository.save(account);
-        return true;
+        }
     }
 }
