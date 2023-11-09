@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -22,7 +23,7 @@ public class MedicalEntity {
     private String clinicalDiagnosis; // Chẩn đoán lâm sàng
     @Field
     private DiagnosticImageEntity diagnosticImages; // Chẩn đoán hình ảnh
-    @Indexed
+    @Field
     private String diagnosis; // Kết luận chẩn đoán
     @Field
     private String patientId; // Id hồ sơ bệnh nhân

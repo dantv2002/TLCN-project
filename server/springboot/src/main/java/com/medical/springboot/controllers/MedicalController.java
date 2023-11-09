@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.medical.springboot.models.entity.MedicalEntity;
-import com.medical.springboot.models.request.CreateMedicalRequest;
-import com.medical.springboot.models.request.UpdateMedicalRequest;
+import com.medical.springboot.models.request.MedicalRequest;
 import com.medical.springboot.models.response.BaseResponse;
+import com.medical.springboot.models.response.MedicalDetailResponse;
 import com.medical.springboot.models.response.MedicalResponse;
 import com.medical.springboot.services.DoctorService;
 import com.medical.springboot.services.MedicalService;
@@ -45,17 +45,17 @@ public class MedicalController {
     // Doctor create for patient
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse> create(@RequestBody CreateMedicalRequest request) {
+    public ResponseEntity<BaseResponse> create(@RequestBody MedicalRequest request) {
         String doctorId = authenticationFacade.getAuthentication().getName().split(",")[0];
         BaseResponse response = new BaseResponse();
         LOGGER.info("Create medical request");
         LOGGER.info("Medical of patient: {}", request.getPatientId());
         MedicalEntity medicalResult = medicalService.create(new MedicalEntity(request.getClinics(), request.getDate(),
                 doctorId, request.getClinicalDiagnosis(), null,
-                null, request.getPatientId()));
+                "Chưa có kết luận", request.getPatientId()));
         if (medicalResult != null) {
             response.setMessage("Create medical success for patient: " + request.getPatientId());
-            response.setData(request);
+            response.setData(null);
             return ResponseEntity.status(201).body(response);
         }
         response.setMessage("Create medical failed");
@@ -94,7 +94,7 @@ public class MedicalController {
         BaseResponse response = new BaseResponse();
         LOGGER.info("Read medicals request");
         LOGGER.info("Patient id: {}", patientId);
-        response.setMessage("Read medicals success");
+        response.setMessage("Read medicals success");   
         Page<MedicalEntity> result = medicalService.readAllByPatientId(patientId, page, size, sortBy, sortDir);
 
         response.setData(new HashMap<>() {
@@ -116,17 +116,31 @@ public class MedicalController {
 
     // Read medicals detail
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR', 'ROLE_PATIENT')")
-    @PostMapping("/read/detail/{id}")
+    @GetMapping("/read/detail/{id}")
     public ResponseEntity<BaseResponse> readDetail(@PathVariable("id") String medicalId) {
         BaseResponse response = new BaseResponse();
         LOGGER.info("Read medicals detail request");
         LOGGER.info("Medical id: {}", medicalId);
-        MedicalEntity medical = medicalService.findById(medicalId)
-                .orElseThrow(() -> new RuntimeException("Medical not found"));
+        MedicalDetailResponse medicalResponse = medicalService.findById(medicalId).map(medical -> {
+            MedicalDetailResponse medicalDetail = new MedicalDetailResponse();
+            medicalDetail.setId(medical.getId());
+            medicalDetail.setClinics(medical.getClinics());
+            medicalDetail.setDate(medical.getDate());
+            medicalDetail.setNameDoctor(medical.getDoctorId().equals("ADMIN") ? "ADMIN"
+                    : doctorService.findById(medical.getDoctorId())
+                            .orElseThrow(() -> new RuntimeException("Doctor not found")).getFullName());
+            medicalDetail.setNamePatient(patientService.findById(medical.getPatientId())
+                    .orElseThrow(() -> new RuntimeException("Patient not found")).getFullName());
+            medicalDetail.setClinicalDiagnosis(medical.getClinicalDiagnosis());
+            medicalDetail.setDiagnosis(medical.getDiagnosis());
+            medicalDetail.setDiagnosticImages(medical.getDiagnosticImages());
+            return medicalDetail;
+        }).orElseThrow(() -> new RuntimeException("Medical not found"));
+                
         response.setMessage("Read medicals detail success");
         response.setData(new HashMap<>() {
             {
-                put("medical", medical);
+                put("medical", medicalResponse);
             }
         });
         return ResponseEntity.status(200).body(response);
@@ -134,23 +148,22 @@ public class MedicalController {
 
     // Update medical for doctor
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
-    @PutMapping("/update")
-    public ResponseEntity<BaseResponse> update(@RequestBody UpdateMedicalRequest request) {
+    @PutMapping("/update/{id}")
+    public ResponseEntity<BaseResponse> update(@RequestBody MedicalRequest request, @PathVariable("id") String medicalId) {
         String doctorId = authenticationFacade.getAuthentication().getName().split(",")[0];
         BaseResponse response = new BaseResponse();
         LOGGER.info("Update medical of patient request");
         LOGGER.info("Medical of patient: {}", request.getPatientId());
-        MedicalEntity medicalResult = medicalService.findById(request.getId()).map(medical -> {
+        MedicalEntity medicalResult = medicalService.findById(medicalId).map(medical -> {
             medical.setClinics(request.getClinics());
             medical.setDate(request.getDate());
             medical.setDoctorId(doctorId);
             medical.setClinicalDiagnosis(request.getClinicalDiagnosis());
             medical.setDiagnosis(request.getDiagnosis());
-            medical.setPatientId(request.getPatientId());
             return medicalService.update(medical);
         }).orElseThrow(() -> new RuntimeException("Medical not found"));
         if (medicalResult != null) {
-            response.setMessage("Update medical success for patient: " + request.getPatientId());
+            response.setMessage("Update medical success for patient: " + medicalResult.getPatientId());
             response.setData(new HashMap<>() {
                 {
                     put("medical", medicalResult);

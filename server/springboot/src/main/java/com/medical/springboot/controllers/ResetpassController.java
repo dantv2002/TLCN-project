@@ -62,7 +62,7 @@ public class ResetpassController {
                     BCrypt.gensalt(10)));
             return accountService.update(account);
         }).orElseThrow(() -> new Exception("Account not found"));
-
+        response.setMessage("Update password successfully");
         response.setData(null);
         // delete verify code
         verifyService.delete(resetPassRequest.getEmail());

@@ -1,5 +1,6 @@
 package com.medical.springboot.test;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,16 @@ public class ControllerTest {
     @GetMapping("/hello")
     public String hello() {
         return "hello world";
+    }
+
+    @GetMapping("/createAdmin")
+    public String createAdmin() {
+        try {
+            String encryptPass = BCrypt.hashpw("112233", BCrypt.gensalt(10));
+            return encryptPass;
+        } catch (Exception e) {
+            return "Error";
+        }
     }
 
     @PostMapping("/callhello")

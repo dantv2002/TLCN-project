@@ -4,7 +4,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class CreateMedicalRequest {
+public class MedicalRequest {
     private String clinics;
     @JsonFormat(pattern = "MM/dd/yyyy")
     private Date date; // Ngày khám
