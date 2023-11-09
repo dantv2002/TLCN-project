@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import com.medical.springboot.models.entity.MedicalEntity;
 import com.medical.springboot.models.entity.PatientEntity;
 import com.medical.springboot.models.request.PatientRequest;
 import com.medical.springboot.models.response.BaseResponse;
+import com.medical.springboot.models.response.MedicalResponse;
 import com.medical.springboot.models.response.PatientSearchResponse;
 import com.medical.springboot.services.DoctorService;
 import com.medical.springboot.services.MedicalService;
@@ -56,7 +58,7 @@ public class PatientController {
         BaseResponse response = new BaseResponse();
         logger.info("Create patient record request");
         // update isDeleted = false
-            patientService.findById(personId).map(patient -> {
+        patientService.findById(personId).map(patient -> {
             patient.setFullName(patientRequest.getFullname());
             patient.setBirthday(patientRequest.getBirthday());
             patient.setGender(patientRequest.getGender());
@@ -80,6 +82,26 @@ public class PatientController {
     public ResponseEntity<BaseResponse> read() {
         String personId = authenticationFacade.getAuthentication().getName().split(",")[0];
         return readPatient(personId);
+    }
+
+    // API Read all patient record
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
+    @GetMapping("/reads")
+    public ResponseEntity<BaseResponse> readAll() {
+        BaseResponse response = new BaseResponse();
+        logger.info("Read all patient records request");
+        List<PatientEntity> patients = patientService.readAll();
+        // response
+        response.setMessage("Read all patient records successfully");
+        response.setData(new HashMap<String, Object>() {
+            {
+                put("patients", patients.stream().map(patient -> {
+                    return new PatientSearchResponse(patient.getId(), patient.getEmail(), patient.getFullName(),
+                            patient.getBirthday(), patient.getPhoneNumber());
+                }).collect(Collectors.toList()));
+            }
+        });
+        return ResponseEntity.status(200).body(response);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
@@ -192,62 +214,17 @@ public class PatientController {
         BaseResponse response = new BaseResponse();
         logger.info("Search patient records request");
         logger.info("Keyword: {}", keyword);
-        List<PatientSearchResponse> resuList = new ArrayList<>();
         // search
-        patientService.searchIdByRegexpFullNameOrRegexpIdentificationCard(keyword).stream().forEach(patient -> {
-            logger.info("Patient id: {}", patient.getId());
-            PatientSearchResponse patientSearchResponse = new PatientSearchResponse();
-            patientSearchResponse.setIdPatient(patient.getId());
-            patientSearchResponse.setName(patient.getFullName());
-            patientSearchResponse.setYearBirthday(String.valueOf(patient.getBirthday().getYear()));
-            medicalService.readAllByPatientId(patient.getId()).stream().forEach(medical -> {
-                patientSearchResponse.setMedicals(new HashMap<String, Object>() {
-                    {
-                        put("doctorName", doctorService.findFullNameById(medical.getDoctorId()));
-                        put("diagnosis", medical.getDiagnosis());
-                        put("date", medical.getDate());
-                    }
-                });
-            });
-            resuList.add(patientSearchResponse);
-        });
-        if (!resuList.isEmpty()) {
-            response.setMessage("Search patient records successfully");
-            response.setData(new HashMap<String, Object>() {
-                {
-                    put("item", resuList);
-                }
-            });
-            return ResponseEntity.status(200).body(response);
-        }
-        // Search by diagnosis
-        List<MedicalEntity> medicals = medicalService.searchByDiagnosis(keyword);
-        //
-        Set<String> patientIds = medicals.stream().map(medical -> medical.getPatientId()).collect(Collectors.toSet());
-        //
-        patientIds.stream().forEach(patientId -> {
-            PatientSearchResponse patientSearchResponse = new PatientSearchResponse();
-            //
-            PatientEntity patient = patientService.findFirstById(patientId);
-            patientSearchResponse.setIdPatient(patient.getId());
-            patientSearchResponse.setName(patient.getFullName());
-            patientSearchResponse.setYearBirthday(String.valueOf(patient.getBirthday().getYear()));
-            //
-            medicals.stream().filter(medical -> medical.getPatientId().equals(patientId)).forEach(medical -> {
-                patientSearchResponse.setMedicals(new HashMap<String, Object>() {
-                    {
-                        put("doctorName", doctorService.findFullNameById(medical.getDoctorId()));
-                        put("diagnosis", medical.getDiagnosis());
-                        put("date", medical.getDate());
-                    }
-                });
-            });
-            resuList.add(patientSearchResponse);
-        });
+        Page<PatientEntity> result = patientService.search(keyword, page, size, sortBy, sortDir);
         response.setMessage("Search patient records successfully");
-        response.setData(new HashMap<String, Object>() {
+        response.setData(new HashMap<>() {
             {
-                put("item", resuList);
+                put("count", result.getNumberOfElements());
+                put("total", result.getTotalElements());
+                put("medicals", result.getContent().stream().map(patient -> {
+                    return new PatientSearchResponse(patient.getId(), patient.getEmail(), patient.getFullName(),
+                            patient.getBirthday(), patient.getPhoneNumber());
+                }).collect(Collectors.toList()));
             }
         });
         return ResponseEntity.status(200).body(response);

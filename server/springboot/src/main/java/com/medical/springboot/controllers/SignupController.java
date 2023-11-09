@@ -49,7 +49,7 @@ public class SignupController {
         accountService.create(new AccountEntity(signupRequest.getEmail(), encryptPass, "PATIENT", true));
         //
         patientService.create(new PatientEntity(signupRequest.getFullname(), null, null,
-                null, null, signupRequest.getEmail(), null,
+                null, null, signupRequest.getEmail(), "",
                 null, null, true));
         // delete verify code
         verifyService.delete(signupRequest.getEmail());

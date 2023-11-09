@@ -6,6 +6,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.medical.springboot.models.entity.PatientEntity;
@@ -27,7 +31,8 @@ public class PatientService implements IDao<PatientEntity> {
     // Read all
     @Override
     public List<PatientEntity> readAll() {
-        throw new UnsupportedOperationException("Not supported read all patients");
+        logger.debug("read all patients");
+        return patientRepository.findAll();
     }
 
     public PatientEntity findFirstById(String id) {
@@ -86,10 +91,14 @@ public class PatientService implements IDao<PatientEntity> {
     }
 
     // Search
-    public List<PatientEntity> searchIdByRegexpFullNameOrRegexpIdentificationCard(String keyword) {
+    public Page<PatientEntity> search(String keyword, int page, int size, String sortBy,
+            String sortDir) {
         logger.debug("search patients");
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
         keyword = ".*" + keyword + ".*";
-        return patientRepository.findIdByRegexpFullNameOrRegexpIdentificationCard(keyword);
+        return patientRepository.search(keyword, pageable);
     }
 
     

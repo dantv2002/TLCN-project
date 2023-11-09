@@ -2,6 +2,8 @@ package com.medical.springboot.repositories;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -18,5 +20,5 @@ public interface PatientRepository extends MongoRepository<PatientEntity, String
     public Boolean existsByIdAndIsDeleted(String id, Boolean isDeleted);
 
     @Query("{ 'fullName' : { $regex: ?0 , $options: 'i' }, 'identificationCard' : { $regex: ?0 , $options: 'i' } }")
-    public List<PatientEntity> findIdByRegexpFullNameOrRegexpIdentificationCard(String keyword);
+    public Page<PatientEntity> search(String keyword, Pageable pageable);
 }

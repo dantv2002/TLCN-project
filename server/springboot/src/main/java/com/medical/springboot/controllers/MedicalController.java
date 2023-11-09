@@ -1,6 +1,7 @@
 package com.medical.springboot.controllers;
 
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,7 @@ public class MedicalController {
         LOGGER.info("Medical of patient: {}", request.getPatientId());
         MedicalEntity medicalResult = medicalService.create(new MedicalEntity(request.getClinics(), request.getDate(),
                 doctorId, request.getClinicalDiagnosis(), null,
-                "Chưa có kết luận", request.getPatientId()));
+                "", request.getPatientId()));
         if (medicalResult != null) {
             response.setMessage("Create medical success for patient: " + request.getPatientId());
             response.setData(null);
@@ -94,7 +95,7 @@ public class MedicalController {
         BaseResponse response = new BaseResponse();
         LOGGER.info("Read medicals request");
         LOGGER.info("Patient id: {}", patientId);
-        response.setMessage("Read medicals success");   
+        response.setMessage("Read medicals success");
         Page<MedicalEntity> result = medicalService.readAllByPatientId(patientId, page, size, sortBy, sortDir);
 
         response.setData(new HashMap<>() {
@@ -108,7 +109,7 @@ public class MedicalController {
                             : doctorService.findById(medical.getDoctorId())
                                     .orElseThrow(() -> new RuntimeException("Doctor not found")).getFullName();
                     return new MedicalResponse(medical.getId(), medical.getDate(), namePatient, nameDoctor);
-                }));
+                }).collect(Collectors.toList()));
             }
         });
         return ResponseEntity.status(200).body(response);
@@ -136,7 +137,7 @@ public class MedicalController {
             medicalDetail.setDiagnosticImages(medical.getDiagnosticImages());
             return medicalDetail;
         }).orElseThrow(() -> new RuntimeException("Medical not found"));
-                
+
         response.setMessage("Read medicals detail success");
         response.setData(new HashMap<>() {
             {
@@ -149,7 +150,8 @@ public class MedicalController {
     // Update medical for doctor
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     @PutMapping("/update/{id}")
-    public ResponseEntity<BaseResponse> update(@RequestBody MedicalRequest request, @PathVariable("id") String medicalId) {
+    public ResponseEntity<BaseResponse> update(@RequestBody MedicalRequest request,
+            @PathVariable("id") String medicalId) {
         String doctorId = authenticationFacade.getAuthentication().getName().split(",")[0];
         BaseResponse response = new BaseResponse();
         LOGGER.info("Update medical of patient request");
@@ -211,9 +213,19 @@ public class MedicalController {
         //
         String patientId = authenticationFacade.getAuthentication().getName().split(",")[0];
         response.setMessage("Search medicals success");
+        Page<MedicalEntity> result = medicalService.search(keyword, patientId, page, size, sortBy, sortDir);
         response.setData(new HashMap<>() {
             {
-                put("medicals", medicalService.search(keyword, patientId, page, size, sortBy, sortDir));
+                put("count", result.getNumberOfElements());
+                put("total", result.getTotalElements());
+                put("medicals", result.getContent().stream().map(medical -> {
+                    String namePatient = patientService.findById(medical.getPatientId())
+                            .orElseThrow(() -> new RuntimeException("Patient not found")).getFullName();
+                    String nameDoctor = medical.getDoctorId().equals("ADMIN") ? "ADMIN"
+                            : doctorService.findById(medical.getDoctorId())
+                                    .orElseThrow(() -> new RuntimeException("Doctor not found")).getFullName();
+                    return new MedicalResponse(medical.getId(), medical.getDate(), namePatient, nameDoctor);
+                }).collect(Collectors.toList()));
             }
         });
         return ResponseEntity.status(200).body(response);
@@ -230,11 +242,21 @@ public class MedicalController {
         BaseResponse response = new BaseResponse();
         LOGGER.info("Search medicals request");
         LOGGER.info("Keyword: {}", keyword);
+        Page<MedicalEntity> result = medicalService.search(keyword, page, size, sortBy, sortDir);
         //
         response.setMessage("Search medicals success");
         response.setData(new HashMap<>() {
             {
-                put("medicals", medicalService.search(keyword, page, size, sortBy, sortDir));
+                put("count", result.getNumberOfElements());
+                put("total", result.getTotalElements());
+                put("medicals", result.getContent().stream().map(medical -> {
+                    String namePatient = patientService.findById(medical.getPatientId())
+                            .orElseThrow(() -> new RuntimeException("Patient not found")).getFullName();
+                    String nameDoctor = medical.getDoctorId().equals("ADMIN") ? "ADMIN"
+                            : doctorService.findById(medical.getDoctorId())
+                                    .orElseThrow(() -> new RuntimeException("Doctor not found")).getFullName();
+                    return new MedicalResponse(medical.getId(), medical.getDate(), namePatient, nameDoctor);
+                }).collect(Collectors.toList()));
             }
         });
         return ResponseEntity.status(200).body(response);

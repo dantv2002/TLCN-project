@@ -99,11 +99,4 @@ public class MedicalService implements IDao<MedicalEntity> {
         keyword = ".*" + keyword + ".*";
         return medicalRepository.findByKeyword(keyword, pageable);
     }
-
-    // Search by diagnosis
-    public List<MedicalEntity> searchByDiagnosis(String keyword) {
-        logger.info("search medicals by diagnosis");
-        keyword = ".*" + keyword + ".*";
-        return medicalRepository.findByRegexpDiagnosis(keyword);
-    }
 }
