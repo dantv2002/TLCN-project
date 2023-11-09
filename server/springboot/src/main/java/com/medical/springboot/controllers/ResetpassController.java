@@ -47,46 +47,34 @@ public class ResetpassController {
             logger.info("Email not exists");
             response.setMessage("Email not exists");
             response.setData(null);
-            return ResponseEntity.status(400).body(response);
+            return ResponseEntity.status(404).body(response);
         }
         // Verify code
         if (!verifyService.verifyCode(resetPassRequest.getEmail(), resetPassRequest.getVerifycode())) {
             logger.info("Verify code is incorrect");
             response.setMessage("Verify code is incorrect");
             response.setData(null);
-            return ResponseEntity.status(400).body(response);
+            return ResponseEntity.status(401).body(response);
         }
         // Update password
-        // decrypt RSA and encrypt password
-        AccountEntity accountModelResult = accountService.findFirstByEmail(resetPassRequest.getEmail()).map(account -> {
-            try {
-                account.setPassword(BCrypt.hashpw(resetPassRequest.getPassword(),
-                        BCrypt.gensalt(10)));
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-                throw new RuntimeException("Error: RSA decrypt password");
-            }
+        accountService.findFirstByEmail(resetPassRequest.getEmail()).map(account -> {
+            account.setPassword(BCrypt.hashpw(resetPassRequest.getPassword(),
+                    BCrypt.gensalt(10)));
             return accountService.update(account);
         }).orElseThrow(() -> new Exception("Account not found"));
 
-        response.setData(new HashMap<String, Object>() {
-            {
-                accountModelResult.setPassword(null);
-                put("account", accountModelResult);
-            }
-        });
+        response.setData(null);
         // delete verify code
         verifyService.delete(resetPassRequest.getEmail());
 
         logger.info("Update password successfully");
-        response.setMessage("Update password successfully");
         return ResponseEntity.status(200).body(response);
     }
 
     // API Change Password auth
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR', 'ROLE_PATIENT')")
     @PostMapping("/auth/changepass/me")
-    private ResponseEntity<BaseResponse> changePass(@RequestBody ChangePasswordRequest changePasswordRequest)
+    public ResponseEntity<BaseResponse> changePass(@RequestBody ChangePasswordRequest changePasswordRequest)
             throws Exception {
         String id = authenticationFacade.getAuthentication().getName().split(",")[1];
         BaseResponse response = new BaseResponse();

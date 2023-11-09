@@ -85,19 +85,6 @@ public class PatientService implements IDao<PatientEntity> {
         return patientRepository.existsByIdAndIsDeleted(id, isDeleted);
     }
 
-    public PatientEntity activate(String email) {
-        PatientEntity patientEntity = patientRepository.findFirstByEmail(email);
-        if (patientEntity == null) {
-            throw new NullPointerException("Patient record does not exist");
-        }
-        patientEntity.setIsDeleted(false);
-        patientEntity.setGender(null);
-        patientEntity.setIdentificationCard(null);
-        patientEntity.setAllergy(null);
-        patientEntity.setHealthInsurance(null);
-        return patientRepository.save(patientEntity);
-    }
-
     // Search
     public List<PatientEntity> searchIdByRegexpFullNameOrRegexpIdentificationCard(String keyword) {
         logger.debug("search patients");

@@ -42,7 +42,7 @@ public class EmailController {
         if (accountService.isExistsByEmail(request.getToemail())) {
             response.setMessage("Email already exists");
             response.setData(null);
-            return ResponseEntity.status(400).body(response);
+            return ResponseEntity.status(409).body(response);
         }
         //
         return sendEmail(request.getToemail(), request.getUsername());
@@ -60,13 +60,13 @@ public class EmailController {
         if (!accountService.isExistsByEmail(email)) {
             response.setMessage("Email does not exist");
             response.setData(null);
-            return ResponseEntity.status(400).body(response);
+            return ResponseEntity.status(404).body(response);
         }
         if (accountService.isExistsByEmailAndStatus(email, false)) {
             logger.info("Email already exists but not active");
             response.setMessage("Account has been locked");
             response.setData(null);
-            return ResponseEntity.status(400).body(response);
+            return ResponseEntity.status(403).body(response);
         }
         //
         PatientEntity patient = patientService.findByEmail(email).orElseThrow(() -> new Exception("Patient not found"));

@@ -38,7 +38,7 @@ public class LogoutController {
 
         response.setMessage("Logout failed");
         response.setData(null);
-        return ResponseEntity.status(503).body(response);
+        return ResponseEntity.status(500).body(response);
     }
 
 }

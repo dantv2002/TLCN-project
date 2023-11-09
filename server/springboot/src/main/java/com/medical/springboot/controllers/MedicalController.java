@@ -56,11 +56,11 @@ public class MedicalController {
         if (medicalResult != null) {
             response.setMessage("Create medical success for patient: " + request.getPatientId());
             response.setData(request);
-            return ResponseEntity.status(200).body(response);
+            return ResponseEntity.status(201).body(response);
         }
         response.setMessage("Create medical failed");
         response.setData(null);
-        return ResponseEntity.status(400).body(response);
+        return ResponseEntity.status(500).body(response);
     }
 
     // Read medicals
@@ -161,7 +161,7 @@ public class MedicalController {
         }
         response.setMessage("Update medical failed");
         response.setData(null);
-        return ResponseEntity.status(400).body(response);
+        return ResponseEntity.status(500).body(response);
     }
 
     // Delete medical
@@ -180,7 +180,7 @@ public class MedicalController {
 
         response.setMessage("Delete medical failed");
         response.setData(null);
-        return ResponseEntity.status(400).body(response);
+        return ResponseEntity.status(500).body(response);
     }
 
     // Search medicals

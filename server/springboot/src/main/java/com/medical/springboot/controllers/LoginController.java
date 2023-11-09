@@ -51,7 +51,7 @@ public class LoginController {
                 logger.info("Email already exists but not active");
                 response.setMessage("Account has been locked");
                 response.setData(null);
-                return ResponseEntity.status(400).body(response);
+                return ResponseEntity.status(403).body(response);
             }
             AccountEntity account = accountService.findFirstByEmail(loginRequest.getEmail()).get();
             if (!BCrypt.checkpw(loginRequest.getPassword(), account.getPassword())) {

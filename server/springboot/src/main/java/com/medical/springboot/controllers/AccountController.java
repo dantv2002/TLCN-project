@@ -45,7 +45,7 @@ public class AccountController {
             logger.info("Email already exists");
             response.setMessage("Email already exists");
             response.setData(null);
-            return ResponseEntity.status(400).body(response);
+            return ResponseEntity.status(409).body(response);
         }
         // Encrypt password
         String encryptPass = BCrypt.hashpw(request.getPassword(),
@@ -73,7 +73,7 @@ public class AccountController {
         }
         response.setMessage("Delete account failed");
         response.setData(null);
-        return ResponseEntity.status(400).body(response);
+        return ResponseEntity.status(500).body(response);
     }
 
     // Set active account
@@ -86,9 +86,9 @@ public class AccountController {
             response.setData(null);
             return ResponseEntity.status(200).body(response);
         }
-        response.setMessage("Set active account failed");
+        response.setMessage("Account does not exist");
         response.setData(null);
-        return ResponseEntity.status(400).body(response);
+        return ResponseEntity.status(404).body(response);
     }
 
     // Set deactive account
@@ -101,9 +101,9 @@ public class AccountController {
             response.setData(null);
             return ResponseEntity.status(200).body(response);
         }
-        response.setMessage("Set deactivate account failed");
+        response.setMessage("Account does not exist");
         response.setData(null);
-        return ResponseEntity.status(400).body(response);
+        return ResponseEntity.status(404).body(response);
     }
 
     // Reset password
@@ -118,19 +118,14 @@ public class AccountController {
             logger.info("Account does not exist");
             response.setMessage("Account does not exist");
             response.setData(null);
-            return ResponseEntity.status(400).body(response);
+            return ResponseEntity.status(404).body(response);
         }
 
         // Reset password
         AccountEntity accountModelResult = accountService.findById(id).map(account -> {
-            try {
-                account.setPassword(
-                        BCrypt.hashpw(password,
-                                BCrypt.gensalt(10)));
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-                throw new RuntimeException("Error: RSA decrypt password");
-            }
+            account.setPassword(
+                    BCrypt.hashpw(password,
+                            BCrypt.gensalt(10)));
             return accountService.update(account);
         }).orElseThrow(() -> new Exception("Account not found"));
         response.setMessage("Reset password successfully");

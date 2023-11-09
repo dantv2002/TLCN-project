@@ -50,27 +50,28 @@ public class PatientController {
     @Autowired
     private IAuthenticationFacade authenticationFacade;
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR', 'ROLE_PATIENT')")
-    @PostMapping("/create")
-    public ResponseEntity<BaseResponse> create(@RequestBody Map<String, String> requestBody) {
-        String email = requestBody.get("email");
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    @PostMapping("/create/me")
+    public ResponseEntity<BaseResponse> create(@RequestBody PatientRequest patientRequest) {
+        String personId = authenticationFacade.getAuthentication().getName().split(",")[0];
         BaseResponse response = new BaseResponse();
         logger.info("Create patient record request");
-        // Check email exist
-        if (!patientService.isexistsByEmail(email)) {
-            response.setMessage("Patient record of " + email + " does not exist");
-            response.setData(null);
-            return ResponseEntity.status(400).body(response);
-        }
         // update isDeleted = false
-        PatientEntity patientResult = patientService.activate(email);
+            patientService.findById(personId).map(patient -> {
+            patient.setFullName(patientRequest.getFullname());
+            patient.setBirthday(patientRequest.getBirthday());
+            patient.setGender(patientRequest.getGender());
+            patient.setAddress(patientRequest.getAddress());
+            patient.setPhoneNumber(patientRequest.getPhonenumber());
+            patient.setIdentificationCard(patientRequest.getIdentificationCard());
+            patient.setAllergy(patientRequest.getAllergy());
+            patient.setHealthInsurance(patientRequest.getHealthinsurance());
+            patient.setIsDeleted(false);
+            return patientService.create(patient);
+        }).orElseThrow(() -> new RuntimeException("Error: Patient not found"));
         // response
         response.setMessage("Create patient record successfully");
-        response.setData(new HashMap<String, Object>() {
-            {
-                put("patient", patientResult);
-            }
-        });
+        response.setData(null);
         return ResponseEntity.status(201).body(response);
     }
 
@@ -97,7 +98,7 @@ public class PatientController {
             response.setMessage(
                     "Patient record of " + personId + " does not exist. " + "Please create new patient record");
             response.setData(null);
-            return ResponseEntity.status(400).body(response);
+            return ResponseEntity.status(404).body(response);
         }
         PatientEntity patient = patientService.findFirstById(personId);
         // response
@@ -134,7 +135,7 @@ public class PatientController {
             response.setMessage("Patient record of " + id + " does not exist. "
                     + "Please create new patient record");
             response.setData(null);
-            return ResponseEntity.status(400).body(response);
+            return ResponseEntity.status(404).body(response);
         }
         // update patient record
         PatientEntity patientResult = patientService.findById(id).map(patient -> {
@@ -167,7 +168,7 @@ public class PatientController {
         if (!patientService.isexistsById(id)) {
             response.setMessage("Patient record does not exist");
             response.setData(null);
-            return ResponseEntity.status(400).body(response);
+            return ResponseEntity.status(404).body(response);
         }
         // delete patient record
         if (patientService.delete(id)) {
@@ -177,7 +178,7 @@ public class PatientController {
         }
         response.setMessage("Delete patient record failed");
         response.setData(null);
-        return ResponseEntity.status(400).body(response);
+        return ResponseEntity.status(500).body(response);
     }
 
     // API Search patient record

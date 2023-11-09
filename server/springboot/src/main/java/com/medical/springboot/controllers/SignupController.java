@@ -42,7 +42,7 @@ public class SignupController {
         if (!verifyService.verifyCode(signupRequest.getEmail(), signupRequest.getVerifycode())) {
             response.setMessage("Verify code is incorrect");
             response.setData(null);
-            return ResponseEntity.status(400).body(response);
+            return ResponseEntity.status(401).body(response);
         }
         // Create account
         String encryptPass = BCrypt.hashpw(signupRequest.getPassword(), BCrypt.gensalt(10));
