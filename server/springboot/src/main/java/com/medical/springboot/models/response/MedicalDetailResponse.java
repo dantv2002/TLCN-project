@@ -1,12 +1,10 @@
 package com.medical.springboot.models.response;
 
-import com.medical.springboot.models.entity.DiagnosticImageEntity;
-
 public class MedicalDetailResponse extends MedicalResponse {
     private String clinics;
     private String clinicalDiagnosis;
     private String diagnosis;
-    private DiagnosticImageEntity diagnosticImages;
+    private Object diagnosticImages;
 
     public String getClinics() {
         return clinics;
@@ -32,11 +30,11 @@ public class MedicalDetailResponse extends MedicalResponse {
         this.diagnosis = diagnosis;
     }
 
-    public DiagnosticImageEntity getDiagnosticImages() {
+    public Object getDiagnosticImages() {
         return diagnosticImages;
     }
 
-    public void setDiagnosticImages(DiagnosticImageEntity diagnosticImages) {
+    public void setDiagnosticImages(Object diagnosticImages) {
         this.diagnosticImages = diagnosticImages;
     }
 

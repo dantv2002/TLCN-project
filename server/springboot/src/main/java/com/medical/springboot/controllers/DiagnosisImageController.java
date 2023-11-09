@@ -56,12 +56,12 @@ public class DiagnosisImageController {
     @PostMapping("/save/{id}")
     public ResponseEntity<BaseResponse> save(@RequestBody DiagnosticImageRequest request,
             @PathVariable("id") String id) {
-        String personId = authenticationFacade.getAuthentication().getName().split(",")[0];
+        String doctorId = authenticationFacade.getAuthentication().getName().split(",")[0];
         BaseResponse response = new BaseResponse();
         logger.info("Save result predict image");
         // Create object diagnosis image
         DiagnosticImageEntity diagnosticImage = new DiagnosticImageEntity(request.getMethod(), request.getContent(),
-                personId, request.getUrlImage(), request.getConclude());
+                doctorId, request.getUrlImage(), request.getConclude());
         // Save to database
         // find medical by id
         MedicalEntity medicalResult = medicalService.findById(id).map(medical -> {

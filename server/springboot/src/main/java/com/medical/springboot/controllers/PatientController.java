@@ -1,9 +1,7 @@
 package com.medical.springboot.controllers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -22,14 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.medical.springboot.models.entity.MedicalEntity;
+import com.medical.springboot.models.entity.AccountEntity;
 import com.medical.springboot.models.entity.PatientEntity;
 import com.medical.springboot.models.request.PatientRequest;
 import com.medical.springboot.models.response.BaseResponse;
-import com.medical.springboot.models.response.MedicalResponse;
 import com.medical.springboot.models.response.PatientSearchResponse;
-import com.medical.springboot.services.DoctorService;
-import com.medical.springboot.services.MedicalService;
+import com.medical.springboot.services.AccountService;
 import com.medical.springboot.services.PatientService;
 import com.medical.springboot.utils.IAuthenticationFacade;
 
@@ -45,15 +41,13 @@ public class PatientController {
     @Autowired
     private PatientService patientService;
     @Autowired
-    private MedicalService medicalService;
-    @Autowired
-    private DoctorService doctorService;
+    private AccountService accountService;
     @Autowired
     private IAuthenticationFacade authenticationFacade;
 
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @PostMapping("/create/me")
-    public ResponseEntity<BaseResponse> create(@RequestBody PatientRequest patientRequest) {
+    public ResponseEntity<BaseResponse> createMe(@RequestBody PatientRequest patientRequest) {
         String personId = authenticationFacade.getAuthentication().getName().split(",")[0];
         BaseResponse response = new BaseResponse();
         logger.info("Create patient record request");
@@ -70,6 +64,26 @@ public class PatientController {
             patient.setIsDeleted(false);
             return patientService.create(patient);
         }).orElseThrow(() -> new RuntimeException("Error: Patient not found"));
+        // response
+        response.setMessage("Create patient record successfully");
+        response.setData(null);
+        return ResponseEntity.status(201).body(response);
+    }
+
+    // API Create patient record
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
+    @PostMapping("/create")
+    public ResponseEntity<BaseResponse> create(@RequestBody PatientRequest patientRequest) {
+        BaseResponse response = new BaseResponse();
+        logger.info("Create patient record request");
+        // create patient record
+        accountService.create(new AccountEntity(patientRequest.getEmail(),
+                "$2a$10$ftww/fPnJphDVEze5D0QveUhDdK3ZXy0yczMNEaNiaLmh9RNIOUGy", "PATIENT", true));
+        //
+        patientService.create(new PatientEntity(patientRequest.getFullname(), patientRequest.getBirthday(),
+                patientRequest.getGender(), patientRequest.getAddress(), patientRequest.getPhonenumber(),
+                patientRequest.getEmail(), patientRequest.getIdentificationCard(), patientRequest.getAllergy(),
+                patientRequest.getHealthinsurance(), false));
         // response
         response.setMessage("Create patient record successfully");
         response.setData(null);

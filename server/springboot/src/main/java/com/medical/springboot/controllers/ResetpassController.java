@@ -1,6 +1,5 @@
 package com.medical.springboot.controllers;
 
-import java.util.HashMap;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.medical.springboot.models.entity.AccountEntity;
 import com.medical.springboot.models.request.ChangePasswordRequest;
 import com.medical.springboot.models.request.ResetpassRequest;
 import com.medical.springboot.models.response.BaseResponse;

@@ -38,7 +38,7 @@ public class ControllerTest {
     @GetMapping("/createAdmin")
     public String createAdmin() {
         try {
-            String encryptPass = BCrypt.hashpw("112233", BCrypt.gensalt(10));
+            String encryptPass = BCrypt.hashpw("User123", BCrypt.gensalt(10));
             return encryptPass;
         } catch (Exception e) {
             return "Error";
