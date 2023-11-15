@@ -1,0 +1,326 @@
+/* Login page */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: gray;
+    height: 610px;
+}
+
+.login-page-container {
+    text-align: center;
+    background-color: white;
+    border-radius: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 650px;
+    height: 375px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.img-login-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.img-login {
+    width: 325px;
+    height: 375px;
+    border-radius: 30px 0px 0px 30px;
+}
+
+.form-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.title {
+    font-size: 20px;
+    color: red;
+}
+
+.img-logo {
+    width: 80px;
+    height: 80px;
+}
+
+a {
+    font-size: 14px;
+    display: flex;
+    justify-content: flex-end;
+    text-align: end;
+}
+
+.form-control {
+    width: 230px;
+    height: 30px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin: 5px;
+    text-align: center;
+}
+
+.submit-btn {
+    font-size: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.icon{
+    width: auto;
+    height: auto;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+h3 {
+    font-size: 10px;
+}
+
+.img-google {
+    width: 25px;
+    height: 25px;
+}
+
+/* Register page */
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    background: url("../assets/register/bg_register.jpg") center/cover no-repeat;
+  }
+
+  .registration-form {
+    width: 30%;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+  }
+
+  .registration-form h1{
+    color: blue;
+  }
+  
+  .registration-form input {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .flex-container button {
+    width: 20%;
+    padding: 10px;
+    background-color: green;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .registration-form button:hover {
+    background-color: #0056b3;
+  }
+
+  .flex-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .flex-container a{
+    margin-top: 15px;
+  }
+  
+  .flex-item {
+    flex-grow: 1;
+    flex-basis: 0;
+  }
+
+/* Verify register page */
+.verification-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url("../assets/register/bg_verify.jpeg") center/cover no-repeat;
+  }
+  
+  .verification-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 400px;
+    padding: 20px;
+  }
+  
+  .verification-form h1 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: red;
+  }
+  
+  .verification-form input {
+    width: 200px;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .verification-form button {
+    width: 220px;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .verification-form button:hover {
+    background-color: #0056b3;
+  }
+
+/* Page not found */
+.pagenotfound{
+    padding: 0%;
+    margin: 0%;
+    box-sizing: border-box;
+}
+  
+.cont-404{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.cont-404 img{
+    height: 80vh;
+    width: 120vh;
+}
+
+.cont-404 button{
+    padding: 12px 15px;
+    background-color: #7E57C2;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    color: #fff;
+    font-size: medium;
+    font-weight: bold;
+}
+
+.cont-404 button:hover{
+    background-color: aqua;
+}
+
+/* Reset page */
+.reset-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  background: url("../assets/resetpassword/bg_reset.jpg") center/cover no-repeat;
+}
+
+.reset-form {
+  width: 30%;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.reset-form h1{
+  color: #CD1076;
+  font-size: 40px
+}
+
+.reset-form input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.reset-form button{
+  font-size: 15px;
+}
+
+.reset-form a{
+  font-size: 15px;
+}
+
+.reset-form button:hover {
+  background-color: #0056b3;
+}
+
+/* Verify resetpassword page */
+.verifyreset-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url("../assets/resetpassword/bg_verify.png") centerS/cover no-repeat;
+}
+
+.verifyreset-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 400px;
+  padding: 20px;
+}
+
+.verifyreset-form h1 {
+  font-size: 35px;
+  margin-bottom: 20px;
+  color: #8B0000;
+}
+
+.verifyreset-form input {
+  width: 300px;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  border-radius: 5px;
+}
+
+.verifyreset-form button {
+  width: 150px;
+  padding: 10px;
+  background-color: #FF34B3;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.verifyreset-form button:hover {
+  background-color: #FF00FF;
+}
