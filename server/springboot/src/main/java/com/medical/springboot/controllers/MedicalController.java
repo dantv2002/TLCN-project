@@ -64,20 +64,6 @@ public class MedicalController {
         return ResponseEntity.status(500).body(response);
     }
 
-    // Read medicals
-    @PreAuthorize("hasRole('ROLE_PATIENT')")
-    @GetMapping("/read/me")
-    public ResponseEntity<BaseResponse> read(
-            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
-            @RequestParam(name = "size", defaultValue = "5", required = false) int size,
-            @RequestParam(name = "sortBy", defaultValue = "id", required = false) String sortBy,
-            @RequestParam(name = "sortDir", defaultValue = "asc", required = false) String sortDir) {
-        String patientId = authenticationFacade.getAuthentication().getName().split(",")[0];
-        LOGGER.info("Read medicals for patient request");
-        LOGGER.info("Patient id: {}", patientId);
-        return readMedical(patientId, page, size, sortBy, sortDir, false);
-    }
-
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     @GetMapping("/read/{id}")
     public ResponseEntity<BaseResponse> read(@PathVariable("id") String patientId,
