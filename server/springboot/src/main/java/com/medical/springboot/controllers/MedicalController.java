@@ -75,7 +75,7 @@ public class MedicalController {
         String patientId = authenticationFacade.getAuthentication().getName().split(",")[0];
         LOGGER.info("Read medicals for patient request");
         LOGGER.info("Patient id: {}", patientId);
-        return readMedical(patientId, page, size, sortBy, sortDir);
+        return readMedical(patientId, page, size, sortBy, sortDir, false);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
@@ -86,17 +86,24 @@ public class MedicalController {
             @RequestParam(name = "sortBy", defaultValue = "id", required = false) String sortBy,
             @RequestParam(name = "sortDir", defaultValue = "asc", required = false) String sortDir) {
         LOGGER.info("Read medicals for doctor request");
-        return readMedical(patientId, page, size, sortBy, sortDir);
+        return readMedical(patientId, page, size, sortBy, sortDir, false);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
+    @GetMapping("/reads/{id}")
+    public ResponseEntity<BaseResponse> read(@PathVariable("id") String patientId) {
+        LOGGER.info("Read all medicals for doctor request");
+        return readMedical(patientId, 0, 0, "", "", true);
     }
 
     // Read medicals of patientId
     private ResponseEntity<BaseResponse> readMedical(String patientId, int page, int size, String sortBy,
-            String sortDir) {
+            String sortDir, boolean isReadAll) {
         BaseResponse response = new BaseResponse();
         LOGGER.info("Read medicals request");
         LOGGER.info("Patient id: {}", patientId);
         response.setMessage("Read medicals success");
-        Page<MedicalEntity> result = medicalService.readAllByPatientId(patientId, page, size, sortBy, sortDir);
+        Page<MedicalEntity> result = medicalService.readAllByPatientId(patientId, page, size, sortBy, sortDir, isReadAll);
 
         response.setData(new HashMap<>() {
             {

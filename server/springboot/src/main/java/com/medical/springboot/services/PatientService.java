@@ -31,7 +31,7 @@ public class PatientService implements IDao<PatientEntity> {
     @Override
     public Page<PatientEntity> readAll(Pageable pageable) {
         logger.debug("read all patients");
-        return patientRepository.findAll(pageable);
+        return patientRepository.findByIsDeleted(false, pageable);
     }
 
     public PatientEntity findFirstById(String id) {

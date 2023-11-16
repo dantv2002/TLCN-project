@@ -1,6 +1,5 @@
 package com.medical.springboot.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -37,17 +36,17 @@ public class MedicalService implements IDao<MedicalEntity> {
 
     // Read medicals of patient
     public Page<MedicalEntity> readAllByPatientId(String patientId, int page, int size, String sortBy,
-            String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
+            String sortDir, boolean isReadAll) {
+        Pageable pageable = null;
+        if (isReadAll) {
+            pageable = Pageable.unpaged();
+        } else {
+            Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                    : Sort.by(sortBy).descending();
+            pageable = PageRequest.of(page, size, sort);
+        }
         logger.info("read all medicals of patient: {}", patientId);
         return medicalRepository.findByPatientId(patientId, pageable);
-    }
-
-    public List<MedicalEntity> readAllByPatientId(String patientId) {
-        logger.info("read all medicals of patient: {}", patientId);
-        return medicalRepository.findByPatientId(patientId);
     }
 
     // Read one

@@ -7,9 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -103,17 +101,11 @@ public class PatientController {
     // API Read all patient record
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     @GetMapping("/reads")
-    public ResponseEntity<BaseResponse> readAll(
-            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
-            @RequestParam(name = "size", defaultValue = "5", required = false) int size,
-            @RequestParam(name = "sortBy", defaultValue = "id", required = false) String sortBy,
-            @RequestParam(name = "sortDir", defaultValue = "asc", required = false) String sortDir) {
+    public ResponseEntity<BaseResponse> readAll() {
         BaseResponse response = new BaseResponse();
         logger.info("Read all patient records request");
         // read all patient records
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = Pageable.unpaged();
         Page<PatientEntity> result = patientService.readAll(pageable);
         // response
         response.setMessage("Read all patient records successfully");
