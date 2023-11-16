@@ -29,7 +29,7 @@ public class AccountService implements IDao<AccountEntity> {
     @Override
     public Page<AccountEntity> readAll(Pageable pageable) {
         logger.debug("read all account");
-        return accountRepository.findAll(pageable);
+        return accountRepository.findByRoleNot("ADMIN", pageable);
     }
 
     // Read one
