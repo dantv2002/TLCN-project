@@ -102,6 +102,7 @@ public class AccountService implements IDao<AccountEntity> {
         logger.debug("deactivate account by id: {}", id);
         try {
             AccountEntity account = accountRepository.findById(id).get();
+            tokenService.deleteTokenByAccountId(id);
             account.setStatus(false);
             accountRepository.save(account);
             return true;
