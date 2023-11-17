@@ -62,12 +62,19 @@ public class TokenService {
             this.tokenRepository.deleteByToken(token);
             return true;
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return false;
         }
     }
 
+    // Delete token by account id
+    public void deleteTokenByAccountId(String accountId) {
+        this.tokenRepository.deleteByAccountId(accountId);
+    }
+
     // Check token
     public Boolean isExistsByToken(String token) {
+        logger.info("isExistsByToken");
         return this.tokenRepository.existsByToken(token);
     }
 }

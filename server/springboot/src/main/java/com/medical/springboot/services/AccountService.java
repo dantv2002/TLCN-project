@@ -17,6 +17,8 @@ public class AccountService implements IDao<AccountEntity> {
     private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private TokenService tokenService;
 
     // Create
     @Override
@@ -55,6 +57,7 @@ public class AccountService implements IDao<AccountEntity> {
     public boolean delete(String key) {
         try {
             accountRepository.deleteById(key);
+            tokenService.deleteTokenByAccountId(key);
             logger.debug("delete account by id: {}", key);
             return true;
         } catch (Exception e) {

@@ -10,4 +10,6 @@ public interface TokenRepository extends MongoRepository<TokenEntity, String> {
 
     public Boolean existsByToken(String token);
 
+    public void deleteByAccountId(String accountId);
+
 }
