@@ -98,7 +98,7 @@ function HeaderUser() {
               <a href="/user/patientrecord">Hồ sơ bệnh nhân</a>
               <a href="/user/medicalrecord">Hồ sơ bệnh án</a>
               <a href="/user/changepassword">Đổi mật khẩu</a>
-              <a onClick={handleLogout}>Đăng xuất</a>
+              <a className="log_out" onClick={handleLogout}>Đăng xuất</a>
             </div>
           </div>
         </div>

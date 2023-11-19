@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import HeaderUser from '../../components/Layout/HeaderUser';
-import { readMedicalRecordApi } from '../../utils/api/user';
+import { searchMedicalRecordApi } from '../../utils/api/user';
 import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment/moment';
@@ -10,24 +10,55 @@ const MedicalRecord = () => {
     const [medicalRecords, setMedicalRecords] = useState([]);
     const [totalpage, setTotalpage] = useState(0);
     const [currentpage, setCurrentpage] = useState(0);
+    const [keyword, setKeyword] = useState("");
+    const [searchClicked, setSearchClicked] = useState(false);
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
+
+    const handleSearch = () => {
+        setSearchClicked(true);
+        setCurrentpage(0);
+    };
+
     useEffect(() => {
-        const fetchMedicalRecords = async () => {
-        try {
-            const response = await axios.get(readMedicalRecordApi(currentpage),{
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            setMedicalRecords(response.data.data.medicals);
-            setTotalpage(Math.ceil(response.data.data.total / 5));
-        } catch (error) {
-            console.error('Lỗi khi lấy dữ liệu bệnh án', error);
+        if (keyword === "") {
+            const fetchMedicalRecords = async () => {
+                try {
+                    const response = await axios.get(searchMedicalRecordApi(keyword, currentpage), {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    console.log(response.data.data.medicals)
+                    setMedicalRecords(response.data.data.medicals);
+                    setTotalpage(Math.ceil(response.data.data.total / 5));
+                } catch (error) {
+                    console.error('Lỗi khi lấy dữ liệu bệnh án', error);
+                }
+            };
+            console.log(searchClicked);
+            fetchMedicalRecords();
+        } else if (searchClicked && keyword !== "") {
+            const fetchMedicalRecords = async () => {
+                try {
+                    const response = await axios.get(searchMedicalRecordApi(keyword, currentpage), {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    console.log(response.data.data.medicals)
+                    setMedicalRecords(response.data.data.medicals);
+                    setTotalpage(Math.ceil(response.data.data.total / 5));
+                } catch (error) {
+                    console.error('Lỗi khi lấy dữ liệu bệnh án', error);
+                }
+            };
+            setSearchClicked(false);
+            console.log(searchClicked);
+            fetchMedicalRecords();
         }
-        };
-        fetchMedicalRecords();
-    }, [token, currentpage]);
+    }, [token, currentpage, searchClicked]);
+
     const readMedicalRecordDetail = (id) => {
         navigate(`/user/medicalrecord/detail/${id}`)
     }
@@ -40,6 +71,18 @@ const MedicalRecord = () => {
             <HeaderUser/>
             <div className='medicalrecord_container'>
                 <h1>Hồ sơ bệnh án</h1>
+                <div className='search_medical'>
+                    <form>
+                        <input 
+                            type="text" 
+                            className='form-control'
+                            placeholder="nhập bệnh án"
+                            value={keyword}
+                            onChange={(e) => setKeyword(e.target.value)}
+                        />
+                        <i className="ri-search-line" onClick={handleSearch}></i>
+                    </form>
+                </div>
                 <table>
                     <thead>
                     <tr>

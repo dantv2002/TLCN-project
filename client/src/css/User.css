@@ -217,6 +217,24 @@
     background-color: #45a049;
 }
 
+.medicalrecord_container .search_medical {
+    overflow: hidden;
+}
+
+.medicalrecord_container .search_medical .form-control {
+    float: left;
+    width: calc(300px - 30px);
+    padding-right: 30px;
+    box-sizing: border-box;
+}
+
+.medicalrecord_container .search_medical .ri-search-line {
+    float: left;
+    cursor: pointer;
+    margin-top: 7px;
+}
+
+
 /* Medical Record Detail */
 .medicalrecord_detail {
     padding: 20px;

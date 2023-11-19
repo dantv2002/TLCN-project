@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "../../../css/User.css"
 
-const ChangePasswordAdmin = () => {
+const ChangePasswordAdminForm = () => {
 
     const token = localStorage.getItem("token");
     const [oldpass, setOldpass] = useState("");
@@ -14,7 +14,7 @@ const ChangePasswordAdmin = () => {
     const [confirmnewpass, setConfirmnewpass] = useState("");
     const navigate = useNavigate();
 
-    const handleChangePasswordPatient = async(e) => {
+    const handleChangePasswordAdmin = async(e) => {
         e.preventDefault();
         if (newpass === confirmnewpass) {   
             try {
@@ -59,7 +59,7 @@ const ChangePasswordAdmin = () => {
         <div>
             <HeaderUser/>
             <div className="create_patientrecord">
-                <form onSubmit={handleChangePasswordPatient}>
+                <form onSubmit={handleChangePasswordAdmin}>
                     <h1>Đổi mật khẩu</h1>
                     <div className="mb-3">
                         <input
@@ -98,4 +98,4 @@ const ChangePasswordAdmin = () => {
     )
 }
 
-export default ChangePasswordAdmin
+export default ChangePasswordAdminForm

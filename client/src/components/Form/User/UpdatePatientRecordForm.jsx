@@ -102,7 +102,7 @@ const UpdatePatientRecordForm = () => {
                   <input
                       type="text"
                       className="form-control"
-                      
+                      placeholder="Họ tên"
                       value={fullname}
                       onChange={(e) => setFullname(e.target.value)}
                   />

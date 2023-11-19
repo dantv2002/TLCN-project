@@ -53,8 +53,11 @@ const PatientRecord = () => {
             <HeaderUser />
             <h1>Hồ sơ bệnh nhân</h1>
             <div className='active'>
+                {patientData ? (
+                    <button onClick={() => window.location.href = '/user/patientrecord/update'}>Chỉnh sửa hồ sơ</button>
+                ) : (
                 <button onClick={() => window.location.href = '/user/patientrecord/create'}>Tạo hồ sơ</button>
-                <button onClick={() => window.location.href = '/user/patientrecord/update'}>Chỉnh sửa hồ sơ</button>
+                )}
             </div>
             {loading ? (
                 <div className='loading-message'>Loading...</div>

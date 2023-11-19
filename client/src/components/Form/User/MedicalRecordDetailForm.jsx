@@ -5,7 +5,7 @@ import { readMedicalRecordDetailApi } from '../../../utils/api/user'
 import axios from 'axios'
 import '../../../css/User.css'
 
-const MedicalRecordDetail = () => {
+const MedicalRecordDetailForm = () => {
 
   const { id } = useParams();
   const [medicalRecord, setMedicalRecord] = useState(null);
@@ -64,4 +64,4 @@ const MedicalRecordDetail = () => {
   )
 }
 
-export default MedicalRecordDetail
+export default MedicalRecordDetailForm

@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "../../../css/User.css"
 
-const ChangePasswordPatient = () => {
+const ChangePasswordPatientForm = () => {
 
     const token = localStorage.getItem("token");
     const [oldpass, setOldpass] = useState("");
@@ -98,4 +98,4 @@ const ChangePasswordPatient = () => {
     )
 }
 
-export default ChangePasswordPatient
+export default ChangePasswordPatientForm

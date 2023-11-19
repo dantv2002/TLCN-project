@@ -66,7 +66,7 @@ function HeaderAdminDoctor() {
           <div className="dropdown">
             <i class="ri-arrow-down-s-line dropdown__arrow"></i>
             <div className="dropdown_menu">
-              <a href="/user/changepassword">Đổi mật khẩu</a>
+              <a href="/admin/changepassword">Đổi mật khẩu</a>
               <a onClick={handleLogout}>Đăng xuất</a>
             </div>
           </div>
