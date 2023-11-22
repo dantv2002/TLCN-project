@@ -60,4 +60,9 @@ public class VerifyService {
         }
         return isCheck;
     }
+
+    //Delete verify code expiresAt before
+    public void deleteVerifyCodeExpiresAt() {
+        verifyRepository.deleteByExpiresAtBefore(Instant.now());
+    }
 }

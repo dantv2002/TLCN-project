@@ -77,4 +77,9 @@ public class TokenService {
         logger.info("isExistsByToken");
         return this.tokenRepository.existsByToken(token);
     }
+
+    // Delete token expiresAt
+    public void deleteTokenExpiresAt() {
+        this.tokenRepository.deleteByExpiresAtBefore(Instant.now());
+    }
 }
