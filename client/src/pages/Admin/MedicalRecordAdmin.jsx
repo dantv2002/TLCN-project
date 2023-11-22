@@ -141,7 +141,7 @@ const MedicalRecordAdmin = () => {
                         <input 
                             type="text" 
                             className='form-control'
-                            placeholder="nhập CMND/CCCD hoặc tên bệnh nhân"
+                            placeholder="Nhập CMND/CCCD hoặc tên bệnh nhân"
                             value={keywordPatient}
                             onChange={(e) => setKeywordPatient(e.target.value)}
                         />
@@ -159,7 +159,7 @@ const MedicalRecordAdmin = () => {
                         <input 
                             type="text" 
                             className='form-control'
-                            placeholder="nhập bệnh án"
+                            placeholder="Nhập chẩn đoán bệnh án"
                             value={keywordMedical}
                             onChange={(e) => setKeywordMedical(e.target.value)}
                         />

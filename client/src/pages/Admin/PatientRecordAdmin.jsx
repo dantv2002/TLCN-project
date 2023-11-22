@@ -104,7 +104,7 @@ const PatientRecordAdmin = () => {
           <div className='col-md-9'>
             <div className='record_container'>
               <h1>Danh sách hồ sơ bệnh nhân</h1>  
-              <button className='create' onClick={handleCreatePatient}>Tạo hồ sơ bệnh án</button>
+              <button className='create' onClick={handleCreatePatient}>Tạo hồ sơ bệnh nhân</button>
               <div className='search_patient'>
                     <form>
                         <input 
