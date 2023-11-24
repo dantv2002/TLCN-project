@@ -15,4 +15,7 @@ Người thực hiện (MSSV): </br>
  1. Git clone https://github.com/dantv2002/TLCN-project.git
  2. Run file BackendsystemApplication.java
  #
+ # Run toàn bộ hệ thống trên local (yêu cầu đã cài đặt docker và git)
+ 1. Git clone https://github.com/dantv2002/TLCN-project.git
+ 2. docker-compose up
  # [Link document API]( https://docs.google.com/document/d/1byt__JC_A_mWgTfvey_zoh7eEF7Zkf2a/edit?usp=sharing&ouid=101945342616659158984&rtpof=true&sd=true)
