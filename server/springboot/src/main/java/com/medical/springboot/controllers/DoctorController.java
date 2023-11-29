@@ -2,6 +2,7 @@ package com.medical.springboot.controllers;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import com.medical.springboot.models.entity.DoctorEntity;
 import com.medical.springboot.models.entity.MedicalEntity;
 import com.medical.springboot.models.request.DiagnosticImageRequest;
 import com.medical.springboot.models.response.BaseResponse;
+import com.medical.springboot.services.AccountService;
 import com.medical.springboot.services.DoctorService;
 import com.medical.springboot.services.MedicalService;
 import com.medical.springboot.utils.IAuthenticationFacade;
@@ -39,6 +41,8 @@ public class DoctorController {
     private DoctorService doctorService;
     @Autowired
     private MedicalService medicalService;
+    @Autowired
+    private AccountService accountService;
     @Autowired
     private IAuthenticationFacade authenticationFacade;
 
@@ -116,8 +120,12 @@ public class DoctorController {
     public ResponseEntity<BaseResponse> delete(@PathVariable("id") String id) {
         BaseResponse response = new BaseResponse();
         logger.info("Delete doctor");
-        if (doctorService.findById(id).isPresent()) {
+        Optional<DoctorEntity> doctor = doctorService.findById(id);
+        if (doctor.isPresent()) {
             doctorService.delete(id);
+            accountService.findFirstByEmail(doctor.get().getEmail()).ifPresent(account -> {
+                accountService.deactiveAccount(account.getId());
+            });
             response.setMessage("Delete doctor successfully");
             response.setData(null);
             return ResponseEntity.status(200).body(response);

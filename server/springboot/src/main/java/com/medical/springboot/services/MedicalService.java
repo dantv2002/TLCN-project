@@ -1,5 +1,11 @@
 package com.medical.springboot.services;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -95,5 +101,34 @@ public class MedicalService implements IDao<MedicalEntity> {
         logger.info("search medicals");
         keyword = ".*" + keyword + ".*";
         return medicalRepository.findByKeyword(keyword, pageable);
+    }
+
+    // Statistical
+    public List<Map<String, Object>> statistical(String doctor, Date startDate, Date endDate) {
+        logger.info("statistical medicals");
+        doctor = ".*" + doctor + ".*";
+        List<MedicalEntity> medicals = medicalRepository.findByDateBetween(doctor, startDate, endDate);
+        List<Map<String, Object>> result = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        Date current = new Date(startDate.getTime());
+        Date end = new Date(endDate.getTime());
+        while (current.before(end) || current.equals(end)) {
+            calendar.setTime(current);
+            int count = 0;
+            for (MedicalEntity medical : medicals) {
+                if (current.getMonth() == medical.getCreatedDate().getMonth()
+                        && current.getYear() == medical.getCreatedDate().getYear()) {
+                    count++;
+                }
+            }
+            Map<String, Object> item = new HashMap<>();
+            item.put("Date", (calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1)));
+            item.put("scales", count);
+            result.add(item);
+            
+            calendar.add(Calendar.MONTH, 1);
+            current = calendar.getTime();
+        }
+        return result;
     }
 }

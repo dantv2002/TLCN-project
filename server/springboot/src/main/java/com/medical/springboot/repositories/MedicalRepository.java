@@ -1,5 +1,7 @@
 package com.medical.springboot.repositories;
 
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,4 +20,8 @@ public interface MedicalRepository extends MongoRepository<MedicalEntity, String
 
     @Query(value = "{ 'diagnosis' : { $regex: ?0 , $options: 'i' } }", fields = "{'patientId' : 1, 'date' : 1,'doctorId' : 1  }")
     public Page<MedicalEntity> findByKeyword(String keyword, Pageable pageable);
+
+    // statistical
+    @Query(value = "{$and: [ { 'doctorId' : { $regex: ?0 } }, { 'createdDate' : { $gte: ?1 } }, { 'createdDate' : { $lte: ?2 } } ] }")
+    public List<MedicalEntity> findByDateBetween(String doctor, Date startDate, Date endDate);
 }

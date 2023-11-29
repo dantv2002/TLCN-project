@@ -1,6 +1,10 @@
 package com.medical.springboot.controllers;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -89,7 +93,8 @@ public class MedicalController {
         LOGGER.info("Read medicals request");
         LOGGER.info("Patient id: {}", patientId);
         response.setMessage("Read medicals success");
-        Page<MedicalEntity> result = medicalService.readAllByPatientId(patientId, page, size, sortBy, sortDir, isReadAll);
+        Page<MedicalEntity> result = medicalService.readAllByPatientId(patientId, page, size, sortBy, sortDir,
+                isReadAll);
 
         response.setData(new HashMap<>() {
             {
@@ -262,5 +267,33 @@ public class MedicalController {
             }
         });
         return ResponseEntity.status(200).body(response);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/statistical")
+    public ResponseEntity<BaseResponse> statistical(
+            @RequestParam(name = "doctor", defaultValue = "", required = false) String doctor,
+            @RequestBody Map<String, String> request) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            BaseResponse response = new BaseResponse();
+            Date startDate = formatter.parse(request.get("startDate"));
+            Date endDate = formatter.parse(request.get("endDate"));
+            if(startDate.after(endDate)){
+                throw new RuntimeException("Date invalid");
+            }
+            LOGGER.info("Statistical medicals request");
+            LOGGER.info("doctor: {}", doctor == "" ? "All" : doctor);
+            List<Map<String, Object>> result = medicalService.statistical(doctor, startDate, endDate);
+            response.setMessage("Statistical medicals success");
+            response.setData(new HashMap<>() {
+                {
+                    put("statistical", result);
+                }
+            });
+            return ResponseEntity.status(200).body(response);
+        } catch (Exception e) {
+            throw new RuntimeException("Date invalid");
+        }
     }
 }

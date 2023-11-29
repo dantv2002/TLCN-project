@@ -25,6 +25,8 @@ public class MedicalEntity {
     private String diagnosis; // Kết luận chẩn đoán
     @Field
     private String patientId; // Id hồ sơ bệnh nhân
+    @Field
+    private Date createdDate = new Date(); // Ngày tạo
 
     public MedicalEntity() {
     }
@@ -109,5 +111,13 @@ public class MedicalEntity {
         return "Medical [id=" + id + ", clinics=" + clinics + ", date=" + date
                 + ", doctorId=" + doctorId + ", clinicalDiagnosis=" + clinicalDiagnosis + ", diagnosticImages="
                 + diagnosticImages + ", diagnosis=" + diagnosis + ", patientId=" + patientId + "]";
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }
