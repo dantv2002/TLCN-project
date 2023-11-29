@@ -1,6 +1,8 @@
 package com.medical.springboot.controllers;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +59,7 @@ public class MedicalController {
         LOGGER.info("Medical of patient: {}", request.getPatientId());
         MedicalEntity medicalResult = medicalService.create(new MedicalEntity(request.getClinics(), request.getDate(),
                 doctorId, request.getClinicalDiagnosis(), null,
-                "", request.getPatientId()));
+                "", request.getPatientId(), request.getBloodPressure()));
         if (medicalResult != null) {
             response.setMessage("Create medical success for patient: " + request.getPatientId());
             response.setData(null);
@@ -210,6 +212,7 @@ public class MedicalController {
     @GetMapping("/search/me")
     public ResponseEntity<BaseResponse> searchPatient(
             @RequestParam(name = "keyword", defaultValue = "", required = false) String keyword,
+            @RequestParam(name = "doctorId", defaultValue = "", required = false) String doctorId,
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
             @RequestParam(name = "size", defaultValue = "5", required = false) int size,
             @RequestParam(name = "sortBy", defaultValue = "id", required = false) String sortBy,
@@ -220,7 +223,7 @@ public class MedicalController {
         //
         String patientId = authenticationFacade.getAuthentication().getName().split(",")[0];
         response.setMessage("Search medicals success");
-        Page<MedicalEntity> result = medicalService.search(keyword, patientId, page, size, sortBy, sortDir);
+        Page<MedicalEntity> result = medicalService.search(keyword, patientId, doctorId, page, size, sortBy, sortDir);
         response.setData(new HashMap<>() {
             {
                 put("count", result.getNumberOfElements());
@@ -242,6 +245,8 @@ public class MedicalController {
     @GetMapping("/search")
     public ResponseEntity<BaseResponse> search(
             @RequestParam(name = "keyword", defaultValue = "", required = false) String keyword,
+            @RequestParam(name = "patientId", defaultValue = "", required = false) String patientId,
+            @RequestParam(name = "isReadAll", defaultValue = "false", required = false) boolean isReadAll,
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
             @RequestParam(name = "size", defaultValue = "5", required = false) int size,
             @RequestParam(name = "sortBy", defaultValue = "id", required = false) String sortBy,
@@ -249,7 +254,12 @@ public class MedicalController {
         BaseResponse response = new BaseResponse();
         LOGGER.info("Search medicals request");
         LOGGER.info("Keyword: {}", keyword);
-        Page<MedicalEntity> result = medicalService.search(keyword, page, size, sortBy, sortDir);
+        String doctorId = authenticationFacade.getAuthentication().getName().split(",")[0];
+        doctorId = doctorId.equals("ADMIN") ? "" : doctorId;
+        if (isReadAll) {
+            doctorId = "";
+        }
+        Page<MedicalEntity> result = medicalService.search(keyword, patientId, doctorId, page, size, sortBy, sortDir);
         //
         response.setMessage("Search medicals success");
         response.setData(new HashMap<>() {
@@ -279,13 +289,61 @@ public class MedicalController {
             BaseResponse response = new BaseResponse();
             Date startDate = formatter.parse(request.get("startDate"));
             Date endDate = formatter.parse(request.get("endDate"));
-            if(startDate.after(endDate)){
+            if (startDate.after(endDate)) {
                 throw new RuntimeException("Date invalid");
             }
             LOGGER.info("Statistical medicals request");
             LOGGER.info("doctor: {}", doctor == "" ? "All" : doctor);
             List<Map<String, Object>> result = medicalService.statistical(doctor, startDate, endDate);
             response.setMessage("Statistical medicals success");
+            response.setData(new HashMap<>() {
+                {
+                    put("statistical", result);
+                }
+            });
+            return ResponseEntity.status(200).body(response);
+        } catch (Exception e) {
+            throw new RuntimeException("Date invalid");
+        }
+    }
+
+    // statistical blood pressure of patient
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
+    @GetMapping("/statistical/blood-pressure/{patientId}")
+    public ResponseEntity<BaseResponse> bloodPressure(@PathVariable("patientId") String patientId,
+            @RequestBody Map<String, String> request) {
+        return statisticalBloodPressure(patientId, request);
+    }
+
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    @GetMapping("/me/statistical/blood-pressure")
+    public  ResponseEntity<BaseResponse> meStatisticalBloodPressure(@RequestBody Map<String, String> request){
+        String patientId = authenticationFacade.getAuthentication().getName().split(",")[0];
+        return statisticalBloodPressure(patientId, request);
+    }
+
+    private ResponseEntity<BaseResponse> statisticalBloodPressure(String patientId, Map<String, String> request) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            BaseResponse response = new BaseResponse();
+            Date startDate = formatter.parse(request.get("startDate"));
+            Date endDate = formatter.parse(request.get("endDate"));
+            if (startDate.after(endDate)) {
+                throw new RuntimeException("Date invalid");
+            }
+            LOGGER.info("Statistical blood pressure of patient request");
+            LOGGER.info("patientId: {}", patientId);
+            List<MedicalEntity> medicals = medicalService.statisticalBloodPressure(patientId, startDate, endDate);
+            List<Map<String, Object>> result = new ArrayList<>();
+            Calendar calendar = Calendar.getInstance();  
+            medicals.stream().forEach(medical ->{
+                calendar.setTime(medical.getCreatedDate());
+                Map<String, Object> item = new HashMap<>();
+                item.put("Date", (calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH)));
+                item.put("scales", Integer.parseInt(medical.getBloodPressure()));
+                result.add(item);
+            });          
+            response.setMessage("Statistical blood pressure of patient success");
             response.setData(new HashMap<>() {
                 {
                     put("statistical", result);

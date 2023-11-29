@@ -11,6 +11,7 @@ public class MedicalRequest {
     private String clinicalDiagnosis;
     private String diagnosis;
     private String patientId;
+    private String bloodPressure;
 
 
     public String getClinics() {
@@ -53,4 +54,13 @@ public class MedicalRequest {
         this.patientId = patientId;
     }
 
+    public String getBloodPressure() {
+        return bloodPressure;
+    }
+
+    public void setBloodPressure(String bloodPressure) {
+        this.bloodPressure = bloodPressure;
+    }
+
+    
 }

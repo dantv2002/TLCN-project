@@ -26,13 +26,15 @@ public class MedicalEntity {
     @Field
     private String patientId; // Id hồ sơ bệnh nhân
     @Field
+    private String bloodPressure; // Huyết áp
+    @Field
     private Date createdDate = new Date(); // Ngày tạo
 
     public MedicalEntity() {
     }
 
     public MedicalEntity(String clinics, Date date, String doctorId, String clinicalDiagnosis,
-            DiagnosticImageEntity diagnosticImages, String diagnosis, String patientId) {
+            DiagnosticImageEntity diagnosticImages, String diagnosis, String patientId, String bloodPressure) {
         this.clinics = clinics;
         this.date = date;
         this.doctorId = doctorId;
@@ -40,6 +42,7 @@ public class MedicalEntity {
         this.diagnosticImages = diagnosticImages;
         this.diagnosis = diagnosis;
         this.patientId = patientId;
+        this.bloodPressure = bloodPressure;
     }
 
     public String getId() {
@@ -120,4 +123,13 @@ public class MedicalEntity {
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
+
+    public String getBloodPressure() {
+        return bloodPressure;
+    }
+
+    public void setBloodPressure(String bloodPressure) {
+        this.bloodPressure = bloodPressure;
+    }
+    
 }

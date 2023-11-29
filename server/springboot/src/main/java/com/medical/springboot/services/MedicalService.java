@@ -83,24 +83,16 @@ public class MedicalService implements IDao<MedicalEntity> {
 
     // Other methods
     // Search
-    public Page<MedicalEntity> search(String keyword, String patientId, int page, int size, String sortBy,
+    public Page<MedicalEntity> search(String keyword, String patientId, String doctorId, int page, int size, String sortBy,
             String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
         logger.info("search medicals");
         keyword = ".*" + keyword + ".*";
-        return medicalRepository.find(keyword, patientId, pageable);
-    }
-
-    // Search
-    public Page<MedicalEntity> search(String keyword, int page, int size, String sortBy, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
-        logger.info("search medicals");
-        keyword = ".*" + keyword + ".*";
-        return medicalRepository.findByKeyword(keyword, pageable);
+        patientId = ".*" + patientId + ".*";
+        doctorId = ".*" + doctorId + ".*";
+        return medicalRepository.find(keyword, patientId, doctorId, pageable);
     }
 
     // Statistical
@@ -135,5 +127,10 @@ public class MedicalService implements IDao<MedicalEntity> {
     public List<MedicalEntity> getAllPatients(String doctorId) {
         logger.info("get all patients of doctor");
         return medicalRepository.findAllPatientIdByDoctorId(doctorId);
+    }
+    // statistical blood pressure of patient
+    public List<MedicalEntity> statisticalBloodPressure(String patientId, Date startDate, Date endDate) {
+        logger.info("statistical blood pressure of patient");
+        return medicalRepository.findByPatientIdAndDateBetween(patientId, startDate, endDate);
     }
 }
