@@ -1,13 +1,18 @@
 package com.medical.springboot.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,11 +31,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.medical.springboot.models.entity.DiagnosticImageEntity;
 import com.medical.springboot.models.entity.DoctorEntity;
 import com.medical.springboot.models.entity.MedicalEntity;
+import com.medical.springboot.models.entity.PatientEntity;
 import com.medical.springboot.models.request.DiagnosticImageRequest;
 import com.medical.springboot.models.response.BaseResponse;
 import com.medical.springboot.services.AccountService;
 import com.medical.springboot.services.DoctorService;
 import com.medical.springboot.services.MedicalService;
+import com.medical.springboot.services.PatientService;
 import com.medical.springboot.utils.IAuthenticationFacade;
 
 @RestController
@@ -43,6 +50,8 @@ public class DoctorController {
     private MedicalService medicalService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private PatientService patientService;
     @Autowired
     private IAuthenticationFacade authenticationFacade;
 
@@ -77,7 +86,8 @@ public class DoctorController {
     public ResponseEntity<BaseResponse> read(@PathVariable("id") String id) {
         BaseResponse response = new BaseResponse();
         logger.info("Read detail doctor");
-        DoctorEntity doctorResult = doctorService.findById(id).orElseThrow(() -> new RuntimeException("Doctor not found"));
+        DoctorEntity doctorResult = doctorService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
         response.setMessage("Read detail doctor successfully");
         response.setData(new HashMap<>() {
             {
@@ -183,4 +193,54 @@ public class DoctorController {
         return ResponseEntity.status(200).body(response);
     }
 
+    // Get all patients of doctor
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/patients/{id_doctor}")
+    public ResponseEntity<BaseResponse> getAllPatientsOfDoctor(@PathVariable("id_doctor") String id_doctor) {
+        return getPatients(id_doctor);
+    }
+
+    @PreAuthorize("hasRole('ROLE_DOCTOR')")
+    @GetMapping("/patients")
+    public ResponseEntity<BaseResponse> getAllPatients() {
+        String doctorId = authenticationFacade.getAuthentication().getName().split(",")[0];
+        return getPatients(doctorId);
+    }
+
+    private ResponseEntity<BaseResponse> getPatients(String doctorId) {
+        BaseResponse response = new BaseResponse();
+        logger.info("Get all patients of doctor");
+
+        List<MedicalEntity> patients = medicalService.getAllPatients(doctorId);
+        Set<String> patientIds = new HashSet<>();
+        patients.stream().forEach(medical -> {
+            patientIds.add(medical.getPatientId());
+        });
+        Set<MedicalEntity> uniquePatients = new HashSet<>();
+        patientIds.stream().forEach(patientId -> {
+            for (MedicalEntity medical : patients) {
+                if (medical.getPatientId().equals(patientId)) {
+                    uniquePatients.add(medical);
+                    break;
+                }
+            }
+        });
+
+        response.setMessage("Get all patients of doctor successfully");
+        List<Map<String, Object>> result = new ArrayList<>();
+        uniquePatients.stream().forEach(medical -> {
+            PatientEntity patientEntity = patientService.findById(medical.getPatientId()).get();
+            Map<String, Object> item = new HashMap<>();
+            item.put("id", patientEntity.getId());
+            item.put("fullName", patientEntity.getFullName());
+            result.add(item);
+        });
+        response.setData(new HashMap<>() {
+            {
+                put("patients", result);
+            }
+        });
+        return ResponseEntity.status(200).body(response);
+    }
 }

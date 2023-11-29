@@ -24,4 +24,7 @@ public interface MedicalRepository extends MongoRepository<MedicalEntity, String
     // statistical
     @Query(value = "{$and: [ { 'doctorId' : { $regex: ?0 } }, { 'createdDate' : { $gte: ?1 } }, { 'createdDate' : { $lte: ?2 } } ] }")
     public List<MedicalEntity> findByDateBetween(String doctor, Date startDate, Date endDate);
+    // get all medicals of doctor
+    @Query(value = "{ 'doctorId' : ?0 }")
+    public List<MedicalEntity> findAllPatientIdByDoctorId(String doctorId);
 }

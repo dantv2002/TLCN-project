@@ -131,4 +131,9 @@ public class MedicalService implements IDao<MedicalEntity> {
         }
         return result;
     }
+    // Get all patients of doctor
+    public List<MedicalEntity> getAllPatients(String doctorId) {
+        logger.info("get all patients of doctor");
+        return medicalRepository.findAllPatientIdByDoctorId(doctorId);
+    }
 }
