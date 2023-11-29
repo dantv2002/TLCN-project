@@ -74,19 +74,26 @@ public class DoctorService implements IDao<DoctorEntity> {
 
     @Override
     public Page<DoctorEntity> readAll(Pageable pageable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'readAll'");
+       return doctorRepository.findByIsDeleted(false, pageable);
     }
 
     @Override
     public DoctorEntity update(DoctorEntity t) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        return doctorRepository.save(t);
     }
 
     @Override
     public boolean delete(String key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+        try {
+            DoctorEntity doctorEntity = doctorRepository.findFirstById(key);
+            doctorEntity.setIsDeleted(true);
+            logger.debug("delete doctor by id: {}", key);
+            doctorRepository.save(doctorEntity);
+            return true;
+        } catch (Exception e) {
+            logger.error("delete doctor by id: {}", key);
+            logger.error(e.getMessage());
+            return false;
+        }
     }
 }

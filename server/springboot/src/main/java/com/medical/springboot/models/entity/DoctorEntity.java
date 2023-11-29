@@ -12,7 +12,9 @@ public class DoctorEntity extends PersonAbstractEntity {
     private String department; // Khoa
     @Field
     private String title; // Chức danh
-
+    //
+    @Field
+    private Boolean isDeleted = false; // Đã xóa
     public DoctorEntity() {
     }
 
@@ -46,6 +48,14 @@ public class DoctorEntity extends PersonAbstractEntity {
                 + ", phoneNumber=" + this.getPhoneNumber() + ", email=" + this.getEmail() + ", identificationCard="
                 + this.getIdentificationCard() + ", department=" + department + ", title=" + title
                 + "]";
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
 }
