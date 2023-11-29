@@ -5,8 +5,8 @@ import UploadImage from '../../data/UploadImage'
 import axios from 'axios'
 import { diagnosisImageApi, 
         saveDiagnosisImageApi, 
-        searchAllMedicalRecordAdminApi, 
-        searchAllPatientRecordAdminApi } from '../../utils/api/admin'
+        searchAllPatientRecordAdminApi,
+        readsMedicalRecordAdminApi } from '../../utils/api/admin'
 import moment from 'moment';
 import "../../css/Admin.css";
 
@@ -14,11 +14,10 @@ const DiagnosisAdmin = () => {
 
   const token = localStorage.getItem("token");
   const [image, setImage] = useState("");
-  const [result, setResult] = useState("Bình thường");
+  const [result, setResult] = useState("");
   const [keywordPatient, setKeywordPatient] = useState("");
   const [patientRecords, setPatientRecords] = useState([]);
   const [patient, setPatient] = useState("");
-  const [keywordMedical, setKeywordMedical] = useState("");
   const [medicalRecords, setMedicalRecords] = useState([]);
   const [medical, setMedical] = useState("");
   const [method, setMethod] = useState("");
@@ -80,7 +79,7 @@ const DiagnosisAdmin = () => {
   useEffect(() => {
     const fetchMedicalRecords = async () => {
       try {
-        const res = await axios.get(searchAllMedicalRecordAdminApi(keywordMedical), {
+        const res = await axios.get(readsMedicalRecordAdminApi(patient), {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -91,7 +90,7 @@ const DiagnosisAdmin = () => {
       }
     }
     fetchMedicalRecords();
-  }, [token, keywordMedical]);
+  }, [token, patient]);
 
   useEffect(() => {
     if (medicalRecords.length > 0) {
@@ -159,15 +158,6 @@ const DiagnosisAdmin = () => {
                     </select>
                   </div>
                   <div className='search_medical'>
-                    <form>
-                        <input 
-                            type="text" 
-                            className='form-control'
-                            placeholder="nhập kết quả bệnh án"
-                            value={keywordMedical}
-                            onChange={(e) => setKeywordMedical(e.target.value)}
-                        />
-                    </form>
                     <select className='form-select' onChange={selectMedical}>
                       {medicalRecords.map(medical => (
                         <option value={medical.id}>ID: {medical.id} - Ngày khám: {moment(medical.date).format("MM/DD/YYYY")} - Bệnh nhân: {medical.namePatient} - Bác sĩ: {medical.nameDoctor}</option>
