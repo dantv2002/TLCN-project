@@ -83,22 +83,25 @@ public class MedicalService implements IDao<MedicalEntity> {
 
     // Other methods
     // Search
-    public Page<MedicalEntity> search(String keyword, String patientId, String doctorId, int page, int size, String sortBy,
+    public Page<MedicalEntity> search(String keyword, String patientId, String doctorId, int page, int size,
+            String sortBy,
             String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
         logger.info("search medicals");
         keyword = ".*" + keyword + ".*";
-        patientId = ".*" + patientId + ".*";
-        doctorId = ".*" + doctorId + ".*";
+        patientId = patientId.isEmpty() ? ".*" + patientId + ".*" : "^" + patientId + "$";
+        doctorId = doctorId.isEmpty() ? ".*" + doctorId + ".*" : "^" + doctorId + "$";
+
         return medicalRepository.find(keyword, patientId, doctorId, pageable);
     }
 
     // Statistical
     public List<Map<String, Object>> statistical(String doctor, Date startDate, Date endDate) {
         logger.info("statistical medicals");
-        doctor = ".*" + doctor + ".*";
+        doctor = doctor.isEmpty() ? ".*" + doctor + ".*" : "^" + doctor + "$";
+
         List<MedicalEntity> medicals = medicalRepository.findByDateBetween(doctor, startDate, endDate);
         List<Map<String, Object>> result = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
@@ -108,8 +111,8 @@ public class MedicalService implements IDao<MedicalEntity> {
             calendar.setTime(current);
             int count = 0;
             for (MedicalEntity medical : medicals) {
-                if (current.getMonth() == medical.getCreatedDate().getMonth()
-                        && current.getYear() == medical.getCreatedDate().getYear()) {
+                if (current.getMonth() == medical.getDate().getMonth()
+                        && current.getYear() == medical.getDate().getYear()) {
                     count++;
                 }
             }
@@ -117,17 +120,27 @@ public class MedicalService implements IDao<MedicalEntity> {
             item.put("Date", (calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1)));
             item.put("scales", count);
             result.add(item);
-            
+
             calendar.add(Calendar.MONTH, 1);
             current = calendar.getTime();
         }
         return result;
     }
+
+    // Count medicals
+    public int countByDoctorId(String doctor) {
+        logger.info("count medicals");
+        doctor = doctor.isEmpty() ? ".*" + doctor + ".*" : "^" + doctor + "$";
+        System.out.println(doctor);
+        return medicalRepository.countByDoctorId(doctor);
+    }
+
     // Get all patients of doctor
     public List<MedicalEntity> getAllPatients(String doctorId) {
         logger.info("get all patients of doctor");
         return medicalRepository.findAllPatientIdByDoctorId(doctorId);
     }
+
     // statistical blood pressure of patient
     public List<MedicalEntity> statisticalBloodPressure(String patientId, Date startDate, Date endDate) {
         logger.info("statistical blood pressure of patient");

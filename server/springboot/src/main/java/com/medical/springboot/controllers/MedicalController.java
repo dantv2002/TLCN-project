@@ -246,6 +246,7 @@ public class MedicalController {
     public ResponseEntity<BaseResponse> search(
             @RequestParam(name = "keyword", defaultValue = "", required = false) String keyword,
             @RequestParam(name = "patientId", defaultValue = "", required = false) String patientId,
+            @RequestParam(name = "doctorId", defaultValue = "", required = false) String doctorId,
             @RequestParam(name = "isReadAll", defaultValue = "false", required = false) boolean isReadAll,
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
             @RequestParam(name = "size", defaultValue = "5", required = false) int size,
@@ -254,12 +255,20 @@ public class MedicalController {
         BaseResponse response = new BaseResponse();
         LOGGER.info("Search medicals request");
         LOGGER.info("Keyword: {}", keyword);
-        String doctorId = authenticationFacade.getAuthentication().getName().split(",")[0];
-        doctorId = doctorId.equals("ADMIN") ? "" : doctorId;
-        if (isReadAll) {
-            doctorId = "";
+        String doctor = "";
+        if (doctorId.isEmpty()) {
+            doctor = authenticationFacade.getAuthentication().getName().split(",")[0];
+        } else {
+            if (authenticationFacade.getAuthentication().getName().split(",")[0].equals("ADMIN")) {
+                doctor = doctorId;
+            } else {
+                doctor = authenticationFacade.getAuthentication().getName().split(",")[0];
+            }
         }
-        Page<MedicalEntity> result = medicalService.search(keyword, patientId, doctorId, page, size, sortBy, sortDir);
+        if (isReadAll) {
+            doctor = "";
+        }
+        Page<MedicalEntity> result = medicalService.search(keyword, patientId, doctor, page, size, sortBy, sortDir);
         //
         response.setMessage("Search medicals success");
         response.setData(new HashMap<>() {
@@ -293,7 +302,7 @@ public class MedicalController {
                 throw new RuntimeException("Date invalid");
             }
             LOGGER.info("Statistical medicals request");
-            LOGGER.info("doctor: {}", doctor == "" ? "All" : doctor);
+            LOGGER.info("doctor: {}", doctor.isEmpty() ? "All" : doctor);
             List<Map<String, Object>> result = medicalService.statistical(doctor, startDate, endDate);
             response.setMessage("Statistical medicals success");
             response.setData(new HashMap<>() {
@@ -307,6 +316,24 @@ public class MedicalController {
         }
     }
 
+    // Count medicals of doctor
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/count")
+    public ResponseEntity<BaseResponse> count(
+            @RequestParam(name = "doctor", defaultValue = "", required = false) String doctor) {
+        BaseResponse response = new BaseResponse();
+        LOGGER.info("Count medicals request");
+        LOGGER.info("doctor: {}", doctor.isEmpty() ? "All" : doctor);
+        int result = medicalService.countByDoctorId(doctor);
+        response.setMessage("Count medicals success");
+        response.setData(new HashMap<>() {
+            {
+                put("count", result);
+            }
+        });
+        return ResponseEntity.status(200).body(response);
+    }
+
     // statistical blood pressure of patient
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
     @GetMapping("/statistical/blood-pressure/{patientId}")
@@ -317,7 +344,7 @@ public class MedicalController {
 
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     @GetMapping("/me/statistical/blood-pressure")
-    public  ResponseEntity<BaseResponse> meStatisticalBloodPressure(@RequestBody Map<String, String> request){
+    public ResponseEntity<BaseResponse> meStatisticalBloodPressure(@RequestBody Map<String, String> request) {
         String patientId = authenticationFacade.getAuthentication().getName().split(",")[0];
         return statisticalBloodPressure(patientId, request);
     }
@@ -335,14 +362,15 @@ public class MedicalController {
             LOGGER.info("patientId: {}", patientId);
             List<MedicalEntity> medicals = medicalService.statisticalBloodPressure(patientId, startDate, endDate);
             List<Map<String, Object>> result = new ArrayList<>();
-            Calendar calendar = Calendar.getInstance();  
-            medicals.stream().forEach(medical ->{
-                calendar.setTime(medical.getCreatedDate());
+            Calendar calendar = Calendar.getInstance();
+            medicals.stream().forEach(medical -> {
+                calendar.setTime(medical.getDate());
                 Map<String, Object> item = new HashMap<>();
-                item.put("Date", (calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH)));
+                item.put("Date", (calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-"
+                        + calendar.get(Calendar.DAY_OF_MONTH)));
                 item.put("scales", Integer.parseInt(medical.getBloodPressure()));
                 result.add(item);
-            });          
+            });
             response.setMessage("Statistical blood pressure of patient success");
             response.setData(new HashMap<>() {
                 {

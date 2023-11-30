@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,6 +32,7 @@ import com.medical.springboot.models.entity.DoctorEntity;
 import com.medical.springboot.models.entity.MedicalEntity;
 import com.medical.springboot.models.entity.PatientEntity;
 import com.medical.springboot.models.request.DiagnosticImageRequest;
+import com.medical.springboot.models.request.DoctorRequest;
 import com.medical.springboot.models.response.BaseResponse;
 import com.medical.springboot.services.AccountService;
 import com.medical.springboot.services.DoctorService;
@@ -100,7 +100,7 @@ public class DoctorController {
     // update doctor
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update/{id}")
-    public ResponseEntity<BaseResponse> update(@RequestBody DoctorEntity doctor,
+    public ResponseEntity<BaseResponse> update(@RequestBody DoctorRequest doctor,
             @PathVariable("id") String id) {
         BaseResponse response = new BaseResponse();
         logger.info("Update doctor");
