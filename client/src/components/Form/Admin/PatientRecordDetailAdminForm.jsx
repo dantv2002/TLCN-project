@@ -1,10 +1,9 @@
 import React, { useState, useEffect} from 'react'
-import { readPatientRecordAdminApi } from '../../../utils/api/admin';
+import { readPatientRecordAdminApi } from '../../../api';
 import axios from 'axios';
 import moment from 'moment';
-import HeaderAdminDoctor from '../../Layout/HeaderAdminDoctor';
-import AdminMenu from '../../Layout/AdminMenu';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button } from 'antd';
 
 
 
@@ -15,6 +14,7 @@ const PatientRecordDetailAdminForm = () => {
   const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPatientRecordDetail = async () => {
@@ -50,41 +50,36 @@ const PatientRecordDetailAdminForm = () => {
   const getGenderString = (isMale) => {
     return isMale ? 'Nam' : 'Nữ';
   };
+
+  const handleBack = () => {
+    navigate("/dashboard/patient/")  
+  }
   return (
     <div>
-      <HeaderAdminDoctor/>
-      <div className='container-fluid'>
-        <div className='row'>
-          <div className='col-md-3'>
-            <AdminMenu/>
-          </div>
-          <div className='col-md-9'>
-            <div className='record_detail'>
-              <h1>Chi tiết hồ sơ</h1>
-              {loading ? (
-                <div className='loading-message'>Loading...</div>
-              ) : error ? (
-                <div className='error-message'>Chưa tạo hồ sơ</div>
-              ) : record ? (
-                  <div className='record_detail_container'>
-                    <p>ID: {record.id}</p>
-                    <p>Họ tên: {record.fullName}</p>
-                    <p>Ngày sinh: {moment(record.birthday).format("MM/DD/YYYY")}</p>
-                    <p>Giới tính: {getGenderString(record.gender)}</p>
-                    <p>Địa chỉ: {record.address}</p>
-                    <p>Số điện thoại: {record.phonenumber}</p>
-                    <p>Email: {record.email}</p>
-                    <p>CMND/CCCD: {record.identificationCard}</p>
-                    <p>Bệnh nền: {record.allergy}</p>
-                    <p>Mã BHYT: {record.healthInsurance}</p>
-                  </div>
-                ) : (
-                  <div className='error-message'>Chưa tạo hồ sơ</div>
-              )}
-            </div>   
-          </div>
-        </div>
-      </div>
+      <div className='record_detail'>
+      <Button type='primary' size='medium' onClick={handleBack} style={{backgroundColor:"green"}}>Quay lại</Button>
+        <h1>Chi tiết hồ sơ</h1>
+        {loading ? (
+          <div className='loading-message'>Loading...</div>
+        ) : error ? (
+          <div className='error-message'>Chưa tạo hồ sơ</div>
+        ) : record ? (
+            <div className='record_detail_container'>
+              <p>ID: {record.id}</p>
+              <p>Họ tên: {record.fullName}</p>
+              <p>Ngày sinh: {moment(record.birthday).format("MM/DD/YYYY")}</p>
+              <p>Giới tính: {getGenderString(record.gender)}</p>
+              <p>Địa chỉ: {record.address}</p>
+              <p>Số điện thoại: {record.phonenumber}</p>
+              <p>Email: {record.email}</p>
+              <p>CMND/CCCD: {record.identificationCard}</p>
+              <p>Bệnh nền: {record.allergy}</p>
+              <p>Mã BHYT: {record.healthInsurance}</p>
+            </div>
+          ) : (
+            <div className='error-message'>Chưa tạo hồ sơ</div>
+        )}
+      </div>   
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import HeaderUser from '../../components/Layout/HeaderUser';
-import { readPatientRecordApi } from '../../utils/api/user';
+import { readPatientRecordApi } from '../../api';
 import "../../css/User.css"
 import axios from 'axios';
 import moment from 'moment/moment';

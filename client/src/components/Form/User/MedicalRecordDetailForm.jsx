@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import HeaderUser from '../../Layout/HeaderUser'
 import { useParams } from 'react-router-dom'
-import { readMedicalRecordDetailApi } from '../../../utils/api/user'
+import { readMedicalRecordDetailApi } from '../../../api'
 import axios from 'axios'
 import '../../../css/User.css'
 

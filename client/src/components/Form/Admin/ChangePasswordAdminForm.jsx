@@ -1,7 +1,6 @@
 import React, { useState , useEffect} from 'react'
 import HeaderUser from '../../Layout/HeaderUser'
-import { changePasswordApi } from '../../../utils/api/user';
-import { logoutApi } from '../../../utils/api/auth';
+import { logoutApi, changePasswordApi } from '../../../api';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "../../../css/User.css"

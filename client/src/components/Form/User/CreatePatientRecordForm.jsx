@@ -4,7 +4,7 @@ import moment from "moment/moment";
 import { useNavigate } from "react-router-dom";
 import "../../../css/User.css"
 import axios from "axios";
-import { createPatienRecordApi } from "../../../utils/api/user";
+import { createPatienRecordApi } from "../../../api";
 
 const CreatePatientRecordForm = () => {
     const fullname = localStorage.getItem("fullname");
