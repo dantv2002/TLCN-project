@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import HeaderUser from '../../components/Layout/HeaderUser';
-import { searchMedicalRecordApi } from '../../utils/api/user';
+import { searchMedicalRecordApi } from '../../api';
 import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment/moment';

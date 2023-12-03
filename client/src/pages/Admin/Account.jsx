@@ -1,16 +1,12 @@
 import { SearchOutlined } from '@ant-design/icons';
 import React, { useState, useEffect } from 'react';
 import { Alert, Button, Input, Space, Spin, Table, message} from 'antd';
-// import { Search } from Input;
 import Highlighter from 'react-highlight-words';
 import axios from 'axios';
-import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
-import { searchPatientRecordAdminApi,
-          deletePatientRecordAdminApi,
-        } from '../../api'; 
+import { deleteAccountApi, lockAccountApi, readAccoutApi, unlockAccountApi } from '../../api';
 
-const PatientRecordAdmin = () => {
+const Account = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const [data, setData] = useState([]);
@@ -19,8 +15,6 @@ const PatientRecordAdmin = () => {
   const [eventClick, setEventClick] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingTime, setLoadingTime] = useState(0);
-  const [keyword, setKeyword] = useState("");
-  const [searchClicked, setSearchClicked] = useState(false);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
@@ -28,58 +22,32 @@ const PatientRecordAdmin = () => {
     setCurrentpage(page-1);
   };
 
-  const handleSearchKeyword = (word) => {
-    setSearchClicked(true);
-    setCurrentpage(0);
-    setKeyword(word)
-  }
-
   useEffect(() => {
-    if (!searchClicked) {
-      const fetchPatientRecords = async () => {
-        try {
-          setLoading(true);
-          const startTime = new Date();
-          const response = await axios.get(searchPatientRecordAdminApi(keyword, currentpage), {
-              headers: {
-                  Authorization: `Bearer ${token}`,
-              },
-          });
-          console.log(response.data.data.medicals)
-          setData(response.data.data.medicals);
-          setTotalpage(Math.ceil(response.data.data.total/5));
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const startTime = new Date();
+        const response = await axios.get(readAccoutApi(currentpage), {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setData(response.data.data.medicals);
+        setTotalpage(Math.ceil(response.data.data.total / 5));
+        console.log(totalpage);
         const endTime = new Date();
         const fetchTime = endTime - startTime;
         setLoadingTime(fetchTime);
-        } catch (error) {
-            console.error('Lỗi khi lấy dữ liệu hồ sơ bệnh nhân', error);
-        }
-      };
-      fetchPatientRecords();
-    } else {
-        const fetchPatientRecords = async () => {
-          try {
-            setLoading(true);
-            const startTime = new Date();
-            const response = await axios.get(searchPatientRecordAdminApi(keyword, currentpage), {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            console.log(response.data.data.medicals)
-            setData(response.data.data.medicals);
-            setTotalpage(Math.ceil(response.data.data.total / 5));
-            const endTime = new Date();
-            const fetchTime = endTime - startTime;
-            setLoadingTime(fetchTime);
-          } catch (error) {
-              console.error('Lỗi khi lấy dữ liệu hồ sơ bệnh nhân', error);
-          }
-        };
-        setSearchClicked(false);
-        fetchPatientRecords();
-    }
-  }, [token, currentpage, eventClick, searchClicked]);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }finally{
+        setTimeout(() =>{
+          setLoading(false);
+        },3000)
+      }
+    };
+    fetchData();
+  }, [token, currentpage, eventClick]);
 
   useEffect(() => {
     if (loading) {
@@ -143,34 +111,68 @@ const PatientRecordAdmin = () => {
       ),
   });
 
-  const handleCreatePatient = () => {
-    navigate("/dashboard/patient/create");
-  }
-
-  const handleReadPatientRecord = (id) => {
-    navigate(`/dashboard/patient/read/${id}`)
-  }
-  const handleUpdatePatientRecord = (id) => {
-    navigate(`/dashboard/patient/update/${id}`)
-  }
-  const handleDeletePatientRecord = async(id) => {
+  const handleLock = async (id) => {
     try {
-      const res = await axios.delete(deletePatientRecordAdminApi(id),{
+      await axios.get(lockAccountApi(id), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      })
-      if (res.status === 200){
-        message.success("Đã xóa")
-      }
-      if(eventClick){
-        setEventClick(false);
-      }else{
-        setEventClick(true);
-      }
-    }catch(error){
-      console.log(error);
-      message.error("Không thể xóa")
+      });
+      message.success('Khóa tài khoản thành công');
+      setEventClick(!eventClick);
+    } catch (error) {
+      console.error('Lỗi khi khóa tài khoản', error);
+      message.error('Lỗi khi khóa tài khoản');
+    }
+  };
+
+  const handleUnlock = async (id) => {
+    try {
+      await axios.get(unlockAccountApi(id), {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      message.success('Mở tài khoản thành công');
+      setEventClick(!eventClick);
+    } catch (error) {
+      console.error('Lỗi khi mở tài khoản', error);
+      message.error('Lỗi khi mở tài khoản');
+    }
+  };
+
+  const handleRePassword = (id) => {
+    navigate(`/dashboard/account/reissuepass/${id}`);
+  };
+
+  const handleCreateAccountDoctor = () => {
+    navigate('/dashboard/account/createdoctor');
+    setEventClick(!eventClick);
+  };
+
+  const handleDeleteAccount = async (id) => {
+    try {
+      await axios.delete(deleteAccountApi(id), {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      message.success('Xóa tài khoản thành công');
+      setEventClick(!eventClick);
+    } catch (error) {
+      console.error('Lỗi khi xóa tài khoản', error);
+      message.error('Lỗi khi xóa tài khoản');
+    }
+  };
+
+  function convertRoleToVietnamese(role) {
+    switch (role) {
+      case 'PATIENT':
+        return 'Bệnh nhân';
+      case 'DOCTOR':
+        return 'Bác sĩ';
+      default:
+        return role;
     }
   }
 
@@ -188,22 +190,16 @@ const PatientRecordAdmin = () => {
       ...getColumnSearchProps('email'),
     },
     {
-      title: 'Họ tên',
-      dataIndex: 'fullName',
-      key: 'fullName',
+      title: 'Tình trạng',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status) => (status ? 'Đang sử dụng' : 'Đã khóa'),
     },
     {
-      title: 'Ngày sinh',
-      dataIndex: 'date',
-      key: 'date',
-      render: (date) => {
-        return moment(date).format('YYYY-MM-DD');
-      }
-    },
-    {
-      title: 'Số điện thoại',
-      dataIndex: 'phonenumber',
-      key: 'phonenumber',
+      title: 'Vai trò',
+      dataIndex: 'role',
+      key: 'role',
+      render: (role) => convertRoleToVietnamese(role),
     },
     {
       title: 'Tùy chọn',
@@ -211,13 +207,19 @@ const PatientRecordAdmin = () => {
       key: 'options',
       render: (_, record) => (
         <>
-          <Button className="read" onClick={() => handleReadPatientRecord(record.id)}>
-            Xem
+          {record.status ? (
+            <Button className="lock" onClick={() => handleLock(record.id)}>
+              Khóa
+            </Button>
+          ) : (
+            <Button className="unlock" onClick={() => handleUnlock(record.id)}>
+              Mở
+            </Button>
+          )}
+          <Button className="repass" onClick={() => handleRePassword(record.id)}>
+            Cấp lại MK
           </Button>
-          <Button className="update" onClick={() => handleUpdatePatientRecord(record.id)}>
-            Cập nhật
-          </Button>
-          <Button className="delete" onClick={() => handleDeletePatientRecord(record.id)}>
+          <Button className="delete" onClick={() => handleDeleteAccount(record.id)}>
             Xóa
           </Button>
         </>
@@ -227,16 +229,9 @@ const PatientRecordAdmin = () => {
 
   return (
     <div>
-      <Button type='primary' size='medium' onClick={handleCreatePatient}>Tạo hồ sơ bệnh nhân</Button>
-      <br/>
-      <Input.Search
-        placeholder='Nhập CCCD/CMND hoặc tên của bệnh nhân'
-        style={{marginTop: "5px", marginBottom: "5px", width:"400px"}}
-        onPressEnter={(value) => handleSearchKeyword(value)}
-        onSearch={(value) => handleSearchKeyword(value)}
-      />
       { !loading ? (
           <>
+            <Button type='primary' size='medium' onClick={handleCreateAccountDoctor}>Tạo tài khoản bác sĩ</Button>
             <Table 
               columns={columns} 
               dataSource={data} 
@@ -252,14 +247,14 @@ const PatientRecordAdmin = () => {
           <Spin tip="Đang load ...">
           <Alert
             message="Hãy chờ một chút"
-            description="Đang lấy dữ liệu hồ sơ bệnh nhân"
+            description="Đang lấy dữ liệu tài khoản"
             type='info'
           />
         </Spin>
         )
       }
     </div>
-  )
-}
+  );
+};
 
-export default PatientRecordAdmin
+export default Account;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import HeaderUser from '../../Layout/HeaderUser';
-import { readPatientRecordApi, updatePatientRecordApi } from '../../../utils/api/user';
+import { readPatientRecordApi, updatePatientRecordApi } from '../../../api';
 import moment from 'moment';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';

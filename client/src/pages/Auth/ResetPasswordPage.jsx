@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { resetpassApi } from "../../utils/api/auth";
+import { resetpassApi } from "../../api";
 import { useNavigate } from "react-router-dom";
 import "../../css/Auth.css"
 import HeaderUser from "../../components/Layout/HeaderUser";

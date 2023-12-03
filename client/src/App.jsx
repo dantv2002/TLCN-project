@@ -13,21 +13,18 @@ import CreatePatientRecordForm from './components/Form/User/CreatePatientRecordF
 import UpdatePatientRecordForm from './components/Form/User/UpdatePatientRecordForm';
 import MedicalRecord from './pages/User/MedicalRecord';
 import MedicalRecordDetailForm from './components/Form/User/MedicalRecordDetailForm';
+import Dashboard from './pages/Admin/Dashboard';
 import DashboardDoctor from './pages/Doctor/DashboardDoctor';
-import DashboardAdmin from './pages/Admin/DashboardAdmin';
-import ChangePasswordAdminForm from './components/Form/Admin/ChangePasswordAdminForm';
+import Account from './pages/Admin/Account';
+import Diagnose from './pages/Admin/Diagnose';
 import PatientRecordAdmin from './pages/Admin/PatientRecordAdmin';
-import CreatePatientRecordAdminForm from './components/Form/Admin/CreatePatientRecordAdminForm';
+import ReissuePassword from './components/Form/Admin/ReissuePassword';
+import CreateAccountDoctor from './components/Form/Admin/CreateAccountDoctor';
 import PatientRecordDetailAdminForm from './components/Form/Admin/PatientRecordDetailAdminForm';
-import UpdatePatientRecordAdminForm from './components/Form/Admin/UpdatePatientRecordAdminForm';
-import AccountAdmin from './pages/Admin/AccountAdmin';
-import ReissuePasswordForm from './components/Form/Admin/ReissuePasswordForm';
-import CreateAccountDoctorForm from './components/Form/Admin/CreateAccountDoctorForm';
+import CreatePatientRecordAdmin from './components/Form/Admin/CreatePatientRecordAdmin';
+import UpdatePatientRecordAdmin from './components/Form/Admin/UpdatePatientRecordAdmin';
 import MedicalRecordAdmin from './pages/Admin/MedicalRecordAdmin';
-import MedicalRecordDetailAdminForm from './components/Form/Admin/MedicalRecordDetailAdminForm';
-import CreateMedicalRecordAdminForm from './components/Form/Admin/CreateMedicalRecordAdminForm';
-import UpdateMedicalRecordAdminForm from './components/Form/Admin/UpdateMedicalRecordAdminForm';
-import DiagnosisAdmin from './pages/Admin/DiagnosisAdmin';
+import ChangePasswordAdminForm from './components/Form/Admin/ChangePasswordAdminForm';
 
 function App() {
   return (
@@ -46,20 +43,18 @@ function App() {
       <Route path='/user/medicalrecord' element={<MedicalRecord/>}/>
       <Route path='/user/medicalrecord/detail/:id' element={<MedicalRecordDetailForm/>}/>
       <Route path='/doctor/dashboard' element={<DashboardDoctor/>}/>  
-      <Route path='/admin/dashboard' element={<DashboardAdmin/>}/>
-      <Route path='/admin/changepassword' element={<ChangePasswordAdminForm/>}/>
-      <Route path='/admin/dashboard/account' element={<AccountAdmin/>}/>
-      <Route path='/admin/dashboard/account/createdoctor' element={<CreateAccountDoctorForm/>}/>
-      <Route path='/admin/dashboard/account/repass/:id' element={<ReissuePasswordForm/>}/>
-      <Route path='/admin/dashboard/patientrecord' element={<PatientRecordAdmin/>}/>
-      <Route path='/admin/dashboard/patientrecord/create' element={<CreatePatientRecordAdminForm/>}/>
-      <Route path='/admin/dashboard/patientrecord/update/:id' element={<UpdatePatientRecordAdminForm/>}/>
-      <Route path='/admin/dashboard/patientrecord/read/:id' element={<PatientRecordDetailAdminForm/>}/>
-      <Route path='/admin/dashboard/medicalrecord' element={<MedicalRecordAdmin/>}/>
-      <Route path='/admin/dashboard/medicalrecord/detail/:id' element={<MedicalRecordDetailAdminForm/>}/>
-      <Route path='/admin/dashboard/medicalrecord/create/:id' element={<CreateMedicalRecordAdminForm/>}/>
-      <Route path='/admin/dashboard/medicalrecord/update/:id' element={<UpdateMedicalRecordAdminForm/>}/>
-      <Route path='/admin/dashboard/diagnosis' element={<DiagnosisAdmin/>}/>
+      <Route path="/dashboard" element={<Dashboard/>}>
+        <Route path='changepass' element={<ChangePasswordAdminForm/>}/>
+        <Route path='account' element={<Account/>}/>
+        <Route path='account/createdoctor' element={<CreateAccountDoctor/>}/>
+        <Route path='account/reissuepass/:id' element={<ReissuePassword/>}/>
+        <Route path='patient' element={<PatientRecordAdmin/>}/>
+        <Route path='patient/read/:id' element={<PatientRecordDetailAdminForm/>}/>
+        <Route path='patient/create' element={<CreatePatientRecordAdmin/>}/>
+        <Route path='patient/update/:id' element={<UpdatePatientRecordAdmin/>}/>
+        <Route path='medical' element={<MedicalRecordAdmin/>}/>
+        <Route path='diagnose' element={<Diagnose/>}/>
+      </Route>
       <Route path='*' element={<Pagenotfound/>}/>
     </Routes>
   );

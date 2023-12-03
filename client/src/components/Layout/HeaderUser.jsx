@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "../../assets/logo.png"
 import axios from "axios";
-import { logoutApi } from "../../utils/api/auth";
+import { logoutApi } from "../../api";
 import "../../css/Home/Navbar.css";
 import "../../css/Header.css"
 import { Link, useNavigate } from "react-router-dom";

@@ -1,10 +1,10 @@
 import React, { useState , useEffect} from 'react'
-import HeaderUser from '../../Layout/HeaderUser'
-import { changePasswordApi } from '../../../utils/api/user';
-import { logoutApi } from '../../../utils/api/auth';
+import HeaderUser from '../../Layout/HeaderUser';
+import { logoutApi } from '../../../api';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "../../../css/User.css"
+import { changePasswordApi } from '../../../api';
 
 const ChangePasswordPatientForm = () => {
 

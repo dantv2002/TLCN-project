@@ -1,6 +1,6 @@
 import React, { useState} from "react";
 import axios from "axios";
-import { loginApi } from "../../utils/api/auth";
+import { loginApi } from "../../api";
 import { useNavigate} from "react-router-dom";
 import img_logo from '../../assets/logo.png';
 import img_login from "../../assets/login/hopital.jpg";
@@ -21,7 +21,6 @@ const LoginPage = () => {
             const response = await axios.post(loginApi,
                         {email, password});
             if (response.status===200) {
-                alert("Đăng nhập thành công");
                 localStorage.setItem("email", response.data.data.email);
                 localStorage.setItem("fullname", response.data.data.fullname);
                 localStorage.setItem("token", response.data.data.token);
@@ -34,7 +33,7 @@ const LoginPage = () => {
                     navigate("/doctor/dashboard");
                 } else if (response.data.data.role === "ADMIN") {
                     alert("Xin chào admin");
-                    navigate("/admin/dashboard");
+                    navigate("/dashboard");
                 }
             } else {
                 alert("Đăng nhập thất bại");
