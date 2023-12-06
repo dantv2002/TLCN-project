@@ -24,8 +24,18 @@ public class DoctorService implements IDao<DoctorEntity> {
     private DoctorRepository doctorRepository;
 
     // Create
+    @Override
+    public DoctorEntity create(DoctorEntity t) {
+        return doctorRepository.save(t);
+
+    }
+
     // Read all
-    // Read one
+    @Override
+    public Page<DoctorEntity> readAll(Pageable pageable) {
+        return doctorRepository.findByIsDeleted(false, pageable);
+    }
+
     // find fullName by id
     public String findFullNameById(String id) {
         return doctorRepository.findFullNameById(id);
@@ -37,7 +47,27 @@ public class DoctorService implements IDao<DoctorEntity> {
     }
 
     // Update
+    @Override
+    public DoctorEntity update(DoctorEntity t) {
+        return doctorRepository.save(t);
+    }
+
     // Delete
+    @Override
+    public boolean delete(String key) {
+        try {
+            DoctorEntity doctorEntity = doctorRepository.findFirstById(key);
+            doctorEntity.setIsDeleted(true);
+            logger.debug("delete doctor by id: {}", key);
+            doctorRepository.save(doctorEntity);
+            return true;
+        } catch (Exception e) {
+            logger.error("delete doctor by id: {}", key);
+            logger.error(e.getMessage());
+            return false;
+        }
+    }
+
     // Others methods
     // Find by email
     public Optional<DoctorEntity> findByEmail(String email) {
@@ -64,36 +94,5 @@ public class DoctorService implements IDao<DoctorEntity> {
         HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
         //
         return restTemplate.postForObject(url, request, String.class);
-    }
-
-    @Override
-    public DoctorEntity create(DoctorEntity t) {
-        return doctorRepository.save(t);
-        
-    }
-
-    @Override
-    public Page<DoctorEntity> readAll(Pageable pageable) {
-       return doctorRepository.findByIsDeleted(false, pageable);
-    }
-
-    @Override
-    public DoctorEntity update(DoctorEntity t) {
-        return doctorRepository.save(t);
-    }
-
-    @Override
-    public boolean delete(String key) {
-        try {
-            DoctorEntity doctorEntity = doctorRepository.findFirstById(key);
-            doctorEntity.setIsDeleted(true);
-            logger.debug("delete doctor by id: {}", key);
-            doctorRepository.save(doctorEntity);
-            return true;
-        } catch (Exception e) {
-            logger.error("delete doctor by id: {}", key);
-            logger.error(e.getMessage());
-            return false;
-        }
     }
 }
