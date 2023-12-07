@@ -3,7 +3,7 @@ import axios from 'axios';
 import moment from 'moment/moment';
 import { useNavigate } from 'react-router-dom';
 import { Input, Button, Form, message, DatePicker, Select} from 'antd';
-import { createAccountDoctorApi } from '../../../api';
+import { createAccountDoctorApi } from '../../../../api';
 const CreateAccountDoctor = () => {
     
     const [fullname, setFullname] = useState("");
@@ -89,7 +89,6 @@ const CreateAccountDoctor = () => {
                             >
                             <Input
                                 type="text"
-                                className="form-control"
                                 placeholder="Nhập họ tên"
                                 value={fullname}
                                 onChange={(e) => setFullname(e.target.value)}

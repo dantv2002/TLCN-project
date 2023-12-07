@@ -28,10 +28,9 @@ export const searchAllPatientRecordAdminApi = (keyword) => `${host}/auth/patient
 
 //Medical Record Manager
 export const readsMedicalRecordAdminApi = (id) => `${host}/auth/medical/reads/${id}`;
-export const searchMedicalRecordAdminApi = (page) => `${host}/auth/medical/search?page=${page}`;
 export const readsMedicalPatientAdminApi = `${host}/auth/patientrecord/search?size=1000`;
 export const readsMedicalDoctorAdminApi = `${host}/auth/doctor/reads?size=1000`;
-export const readMedicalRecordByPatientDoctorAdminApi = (patientid, doctorid, page) => `${host}/auth/medical/search?patientId=${patientid}&doctorId=${doctorid}&page=${page}`
+export const readMedicalRecordByPatientDoctorAdminApi = (patientid, doctorid, page, isReadAll) => `${host}/auth/medical/search?patientId=${patientid}&doctorId=${doctorid}&page=${page}&isReadAll=${isReadAll}`
 export const readMedicalRecordDetailAdminApi = (id) => `${host}/auth/medical/read/detail/${id}`;
 export const deleteMedicalRecordAdminApi = (id) => `${host}/auth/medical/delete/${id}`;
 export const updateMedicalRecordAdminApi = (id) => `${host}/auth/medical/update/${id}`;

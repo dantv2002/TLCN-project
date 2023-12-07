@@ -3,7 +3,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import { Input, Button, Form, message, DatePicker, Select} from 'antd';
-import { createPatientRecordAdminApi } from '../../../api'
+import { createPatientRecordAdminApi } from '../../../../api';
 
 const CreatePatientRecordAdmin = () => {
     const [fullname, setFullname] = useState("");

@@ -33,11 +33,11 @@ function Footer() {
             </li>
             <li>
               <ion-icon name="phone-portrait-outline"></ion-icon>
-              <span>Phone: 0858889999</span>
+              <span>Phone: 0333060777</span>
             </li>
             <li>
               <ion-icon ion-icon name="mail-outline"></ion-icon>
-              <span>Email: danhtaiduc@hospital.com</span>
+              <span>Email: 20110121@student.hcmute.edu.vn</span>
             </li>
           </ul>
         </div>
@@ -65,12 +65,14 @@ function Footer() {
       </div>
 
       <div className="ft-copyright">
-        <p>© 2013-2023 Bệnh viên Danh Tài Đức. All rights reserved.</p>
+        <p>© Những thông tin ở trang web này là ảo được tạo ra để phục vụ mục đích học tập. 
+          Nếu có khiếu nại vui lòng gửi qua email 20110121@student.hcmute.edu.vn
+        </p>
 
         <ul className="ft-social-links">
           <li>
             <a
-              href="https://linkedin.com/in/Alkaison/"
+              href="/"
               title="LinkedIn"
               target="_blank"
               rel="noopener noreferrer"
@@ -87,7 +89,7 @@ function Footer() {
 
           <li>
             <a
-              href="https://facebook.com/"
+              href="/"
               title="FaceBook"
               target="_blank"
               rel="noopener noreferrer"
@@ -104,7 +106,7 @@ function Footer() {
 
           <li>
             <a
-              href="https://x.com/Alkaison/"
+              href=""
               title="Twitter"
               target="_blank"
               rel="noopener noreferrer"

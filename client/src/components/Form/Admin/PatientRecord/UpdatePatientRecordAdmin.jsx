@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { updatePatientRecordAdminApi, 
-        readPatientRecordAdminApi } from '../../../api'
+        readPatientRecordAdminApi } from '../../../../api'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
@@ -49,7 +49,7 @@ const UpdatePatientRecordAdmin = () => {
         setHealthinsurance(patientData.healthInsurance);
       }
     }, [patientData]);
-    console.log(fullname, birthday, gender, address, phonenumber, identificationCard, allergy, healthinsurance);
+    
     const handleUpdatePatientRecord = async (e) => {
       const birthdayFormatted = moment(birthday).format("MM/DD/YYYY");
       try {

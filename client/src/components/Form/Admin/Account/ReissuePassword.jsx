@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import {Form, Input, Button, message} from 'antd'
 import axios from 'axios';
-import { reissuePassApi } from '../../../api';
+import { reissuePassApi } from '../../../../api';
 
 const ReissuePassword = () => {
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react'
-import { readPatientRecordAdminApi } from '../../../api';
+import { readPatientRecordAdminApi } from '../../../../api';
 import axios from 'axios';
 import moment from 'moment';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -7,7 +7,7 @@ import { Button } from 'antd';
 
 
 
-const PatientRecordDetailAdminForm = () => {
+const PatientRecordDetailAdmin = () => {
 
   const { id } = useParams();
   const [record, setRecord] = useState(null);
@@ -84,4 +84,4 @@ const PatientRecordDetailAdminForm = () => {
   )
 }
 
-export default PatientRecordDetailAdminForm
+export default PatientRecordDetailAdmin

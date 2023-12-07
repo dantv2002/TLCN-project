@@ -13,10 +13,9 @@ import { Layout, Menu, Button, theme, Avatar, Dropdown, message } from 'antd';
 const { Header, Sider, Content } = Layout;
 import { Outlet, useNavigate } from 'react-router-dom';
 import { logoutApi } from '../../api';
-import "../Admin/Dashboard.css"
 import axios from 'axios';
 
-const Dashboard = () => {
+const DashboardAdmin = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [headerTitle, setheaderTitle] = useState("Dashboard");
     const navigate = useNavigate();
@@ -204,4 +203,4 @@ const Dashboard = () => {
     );
 }
 
-export default Dashboard
+export default DashboardAdmin
