@@ -17,7 +17,7 @@ singleton_instance = deseaseModels()
 
 @app.route("/image/predict", methods=["POST"])
 def predict():
-    # try:
+    try:
         global singleton_instance
         imageURL = request.get_json()["imageURL"]
         print(imageURL)
@@ -27,8 +27,8 @@ def predict():
         result = predictSv.predict()
         # Return result
         return result, 200
-    # except:
-        return "Error", 500
+    except:
+        return "Server error", 500
 
 
 if __name__ == "__main__":
