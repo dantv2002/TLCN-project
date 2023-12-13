@@ -1,4 +1,4 @@
-export const host = "https://13.54.42.209/api";
+export const host = "http://13.54.42.209/api";
 
 //Login Register ResetPasswordx`
 export const loginApi = `${host}/login`;
