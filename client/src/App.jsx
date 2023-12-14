@@ -16,7 +16,6 @@ import MedicalRecordDetailForm from './components/Form/User/MedicalRecordDetailF
 import DashboardAdmin from './pages/Admin/DashboardAdmin';
 import DashboardDoctor from './pages/Doctor/DashboardDoctor';
 import Account from './pages/Admin/Account';
-import Diagnose from './pages/Admin/Diagnose';
 import PatientRecordAdmin from './pages/Admin/PatientRecordAdmin';
 import MedicalRecordAdmin from './pages/Admin/MedicalRecordAdmin';
 import ChangePasswordAdminForm from './components/Form/Admin/ChangePasswordAdminForm';
@@ -28,6 +27,10 @@ import UpdatePatientRecordAdmin from './components/Form/Admin/PatientRecord/Upda
 import MedicalRecordDetailAdmin from './components/Form/Admin/MedicalRecord/MedicalRecordDetailAdmin';
 import UpdateMedicalRecordAdmin from './components/Form/Admin/MedicalRecord/UpdateMedicalRecordAdmin';
 import CreateMedicalRecordAdmin from './components/Form/Admin/MedicalRecord/CreateMedicalRecordAdmin';
+import Doctor from './pages/Admin/Doctor';
+import DoctorDetail from './components/Form/Admin/Doctor/DoctorDetail';
+import UpdateDoctor from './components/Form/Admin/Doctor/UpdateDoctor';
+import DiagnosisAdmin from './pages/Admin/DiagnosisAdmin';
 
 function App() {
   return (
@@ -51,6 +54,9 @@ function App() {
         <Route path='account' element={<Account/>}/>
         <Route path='account/createdoctor' element={<CreateAccountDoctor/>}/>
         <Route path='account/reissuepass/:id' element={<ReissuePassword/>}/>
+        <Route path='doctor' element={<Doctor/>}/>
+        <Route path='doctor/detail/:id' element={<DoctorDetail/>}/>
+        <Route path='doctor/update/:id' element={<UpdateDoctor/>}/>
         <Route path='patient' element={<PatientRecordAdmin/>}/>
         <Route path='patient/read/:id' element={<PatientRecordDetailAdmin/>}/>
         <Route path='patient/create' element={<CreatePatientRecordAdmin/>}/>
@@ -59,7 +65,7 @@ function App() {
         <Route path='medical/create' element={<CreateMedicalRecordAdmin/>}/>
         <Route path='medical/detail/:id' element={<MedicalRecordDetailAdmin/>}/>
         <Route path='medical/update/:id' element={<UpdateMedicalRecordAdmin/>}/>
-        <Route path='diagnose' element={<Diagnose/>}/>
+        <Route path='diagnose' element={<DiagnosisAdmin/>}/>
       </Route>
       <Route path='*' element={<Pagenotfound/>}/>
     </Routes>

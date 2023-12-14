@@ -75,7 +75,7 @@ const DashboardAdmin = () => {
                 break;
 
             case '2':
-                navigate("/dashboard/")
+                navigate("/dashboard/doctor")
                 setheaderTitle('Quản lý bác sĩ')
                 break;
 

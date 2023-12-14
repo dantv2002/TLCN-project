@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { imageDb } from './Config';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
-import "../css/Admin.css"
 
 const UploadImage = ({ onImageUpload }) => {
     const [img, setImg] = useState(null);

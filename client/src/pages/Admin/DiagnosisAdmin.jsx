@@ -6,9 +6,8 @@ import axios from 'axios'
 import { diagnosisImageApi, 
         saveDiagnosisImageApi, 
         searchAllPatientRecordAdminApi,
-        readsMedicalRecordAdminApi } from '../../utils/api/admin'
+        readsMedicalRecordAdminApi } from '../../api'
 import moment from 'moment';
-import "../../css/Admin.css";
 
 const DiagnosisAdmin = () => {
 

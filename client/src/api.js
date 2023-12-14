@@ -9,13 +9,19 @@ export const confirmReset = `${host}/resetpass`;
 export const logoutApi = `${host}/auth/logout`;
 
 //Admin
-//Accout
-export const readAccoutApi = (page) => `${host}/auth/account/reads?page=${page}&size=5`;
+//Account
+export const readAccountApi = (page) => `${host}/auth/account/reads?page=${page}&size=5`;
 export const lockAccountApi = (id) => `${host}/auth/account/deactive/${id}`;
 export const unlockAccountApi = (id) => `${host}/auth/account/active/${id}`;
 export const reissuePassApi = (id) => `${host}/auth/account/password/reset/${id}`;
 export const deleteAccountApi = (id) => `${host}/auth/account/delete/${id}`;
 export const createAccountDoctorApi = `${host}/auth/account/create`;
+
+//Doctor
+export const readsDoctorApi = (page) => `${host}/auth/doctor/reads?page=${page}`;
+export const readDoctorApi = (id) => `${host}/auth/doctor/read/${id}`;
+export const updateDoctorApi = (id) => `${host}/auth/doctor/update/${id}`;
+export const deleteDoctorApi = (id) => `${host}/auth/doctor/delete/${id}`;
 
 //Patient
 export const readsPatientRecordAdminApi = `${host}/auth/patientrecord/reads`;
@@ -26,7 +32,7 @@ export const deletePatientRecordAdminApi = (id) => `${host}/auth/patientrecord/d
 export const searchPatientRecordAdminApi = (keyword, page) => `${host}/auth/patientrecord/search?keyword=${keyword}&page=${page}`;
 export const searchAllPatientRecordAdminApi = (keyword) => `${host}/auth/patientrecord/search?keyword=${keyword}&size=100`;
 
-//Medical Record Manager
+//Medical
 export const readsMedicalRecordAdminApi = (id) => `${host}/auth/medical/reads/${id}`;
 export const readsMedicalPatientAdminApi = `${host}/auth/patientrecord/search?size=1000`;
 export const readsMedicalDoctorAdminApi = `${host}/auth/doctor/reads?size=1000`;

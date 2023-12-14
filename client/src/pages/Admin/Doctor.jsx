@@ -4,9 +4,10 @@ import { Alert, Button, Input, Space, Spin, Table, message} from 'antd';
 import Highlighter from 'react-highlight-words';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { deleteAccountApi, lockAccountApi, readAccountApi, unlockAccountApi } from '../../api';
+import moment from 'moment';
+import { deleteDoctorApi, readsDoctorApi, } from '../../api';
 
-const Account = () => {
+const Doctor = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const [data, setData] = useState([]);
@@ -27,14 +28,13 @@ const Account = () => {
       try {
         setLoading(true);
         const startTime = new Date();
-        const response = await axios.get(readAccountApi(currentpage), {
+        const response = await axios.get(readsDoctorApi(currentpage), {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setData(response.data.data.medicals);
+        setData(response.data.data.doctors);
         setTotalpage(Math.ceil(response.data.data.total / 5));
-        console.log(totalpage);
         const endTime = new Date();
         const fetchTime = endTime - startTime;
         setLoadingTime(fetchTime);
@@ -110,71 +110,26 @@ const Account = () => {
         text
       ),
   });
-
-  const handleLock = async (id) => {
+  const handleReadDoctor = async (id) => {
+    navigate(`/dashboard/doctor/detail/${id}`);
+  }
+  const handleUpdateDoctor = async (id) => {
+    navigate(`/dashboard/doctor/update/${id}`);
+  }
+  const handleDeleteDoctor = async (id) => {
     try {
-      await axios.get(lockAccountApi(id), {
+      await axios.delete(deleteDoctorApi(id), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      message.success('Khóa tài khoản thành công');
-      setEventClick(!eventClick);
-    } catch (error) {
-      console.error('Lỗi khi khóa tài khoản', error);
-      message.error('Lỗi khi khóa tài khoản');
-    }
-  };
-
-  const handleUnlock = async (id) => {
-    try {
-      await axios.get(unlockAccountApi(id), {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      message.success('Mở tài khoản thành công');
-      setEventClick(!eventClick);
-    } catch (error) {
-      console.error('Lỗi khi mở tài khoản', error);
-      message.error('Lỗi khi mở tài khoản');
-    }
-  };
-
-  const handleRePassword = (id) => {
-    navigate(`/dashboard/account/reissuepass/${id}`);
-  };
-
-  const handleCreateAccountDoctor = () => {
-    navigate('/dashboard/account/createdoctor');
-    setEventClick(!eventClick);
-  };
-
-  const handleDeleteAccount = async (id) => {
-    try {
-      await axios.delete(deleteAccountApi(id), {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      message.success('Xóa tài khoản thành công');
+      message.success('Xóa bác sĩ thành công');
       setEventClick(!eventClick);
     } catch (error) {
       console.error('Lỗi khi xóa tài khoản', error);
       message.error('Lỗi khi xóa tài khoản');
     }
   };
-
-  function convertRoleToVietnamese(role) {
-    switch (role) {
-      case 'PATIENT':
-        return 'Bệnh nhân';
-      case 'DOCTOR':
-        return 'Bác sĩ';
-      default:
-        return role;
-    }
-  }
 
   const columns = [
     {
@@ -184,22 +139,28 @@ const Account = () => {
       render: (_, __, index) => index + 1 + currentpage * 5,
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-      ...getColumnSearchProps('email'),
+      title: 'Họ tên',
+      dataIndex: 'fullName',
+      key: 'fullName',
+      ...getColumnSearchProps('fullName'),
     },
     {
-      title: 'Tình trạng',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => (status ? 'Đang sử dụng' : 'Đã khóa'),
+      title: 'Ngày sinh',
+      dataIndex: 'birthday',
+      key: 'birthday',
+      render: (birthday) => {
+        return moment(birthday).format('YYYY-MM-DD');
+      }
     },
     {
-      title: 'Vai trò',
-      dataIndex: 'role',
-      key: 'role',
-      render: (role) => convertRoleToVietnamese(role),
+      title: 'Địa chỉ',
+      dataIndex: 'address',
+      key: 'address',
+    },
+    {
+        title: 'Số điện thoại',
+        dataIndex: 'phoneNumber',
+        key: 'phoneNumber',
     },
     {
       title: 'Tùy chọn',
@@ -207,19 +168,13 @@ const Account = () => {
       key: 'options',
       render: (_, record) => (
         <>
-          {record.status ? (
-            <Button className="lock" onClick={() => handleLock(record.id)}>
-              Khóa
-            </Button>
-          ) : (
-            <Button className="unlock" onClick={() => handleUnlock(record.id)}>
-              Mở
-            </Button>
-          )}
-          <Button className="repass" onClick={() => handleRePassword(record.id)}>
-            Cấp lại MK
+          <Button className="read" onClick={() => handleReadDoctor(record.id)}>
+            Xem
           </Button>
-          <Button className="delete" onClick={() => handleDeleteAccount(record.id)}>
+          <Button className="update" onClick={() => handleUpdateDoctor(record.id)}>
+            Cập nhật
+          </Button>
+          <Button className="delete" onClick={() => handleDeleteDoctor(record.id)}>
             Xóa
           </Button>
         </>
@@ -231,7 +186,6 @@ const Account = () => {
     <div>
       { !loading ? (
           <>
-            <Button type='primary' size='medium' onClick={handleCreateAccountDoctor}>Tạo tài khoản bác sĩ</Button>
             <Table 
               columns={columns} 
               dataSource={data} 
@@ -247,7 +201,7 @@ const Account = () => {
           <Spin tip="Đang load ...">
           <Alert
             message="Hãy chờ một chút"
-            description="Đang lấy dữ liệu tài khoản"
+            description="Đang lấy dữ liệu bác sĩ"
             type='info'
           />
         </Spin>
@@ -257,4 +211,4 @@ const Account = () => {
   );
 };
 
-export default Account;
+export default Doctor;
