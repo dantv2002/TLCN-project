@@ -30,13 +30,14 @@ export const createPatientRecordAdminApi = `${host}/auth/patientrecord/create`;
 export const updatePatientRecordAdminApi = (id) => `${host}/auth/patientrecord/update/${id}`;
 export const deletePatientRecordAdminApi = (id) => `${host}/auth/patientrecord/delete/${id}`;
 export const searchPatientRecordAdminApi = (keyword, page) => `${host}/auth/patientrecord/search?keyword=${keyword}&page=${page}`;
-export const searchAllPatientRecordAdminApi = (keyword) => `${host}/auth/patientrecord/search?keyword=${keyword}&size=100`;
+// export const searchAllPatientRecordAdminApi = (keyword) => `${host}/auth/patientrecord/search?keyword=${keyword}&size=100`;
 
 //Medical
 export const readsMedicalRecordAdminApi = (id) => `${host}/auth/medical/reads/${id}`;
 export const readsMedicalPatientAdminApi = `${host}/auth/patientrecord/search?size=1000`;
 export const readsMedicalDoctorAdminApi = `${host}/auth/doctor/reads?size=1000`;
 export const readMedicalRecordByPatientDoctorAdminApi = (patientid, doctorid, page, isReadAll) => `${host}/auth/medical/search?patientId=${patientid}&doctorId=${doctorid}&page=${page}&isReadAll=${isReadAll}`
+export const readAllMedicalRecordByPatientDoctorAdminApi = (patientid, doctorid, isReadAll) => `${host}/auth/medical/search?patientId=${patientid}&doctorId=${doctorid}&isReadAll=${isReadAll}&size=1000`
 export const readMedicalRecordDetailAdminApi = (id) => `${host}/auth/medical/read/detail/${id}`;
 export const deleteMedicalRecordAdminApi = (id) => `${host}/auth/medical/delete/${id}`;
 export const updateMedicalRecordAdminApi = (id) => `${host}/auth/medical/update/${id}`;
@@ -44,7 +45,7 @@ export const createMedicalRecordAdminApi = `${host}/auth/medical/create`;
 
 //Diagnosis Manager
 export const diagnosisImageApi = `${host}/auth/diagnosisimage/predict`;
-export const saveDiagnosisImageApi = (id) => `${host}/auth/diagnosisimage/save/${id}`;
+export const saveDiagnosisImageApi = (id) => `${host}/auth/doctor/save/${id}`;
 
 //User
 //Change Password

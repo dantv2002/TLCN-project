@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import HeaderAdminDoctor from '../../components/Layout/HeaderAdminDoctor'
-import AdminMenu from '../../components/Layout/AdminMenu'
+import { Button, Form, Select, Input, message } from 'antd'
 import UploadImage from '../../data/UploadImage'
 import axios from 'axios'
 import { diagnosisImageApi, 
         saveDiagnosisImageApi, 
-        searchAllPatientRecordAdminApi,
-        readsMedicalRecordAdminApi } from '../../api'
+        readsMedicalPatientAdminApi,
+        readsMedicalDoctorAdminApi, 
+        readAllMedicalRecordByPatientDoctorAdminApi} from '../../api'
 import moment from 'moment';
 
 const DiagnosisAdmin = () => {
@@ -14,16 +14,18 @@ const DiagnosisAdmin = () => {
   const token = localStorage.getItem("token");
   const [image, setImage] = useState("");
   const [result, setResult] = useState("");
-  const [keywordPatient, setKeywordPatient] = useState("");
-  const [patientRecords, setPatientRecords] = useState([]);
   const [patient, setPatient] = useState("");
-  const [medicalRecords, setMedicalRecords] = useState([]);
+  const [patientRecords, setPatientRecords] = useState([]);
+  const [doctor, setDoctor] = useState("");
+  const [doctorRecords, setDoctorRecords] = useState([]);
   const [medical, setMedical] = useState("");
+  const [medicalRecords, setMedicalRecords] = useState([]);
   const [method, setMethod] = useState("");
   const [content, setContent] = useState("");
 
   const handleImageUpload = (url) => {
     setImage(url);
+    console.log(image);
   };
 
   const handleDiagnosisImage = async() => {
@@ -38,64 +40,71 @@ const DiagnosisAdmin = () => {
       });
       if (response.status === 200){
         setResult(response.data.data.result);
+        message.success("Đã chẩn đoán xong")
         console.log(response);
       }
     }catch(error){
       console.log(error);
-      alert("Lỗi không thấy kết quả");
+      message.error("Không tìm thấy kết quả")
     }
   }
 
-  const selectPatient = (id) =>{
-    setPatient(id.target.value)
-  }
-
-  useEffect(() => {
+  useEffect(() =>{
     const fetchPatientRecords = async () => {
       try {
-        const res = await axios.get(searchAllPatientRecordAdminApi(keywordPatient), {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await axios.get(readsMedicalPatientAdminApi, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         });
-        setPatientRecords(res.data.data.medicals);
-      }catch(error){
-      console.log(error);
+        setPatientRecords(response.data.data.medicals);
+      } catch (error) {
+          console.error('Lỗi khi lấy dữ liệu bệnh nhân', error);
       }
-    }
+    };
     fetchPatientRecords();
-  }, [token, keywordPatient]);
-  useEffect(() => {
-    if (patientRecords.length > 0) {
-      setPatient(patientRecords[0].id);
-    }
-  },[patientRecords])
+  }, [token]);
 
-  const selectMedical = (id) =>{
-    setMedical(id.target.value)
-  }
-
-  useEffect(() => {
-    const fetchMedicalRecords = async () => {
+  useEffect(() =>{
+    const fetchDoctorRecords = async () => {
       try {
-        const res = await axios.get(readsMedicalRecordAdminApi(patient), {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await axios.get(readsMedicalDoctorAdminApi, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         });
-        setMedicalRecords(res.data.data.medicals);
-      }catch(error){
-      console.log(error);
+        setDoctorRecords(response.data.data.doctors);
+      } catch (error) {
+          console.error('Lỗi khi lấy dữ liệu bác sĩ', error);
       }
-    }
-    fetchMedicalRecords();
-  }, [token, patient]);
+    };
+    fetchDoctorRecords();
+  }, [token]);
 
-  useEffect(() => {
-    if (medicalRecords.length > 0) {
-      setMedical(medicalRecords[0].id);
-    }
-  },[medicalRecords])
+  useEffect(() =>{
+    const fetchMedicalsByPatientDoctorRecords = async () => {
+        try {
+          let response;
+          if (doctor!=="") {
+            response = await axios.get(readAllMedicalRecordByPatientDoctorAdminApi(patient, doctor, "false"), {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+            });
+          } else {
+            response = await axios.get(readAllMedicalRecordByPatientDoctorAdminApi(patient, doctor, "true"), {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+            });
+          }
+          setMedicalRecords(response.data.data.medicals);
+        } catch (error) {
+            console.error('Lỗi khi lấy dữ liệu bệnh nhân', error);
+        };
+    };
+    fetchMedicalsByPatientDoctorRecords();
+  }, [token, patient, doctor]);
 
   const handleSaveResult = async(id) => {
     try {
@@ -111,90 +120,211 @@ const DiagnosisAdmin = () => {
         },
       });
       if (response.status === 200){
-        console(response);
-        alert("Lưu thành công");
+        console.log(response);
+        message.success("Lưu thành công")
       }
     }catch(error){
       console.log(error);
-      alert("Lưu không thành công")
+      message.error("Lưu không thành công")
     }
   }
+
+  const onChangePatient = (value) => {
+    if (typeof value !== 'undefined') {
+      console.log(`selected ${value}`);
+      setPatient(value);
+    } else {
+      console.log('Clear selected');
+      setPatient("");
+    }
+    console.log(patient);
+  };
+  
+  const onSearchPatient = (value) => {
+    if (typeof value !== 'undefined') {
+      console.log(`selected ${value}`);
+      setPatient(value);
+    } else {
+      console.log('Clear selected');
+      setPatient("");
+    }
+    console.log(patient);
+  };
+
+  const filterOptionPatient = (input, option) =>
+  (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
+  const formattedPatientRecords = patientRecords.map(patient => ({
+    label: `${patient.email} - ${patient.fullName}`,
+    value: patient.id
+  }));
+
+  const onChangeDoctor = (value) => {
+    if (typeof value !== 'undefined') {
+      console.log(`selected ${value}`);
+      setDoctor(value);
+    } else {
+      console.log('Clear selected');
+      setDoctor("");
+      console.log(doctor);
+    }
+  };
+
+  const onSearchDoctor = (value) => {
+    if (typeof value !== 'undefined') {
+      console.log(`selected ${value}`);
+      setDoctor(value);
+    } else {
+      console.log('Clear selected');
+      setDoctor("");
+      console.log(doctor);
+    }
+  };
+
+  const filterOptionDoctor = (input, option) =>
+  (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
+  const formattedDoctorRecords = doctorRecords.map(doctor => ({
+    label: `${doctor.email} - ${doctor.fullName}`,
+    value: doctor.id
+  }));
+
+  const onChangeMedical = (value) => {
+    if (typeof value !== 'undefined') {
+      setMedical(value);
+    } else {
+      console.log('Clear selected');
+      setMedical("");
+    }
+  };
+
+  const onSearchMedical = (value) => {
+    if (typeof value !== 'undefined') {
+      setMedical(value);
+    } else {
+      setMedical("");
+    }
+  };
+
+  const filterOptionMedical = (input, option) =>
+  (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
+  const formattedMedicalRecords = medicalRecords.map(medical => ({
+    label: `Ngày khám: ${moment(medical.date).format("MM/DD/YYYY")} - Bệnh nhân: ${medical.namePatient} - Bác sĩ: ${medical.nameDoctor}`,
+    value: medical.id
+  }));
+
   return (
-    <div>
-      <HeaderAdminDoctor/>
-      <div className='container-fluid'>
-        <div className='row'>
-          <div className='col-md-3'>
-            <AdminMenu/>
-          </div>
-          <div className='col-md-9'>
-            <div className='row'>
-              <div className='col-md-6'>
-                <div className='readimage'>
-                  <UploadImage onImageUpload={handleImageUpload}/>
-                  <button className='redict' onClick={handleDiagnosisImage}>Chuẩn đoán</button>
-                  <br/>
-                  <span>Kết quả: {result}</span>
-                </div>
-              </div>
-              <div className='col-md-6'>
-                {image ? (
-                <div className='saveimage'>
-                  <div className='search_patient'>
-                    <form>
-                        <input 
-                            type="text" 
-                            className='form-control'
-                            placeholder="nhập CMND/CCCD hoặc tên bệnh nhân"
-                            value={keywordPatient}
-                            onChange={(e) => setKeywordPatient(e.target.value)}
-                        />
-                    </form>
-                    <select className='form-select' onChange={selectPatient}>
-                      {patientRecords.map(patient => (
-                        <option value={patient.id}>{patient.email} - {patient.fullName}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className='search_medical'>
-                    <select className='form-select' onChange={selectMedical}>
-                      {medicalRecords.map(medical => (
-                        <option value={medical.id}>ID: {medical.id} - Ngày khám: {moment(medical.date).format("MM/DD/YYYY")} - Bệnh nhân: {medical.namePatient} - Bác sĩ: {medical.nameDoctor}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <form onSubmit={() =>handleSaveResult(medical)}>
-                      <h1>Lưu kết quả</h1>
-                      <div className="mb-3">
-                          <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Phương pháp"
-                              value={method}
-                              onChange={(e) => setMethod(e.target.value)}
-                          />
-                      </div>
-                      <div className="mb-3">
-                          <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Nội dung"
-                              value={content}
-                              onChange={(e) => setContent(e.target.value)}
-                          />
-                      </div>
-                      <button type="submit" className="btn btn-primary">
-                          Lưu
-                      </button>
-                  </form>
-                </div>
-                ) : (
-                  <h2>Hãy load tải ảnh lên</h2>
-                )}
-              </div>
+    <div className='row'>
+      <div className='col-md-6'>
+        <div className='readimage'>
+          <UploadImage onImageUpload={handleImageUpload}/>
+          {image ? (
+            <div>
+              <Button className='redict' 
+                      onClick={handleDiagnosisImage}
+                      style={{marginTop: "5px", marginBottom: "5px"}}>Chuẩn đoán</Button>
+              <br/>
+              <span>Kết quả: {result}</span>
             </div>
-          </div>
+          ) : (
+            <h5>Hãy tải ảnh lên để chẩn đoán</h5>
+          )}
         </div>
+      </div>
+      <div className='col-md-6'>
+        {result ? (
+        <div className='saveimage'>
+          <h2>Lưu kết quả</h2>
+            <Select mode='default'
+              showSearch
+              allowClear
+              style={{minWidth: "490px"}}
+              placeholder="Tìm kiếm bệnh nhân"
+              optionFilterProp='children' 
+              onChange={onChangePatient}
+              onSearch={onSearchPatient}
+              filterOption={filterOptionPatient}
+              options={formattedPatientRecords}
+            />
+            <Select mode='default'
+              showSearch
+              allowClear
+              style={{minWidth: "490px", marginTop: "5px"}}
+              placeholder="Tìm kiếm bác sĩ"
+              optionFilterProp='children' 
+              onChange={onChangeDoctor}
+              onSearch={onSearchDoctor}
+              filterOption={filterOptionDoctor}
+              options={formattedDoctorRecords}
+            />
+          <Form onFinish={() => handleSaveResult(medical)}>
+            <Form.Item 
+                name="medical"
+                rules={[
+                  {
+                      required: true,
+                      message: "Bạn chưa chọn bệnh án"
+                  }
+                ]}
+                hasFeedback
+              >
+              <Select mode='default' 
+                showSearch
+                allowClear
+                style={{minWidth: "490px", marginTop:"5px"}}
+                placeholder="Tìm kiếm bệnh án"
+                optionFilterProp='children' 
+                onChange={onChangeMedical}
+                onSearch={onSearchMedical}
+                filterOption={filterOptionMedical}
+                options={formattedMedicalRecords}
+              />
+            </Form.Item>
+            <Form.Item 
+              label="Phương pháp"
+              name="method"
+              rules={[
+                  {
+                      required: true,
+                      message: "Bạn chưa nhập phương pháp"
+                  }
+              ]}
+              hasFeedback
+              >
+              <Input
+                  type="text"
+                  placeholder="Nhập phương pháp"
+                  value={method}
+                  onChange={(e) => setMethod(e.target.value)}
+              />
+            </Form.Item>
+            <Form.Item 
+              label="Nội dung"
+              name="content"
+              rules={[
+                  {
+                      required: true,
+                      message: "Bạn chưa nhập nội dung"
+                  }
+              ]}
+              hasFeedback
+              >
+              <Input
+                  type="text"
+                  placeholder="Nhập nội dung"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+              />
+            </Form.Item>
+            <Button block type="primary" htmlType='submit'>
+              Lưu 
+            </Button>
+          </Form>
+        </div>
+        ) : (
+          <h2 style={{fontSize: "25px"}}>Thực hiện chẩn đoán để lưu kết quả</h2>
+        )}
       </div>
     </div>
   )
