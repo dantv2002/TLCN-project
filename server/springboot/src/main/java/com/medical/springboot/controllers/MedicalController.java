@@ -289,7 +289,7 @@ public class MedicalController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/statistical")
+    @PostMapping("/statistical")
     public ResponseEntity<BaseResponse> statistical(
             @RequestParam(name = "doctor", defaultValue = "", required = false) String doctor,
             @RequestBody Map<String, String> request) {
@@ -336,14 +336,14 @@ public class MedicalController {
 
     // statistical blood pressure of patient
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DOCTOR')")
-    @GetMapping("/statistical/blood-pressure/{patientId}")
+    @PostMapping("/statistical/blood-pressure/{patientId}")
     public ResponseEntity<BaseResponse> bloodPressure(@PathVariable("patientId") String patientId,
             @RequestBody Map<String, String> request) {
         return statisticalBloodPressure(patientId, request);
     }
 
     @PreAuthorize("hasRole('ROLE_PATIENT')")
-    @GetMapping("/me/statistical/blood-pressure")
+    @PostMapping("/me/statistical/blood-pressure")
     public ResponseEntity<BaseResponse> meStatisticalBloodPressure(@RequestBody Map<String, String> request) {
         String patientId = authenticationFacade.getAuthentication().getName().split(",")[0];
         return statisticalBloodPressure(patientId, request);
@@ -379,7 +379,7 @@ public class MedicalController {
             });
             return ResponseEntity.status(200).body(response);
         } catch (Exception e) {
-            throw new RuntimeException("Date invalid");
+            throw new RuntimeException(e);
         }
     }
 }
