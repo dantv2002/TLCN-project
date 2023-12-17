@@ -67,7 +67,7 @@ export const updateMedicalRecordAdminApi = (id) =>
 export const createMedicalRecordAdminApi = `${host}/auth/medical/create`;
 
 //Diagnosis Manager
-export const diagnosisImageApi = `${host}/auth/diagnosisimage/predict`;
+export const diagnosisImageApi = `${host}/auth/doctor/predict`;
 export const saveDiagnosisImageApi = (id) => `${host}/auth/doctor/save/${id}`;
 
 //Chart Admin
