@@ -76,7 +76,7 @@ const MedicalRecord = () => {
                         <input 
                             type="text" 
                             className='form-control'
-                            placeholder="nhập bệnh án"
+                            placeholder="nhập từ khóa chẩn đoán của bệnh án"
                             value={keyword}
                             onChange={(e) => setKeyword(e.target.value)}
                         />

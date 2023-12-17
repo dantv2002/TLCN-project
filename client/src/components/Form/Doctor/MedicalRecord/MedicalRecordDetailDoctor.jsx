@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom'
 import { readMedicalRecordDetailAdminApi } from '../../../../api'
 import axios from 'axios'
 import moment from 'moment'
-import { Spin, Alert, Button } from 'antd'
+import { Spin, Alert } from 'antd'
 
-const MedicalRecordDetailAdmin = () => {  
+const MedicalRecordDetailDoctor = () => {  
 
   const { id } = useParams();
   const [medicalRecord, setMedicalRecord] = useState(null);
@@ -30,9 +30,9 @@ const MedicalRecordDetailAdmin = () => {
   }, [id]);
 
   const handleBack = () => {
-    navigate("/dashboard/medical")
+    navigate("/doctor/medical")
   }
-  
+
   return (
     <div>
       <Button type='primary' style={{backgroundColor:"green"}} onClick={handleBack}>Quay lại</Button>
@@ -73,4 +73,4 @@ const MedicalRecordDetailAdmin = () => {
   )
 }
 
-export default MedicalRecordDetailAdmin
+export default MedicalRecordDetailDoctor

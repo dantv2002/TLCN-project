@@ -5,6 +5,7 @@ import { logoutApi } from "../../api";
 import "../../css/Home/Navbar.css";
 import "../../css/Header.css"
 import { Link, useNavigate } from "react-router-dom";
+import { message } from "antd";
 
 function HeaderUser() {
 
@@ -25,10 +26,10 @@ function HeaderUser() {
         localStorage.removeItem("fullname");
         localStorage.removeItem("token");
         localStorage.removeItem("role");
-        alert("Đăng xuất thành công")
+        message.success("Đăng xuất thành công")
         navigate("/")
       } else {
-        alert("Đăng xuất thất bại")
+        message.error("Đăng xuất thất bại")
       }
     } catch(error) {
       console.log(error);
@@ -95,6 +96,7 @@ function HeaderUser() {
           <div className="dropdown">
             <i class="ri-arrow-down-s-line dropdown__arrow"></i>
             <div className="dropdown_menu">
+              <a href="/user/chart">Biểu đồ huyết áp</a>
               <a href="/user/patientrecord">Hồ sơ bệnh nhân</a>
               <a href="/user/medicalrecord">Hồ sơ bệnh án</a>
               <a href="/user/changepassword">Đổi mật khẩu</a>

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../../css/Home/LegalDocs.css";
+import logo from "../../assets/logo.png"
 
 function LegalDocs() {
   useEffect(() => {
@@ -11,7 +12,7 @@ function LegalDocs() {
     <div className="legal-section-title">
       <h1 className="legal-siteTitle">
         <Link to="/">
-          Health <span className="legal-siteSign">+</span>
+          <img className="image_logo" src={logo} alt="logo"/>
         </Link>
       </h1>
 
@@ -62,7 +63,8 @@ function LegalDocs() {
       </div>
 
       <div className="legal-footer">
-        <p>© 2013-2023 Health+. All rights reserved.</p>
+        <p>© Những thông tin ở trang web này là ảo được tạo ra để phục vụ mục đích học tập. 
+          Nếu có khiếu nại vui lòng gửi qua email 20110121@student.hcmute.edu.vn</p>
       </div>
     </div>
   );

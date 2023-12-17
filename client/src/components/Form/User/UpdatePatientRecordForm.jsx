@@ -4,7 +4,7 @@ import { readPatientRecordApi, updatePatientRecordApi } from '../../../api';
 import moment from 'moment';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { faCommentSms } from '@fortawesome/free-solid-svg-icons';
+import { message } from 'antd';
 
 const UpdatePatientRecordForm = () => {
 
@@ -82,14 +82,12 @@ const UpdatePatientRecordForm = () => {
         }
       );
       if (res.status === 200) {
-        alert("Chỉnh sửa hồ sơ thành công");
+        message.success("Chỉnh sửa hồ sơ thành công");
         navigate("/user/patientrecord");
-      } else {
-        alert("Chỉnh hồ sơ không thành công");
       }
     } catch (error) {
       console.log(error);
-      alert("Lỗi");
+      message.error("Chỉnh hồ sơ không thành công");
     }
   };
   return (

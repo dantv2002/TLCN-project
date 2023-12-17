@@ -7,7 +7,8 @@ import {
   CopyOutlined,
   LogoutOutlined,
   DownOutlined,
-  FileOutlined
+  FileOutlined,
+  HomeOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, Button, theme, Avatar, Dropdown, message } from 'antd';
 const { Header, Sider, Content } = Layout;
@@ -69,6 +70,12 @@ const DashboardAdmin = () => {
     ];
     const handleMenuSelect = (item) => {
         switch (item.key) {
+
+            case '0':
+                navigate("/dashboard")
+                setheaderTitle('Home')
+                break;
+
             case '1':
                 navigate("/dashboard/account")
                 setheaderTitle('Quản lý tài khoản')
@@ -108,9 +115,14 @@ const DashboardAdmin = () => {
             <Menu
                 theme="dark"
                 mode="inline"
-                defaultSelectedKeys={['1']}
+                defaultSelectedKeys={['0']}
                 onSelect={handleMenuSelect}
                 items={[
+                {
+                    key: '0',
+                    icon: <HomeOutlined/>,
+                    label: 'Home',
+                },
                 {
                     key: '1',
                     icon: <UserOutlined />,
@@ -183,7 +195,7 @@ const DashboardAdmin = () => {
                 >
                     <div style={{ marginRight: 20, cursor: "pointer" }}>
                     <Avatar size="large" icon={<UserOutlined />} />
-                    <span style={{ marginInline: 10 }}>{localStorage.getItem("fullname")}</span>
+                    <span style={{ marginInline: 10 }}>Admin: {localStorage.getItem("fullname")}</span>
                     <DownOutlined />    
                     </div>
                 </Dropdown>

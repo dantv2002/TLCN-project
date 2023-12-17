@@ -4,6 +4,7 @@ import { confirmReset } from '../../api';
 import { useNavigate } from 'react-router-dom';
 import "../../css/Auth.css"
 import HeaderUser from "../../components/Layout/HeaderUser";
+import { message } from 'antd';
 
 const VerifyResetPasswordPage = () => {
     //Lấy dữ liệu
@@ -18,20 +19,18 @@ const VerifyResetPasswordPage = () => {
           const reponse = await axios.post(confirmReset,
               {email, password, verifycode});
           if(reponse.status===200){
-            alert("Lấy lại mật khẩu thành công");
+            message.success("Lấy lại mật khẩu thành công");
             sessionStorage.removeItem("email");
             sessionStorage.removeItem("password");
             navigate("/")
-          } else {
-            alert("Lấy lại mật khẩu thất bại");
           }
         }catch(error){
           console.log(error);
-          alert("Lỗi");
+          message.error("Lấy lại mật khẩu thất bại");
         }
       }
       else{
-        alert("Mật khẩu không khớp")
+        message.error("Mật khẩu không khớp")
       }
   }
   return (

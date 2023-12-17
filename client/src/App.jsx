@@ -31,6 +31,18 @@ import Doctor from './pages/Admin/Doctor';
 import DoctorDetail from './components/Form/Admin/Doctor/DoctorDetail';
 import UpdateDoctor from './components/Form/Admin/Doctor/UpdateDoctor';
 import DiagnosisAdmin from './pages/Admin/DiagnosisAdmin';
+import ChartAdmin from './pages/Admin/ChartAdmin';
+import PatientRecordDoctor from './pages/Doctor/PatientRecordDoctor';
+import CreatePatientRecordDoctor from './components/Form/Doctor/PatientRecord/CreatePatientRecordDoctor';
+import PatientRecordDetailDoctor from './components/Form/Doctor/PatientRecord/PatientRecordDetailDoctor';
+import UpdatePatientRecordDoctor from './components/Form/Doctor/PatientRecord/UpdatePatientRecordDoctor';
+import DiagnosisDoctor from './pages/Doctor/DiagnosisDoctor';
+import MedicalRecordDoctor from './pages/Doctor/MedicalRecordDoctor';
+import ChartDoctor from './pages/Doctor/ChartDoctor';
+import CreateMedicalRecordDoctor from './components/Form/Doctor/MedicalRecord/CreateMedicalRecordDoctor';
+import MedicalRecordDetailDoctor from './components/Form/Doctor/MedicalRecord/MedicalRecordDetailDoctor';
+import UpdateMedicalRecordDoctor from './components/Form/Doctor/MedicalRecord/UpdateMedicalRecordDoctor';
+import ChartUser from './pages/User/ChartUser';
 
 function App() {
   return (
@@ -41,15 +53,16 @@ function App() {
       <Route path='/verifyregister' element={<VerifyRegisterPage/>}/>
       <Route path='/resetpassword' element={<ResetPasswordPage/>}/>
       <Route path='/verifyresetpassword' element={<VerifyResetPasswordPage/>}/>
-      <Route path='/legal' element={<Legal />} />
+      <Route path='/legal' element={<Legal />}/>
+      <Route path='/user/chart' element={<ChartUser/>}/>
       <Route path='/user/changepassword' element={<ChangePasswordPatientForm/>}/>
       <Route path='/user/patientrecord' element={<PatientRecord/>}/>
       <Route path='/user/patientrecord/create' element={<CreatePatientRecordForm/>}/>
       <Route path='/user/patientrecord/update' element={<UpdatePatientRecordForm/>}/>
       <Route path='/user/medicalrecord' element={<MedicalRecord/>}/>
       <Route path='/user/medicalrecord/detail/:id' element={<MedicalRecordDetailForm/>}/>
-      <Route path='/doctor/dashboard' element={<DashboardDoctor/>}/>  
       <Route path="/dashboard" element={<DashboardAdmin/>}>
+        <Route path='' element={<ChartAdmin/>}/>
         <Route path='changepass' element={<ChangePasswordAdminForm/>}/>
         <Route path='account' element={<Account/>}/>
         <Route path='account/createdoctor' element={<CreateAccountDoctor/>}/>
@@ -66,6 +79,18 @@ function App() {
         <Route path='medical/detail/:id' element={<MedicalRecordDetailAdmin/>}/>
         <Route path='medical/update/:id' element={<UpdateMedicalRecordAdmin/>}/>
         <Route path='diagnose' element={<DiagnosisAdmin/>}/>
+      </Route>
+      <Route path="/doctor" element={<DashboardDoctor/>}>
+        <Route path='' element={<ChartDoctor/>}/>
+        <Route path='patient' element={<PatientRecordDoctor/>}/>
+        <Route path='patient/read/:id' element={<PatientRecordDetailDoctor/>}/>
+        <Route path='patient/create' element={<CreatePatientRecordDoctor/>}/>
+        <Route path='patient/update/:id' element={<UpdatePatientRecordDoctor/>}/>
+        <Route path='medical' element={<MedicalRecordDoctor/>}/>
+        <Route path='medical/create' element={<CreateMedicalRecordDoctor/>}/>
+        <Route path='medical/detail/:id' element={<MedicalRecordDetailDoctor/>}/>
+        <Route path='medical/update/:id' element={<UpdateMedicalRecordDoctor/>}/>
+        <Route path='diagnose' element={<DiagnosisDoctor/>}/>
       </Route>
       <Route path='*' element={<Pagenotfound/>}/>
     </Routes>

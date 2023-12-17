@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "../../../css/User.css"
 import axios from "axios";
 import { createPatienRecordApi } from "../../../api";
+import { message } from "antd";
 
 const CreatePatientRecordForm = () => {
     const fullname = localStorage.getItem("fullname");
@@ -40,14 +41,12 @@ const CreatePatientRecordForm = () => {
                 },
             });
             if (reponse.status === 201) {
-                alert("Tạo hồ so thành công");
+                message.success("Tạo hồ so thành công");
                 navigate("/user/patientrecord");
-            } else {
-                alert("Tạo hồ sơ không thành công");
             }
         } catch(error){
             console.log(error);
-            alert("Lỗi");
+            message.error("Tạo hồ sơ không thành công");
         }
         
     }

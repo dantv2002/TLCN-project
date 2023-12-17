@@ -47,9 +47,17 @@ export const createMedicalRecordAdminApi = `${host}/auth/medical/create`;
 export const diagnosisImageApi = `${host}/auth/diagnosisimage/predict`;
 export const saveDiagnosisImageApi = (id) => `${host}/auth/doctor/save/${id}`;
 
+//Chart Admin
+export const countMedicalApi = (id) => `${host}/auth/medical/count?doctor=${id}`
+export const statisticalApi = (id) => `${host}/auth/medical/statistical?doctor=${id}`
+export const bloodApi = (id) => `${host}/auth/medical/statistical/blood-pressure/${id}`
+
 //User
 //Change Password
 export const changePasswordApi = `${host}/auth/changepass/me`;
+
+//Chart
+export const bloodPatientApi = `${host}/auth/medical/me/statistical/blood-pressure`
 
 //Patient Record
 export const createPatienRecordApi = `${host}/auth/patientrecord/create/me`;
@@ -60,3 +68,6 @@ export const updatePatientRecordApi = `${host}/auth/patientrecord/update/me`;
 export const readMedicalRecordDetailApi = (id) => `${host}/auth/medical/read/detail/${id}`;
 export const searchMedicalRecordApi = (keyword, page) => `${host}/auth/medical/search/me?keyword=${keyword}&page=${page}`
 
+//Doctor
+//Medical Record
+export const readMedicalRecordByPatientDoctorApi = (patientid, page) => `${host}/auth/medical/search?patientId=${patientid}&page=${page}`

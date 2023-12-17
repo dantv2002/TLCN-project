@@ -6,7 +6,7 @@ import axios from 'axios'
 import moment from 'moment'
 import { Input, Button, Form, message, DatePicker, Select} from 'antd';
 
-const UpdatePatientRecordAdmin = () => {
+const UpdatePatientRecordDoctor = () => {
     const [patientData, setPatientData] = useState(null);
     const token = localStorage.getItem("token");
     const {id} = useParams();
@@ -71,8 +71,8 @@ const UpdatePatientRecordAdmin = () => {
           }
         );
         if (res.status === 200) {
-          message.success("Chỉnh sửa hồ sơ thành công");
-          navigate("/dashboard/patient");
+          message.success("Chỉnh sửa hồ sơ thành công")
+          navigate("/doctor/patient");
         }
       } catch (error) {
         console.log(error);
@@ -92,7 +92,7 @@ const UpdatePatientRecordAdmin = () => {
         cursor: 'pointer',
     };
     const handleBack = () => {
-        navigate("/dashboard/patient")
+        navigate("/doctor/patient")
     }
     return (
       <div>
@@ -249,4 +249,4 @@ const UpdatePatientRecordAdmin = () => {
   )
 }
 
-export default UpdatePatientRecordAdmin
+export default UpdatePatientRecordDoctor

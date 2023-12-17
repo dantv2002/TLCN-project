@@ -223,7 +223,7 @@
 
 .medicalrecord_container .search_medical .form-control {
     float: left;
-    width: calc(300px - 30px);
+    width: calc(400px - 30px);
     padding-right: 30px;
     box-sizing: border-box;
 }

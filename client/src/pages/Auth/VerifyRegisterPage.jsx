@@ -4,6 +4,7 @@ import { confirmRegister } from '../../api';
 import { useNavigate } from 'react-router-dom';
 import "../../css/Auth.css"
 import HeaderUser from "../../components/Layout/HeaderUser";
+import { message } from 'antd';
 
 const VerifyRegisterPage = () => {
     //Lấy dữ liệu
@@ -18,17 +19,15 @@ const VerifyRegisterPage = () => {
         const reponse = await axios.post(confirmRegister,
             {email, password, fullname, verifycode});
         if(reponse.status===201){
-          alert("Đăng ký thành công");
+          message.success("Đăng ký thành công");
           sessionStorage.removeItem("email");
           sessionStorage.removeItem("password");
           sessionStorage.removeItem("fullname");
           navigate("/")
-        } else {
-          alert("Đăng ký thất bại");
         }
       }catch(error){
         console.log(error);
-        alert("Lỗi:");
+        message.error("Đăng ký thất bại");
       }
   }
   return (

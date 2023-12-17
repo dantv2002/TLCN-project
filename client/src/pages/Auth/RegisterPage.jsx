@@ -4,6 +4,7 @@ import { registerApi } from "../../api";
 import { useNavigate } from "react-router-dom";
 import "../../css/Auth.css"
 import HeaderUser from "../../components/Layout/HeaderUser";
+import { message } from "antd";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
@@ -27,17 +28,15 @@ const RegisterPage = () => {
         sessionStorage.setItem("fullname", fullname);
     
         if (response.status===200) {
-          alert("Đăng ký thành công! Vui lòng kiểm tra email của bạn để xác minh.");
+          message.success("Đăng ký thành công! Vui lòng kiểm tra email của bạn để xác minh.");
           navigate("/verifyregister");
-        } else {
-          alert("Lỗi đăng ký: " + response.message);
         }
       } catch (error) {
         console.error("Lỗi: " + error);
-        alert("Đã có lỗi xảy ra khi đăng ký.");
+        message.error("Lỗi đăng ký: " + response.message);
       }
     } else {
-      alert("Nhập lại mật khẩu không chính xác")
+      message.error("Nhập lại mật khẩu không chính xác")
     }
   };
   return (

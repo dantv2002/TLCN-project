@@ -5,22 +5,17 @@ import axios from 'axios'
 import moment from 'moment'
 import Highlighter from 'react-highlight-words';
 import { Alert, Button, Input, Space, Spin, Table, message, Select} from 'antd';
-import { deleteMedicalRecordAdminApi, 
-         readsMedicalPatientAdminApi,
-         readMedicalRecordByPatientDoctorAdminApi,
-         readsMedicalDoctorAdminApi,} from '../../api'
+import { readsMedicalPatientAdminApi,
+         readMedicalRecordByPatientDoctorApi,} from '../../api'
 
-const MedicalRecordAdmin = () => {
+const MedicalRecordDoctor = () => {
 
   const [medicalRecords, setMedicalRecords] = useState([]);
   const [patient, setPatient] = useState("");
   const [patientRecords, setPatientRecords] = useState([]);
-  const [doctor, setDoctor] = useState("");
-  const [doctorRecords, setDoctorRecords] = useState([]);
   const [searchedColumn, setSearchedColumn] = useState('');
   const [totalpage, setTotalpage] = useState(0);
   const [currentpage, setCurrentpage] = useState(0);
-  const [deleteClicked, setDeleteClicked] = useState();
   const [loading, setLoading] = useState(false);
   const [loadingTime, setLoadingTime] = useState(0);
   const token = localStorage.getItem("token");
@@ -31,7 +26,7 @@ const MedicalRecordAdmin = () => {
   };
 
   const handleCreateMedicalRecord = () => {
-    navigate(`/dashboard/medical/create`)
+    navigate(`/doctor/medical/create`)
   }
 
   useEffect(() => {
@@ -60,22 +55,6 @@ const MedicalRecordAdmin = () => {
   }, [token]);
 
   useEffect(() =>{
-    const fetchDoctorRecords = async () => {
-      try {
-        const response = await axios.get(readsMedicalDoctorAdminApi, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        setDoctorRecords(response.data.data.doctors);
-      } catch (error) {
-          console.error('Lỗi khi lấy dữ liệu bác sĩ', error);
-      }
-    };
-    fetchDoctorRecords();
-  }, [token]);
-
-  useEffect(() =>{
     const fetchPatient = () => {
         try{
             setCurrentpage("0");
@@ -86,58 +65,28 @@ const MedicalRecordAdmin = () => {
     fetchPatient();
   }, [patient])
 
-
   useEffect(() =>{
-    console.log('Patient:', patient);
-    console.log('Doctor:', doctor);
-    const fetchMedicalsByPatientDoctorRecords = async () => {
+    const fetchMedicalsByPatientRecords = async () => {
         try {
-          setLoading(true);
-          const startTime = new Date();
-          let response;
-          if (doctor!=="") {
-            response = await axios.get(readMedicalRecordByPatientDoctorAdminApi(patient, doctor, currentpage, "false"), {
+            setLoading(true);
+            const startTime = new Date();
+            const response = await axios.get(readMedicalRecordByPatientDoctorApi(patient, currentpage), {
               headers: {
                   Authorization: `Bearer ${token}`,
               },
             });
-          } else {
-            response = await axios.get(readMedicalRecordByPatientDoctorAdminApi(patient, doctor, currentpage, "true"), {
-              headers: {
-                  Authorization: `Bearer ${token}`,
-              },
-            });
-          }
-          console.log(response.data.data.total)
-          setMedicalRecords(response.data.data.medicals);
-          setTotalpage(Math.ceil(response.data.data.total / 5));
-          const endTime = new Date();
-          const fetchTime = endTime - startTime;
-          setLoadingTime(fetchTime);
+            console.log(response.data.data.total)
+            setMedicalRecords(response.data.data.medicals);
+            setTotalpage(Math.ceil(response.data.data.total / 5));
+            const endTime = new Date();
+            const fetchTime = endTime - startTime;
+            setLoadingTime(fetchTime);
         } catch (error) {
             console.error('Lỗi khi lấy dữ liệu bệnh nhân', error);
         };
     };
-    fetchMedicalsByPatientDoctorRecords();
-  }, [token, currentpage, patient, doctor, deleteClicked]);
-
-  const handleDeleteMedicalRecord = async(id) => {
-    try {
-      await axios.delete(deleteMedicalRecordAdminApi(id),{
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      if(deleteClicked){
-        setDeleteClicked(false);
-      }else{
-        setDeleteClicked(true);
-      }
-      console.log("Đã xóa");
-    }catch(error){
-      console.log(error);
-    }
-  }
+    fetchMedicalsByPatientRecords();
+  }, [token, currentpage, patient]);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -193,11 +142,11 @@ const MedicalRecordAdmin = () => {
   });
 
   const handleReadMedicalRecordDetail = (id) => {
-    navigate(`/dashboard/medical/detail/${id}`)
+    navigate(`/doctor/medical/detail/${id}`)
   }
   
   const handleUpdateMedicalRecord = (id) => {
-    navigate(`/dashboard/medical/update/${id}`);
+    navigate(`/doctor/medical/update/${id}`);
   }
 
   const columns = [
@@ -239,9 +188,6 @@ const MedicalRecordAdmin = () => {
           <Button style={{ color: 'black', border: '1px solid black', backgroundColor: 'transparent' }} onClick={() => handleUpdateMedicalRecord(record.id)}>
             Cập nhật
           </Button>
-          <Button style={{ color: 'black', border: '1px solid black', backgroundColor: 'transparent' }} onClick={() => handleDeleteMedicalRecord(record.id)}>
-            Xóa
-          </Button>
         </>
       ),
     },
@@ -277,36 +223,6 @@ const MedicalRecordAdmin = () => {
     value: patient.id
   }));
 
-  const onChangeDoctor = (value) => {
-    if (typeof value !== 'undefined') {
-      console.log(`selected ${value}`);
-      setDoctor(value);
-    } else {
-      console.log('Clear selected');
-      setDoctor("");
-      console.log(doctor);
-    }
-  };
-
-  const onSearchDoctor = (value) => {
-    if (typeof value !== 'undefined') {
-      console.log(`selected ${value}`);
-      setDoctor(value);
-    } else {
-      console.log('Clear selected');
-      setDoctor("");
-      console.log(doctor);
-    }
-  };
-
-  const filterOptionDoctor = (input, option) =>
-  (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
-
-  const formattedDoctorRecords = doctorRecords.map(doctor => ({
-    label: `${doctor.email} - ${doctor.fullName}`,
-    value: doctor.id
-  }));
-
   return (
     <div>
       <div className='medicalrecord_container'>
@@ -322,17 +238,6 @@ const MedicalRecordAdmin = () => {
           onSearch={onSearchPatient}
           filterOption={filterOptionPatient}
           options={formattedPatientRecords}
-        />
-        <Select mode='default'
-          showSearch
-          allowClear
-          style={{width: "400px"}}
-          placeholder="Tìm kiếm bác sĩ"
-          optionFilterProp='children' 
-          onChange={onChangeDoctor}
-          onSearch={onSearchDoctor}
-          filterOption={filterOptionDoctor}
-          options={formattedDoctorRecords}
         />
         { !loading ? (
             <>
@@ -362,4 +267,4 @@ const MedicalRecordAdmin = () => {
   )
 }
 
-export default MedicalRecordAdmin
+export default MedicalRecordDoctor

@@ -4,6 +4,7 @@ import { resetpassApi } from "../../api";
 import { useNavigate } from "react-router-dom";
 import "../../css/Auth.css"
 import HeaderUser from "../../components/Layout/HeaderUser";
+import { message } from "antd";
 
 const ResetPasswordPage = () => {
   const [email, setEmail] = useState("");
@@ -17,14 +18,12 @@ const ResetPasswordPage = () => {
         sessionStorage.setItem("email", email);
 
         if (response.status===200) {
-            alert("Email tồn tại! Vui lòng kiểm tra email của bạn để xác minh.");
+            message.success("Email tồn tại! Vui lòng kiểm tra email của bạn để xác minh.");
             navigate("/verifyresetpassword");
-        } else {
-            alert("Email không tồn tại ");
         }
     } catch (error) {
-    console.error("Lỗi: " + error);
-    alert("Đã có lỗi xảy ra khi reset password.");
+      console.error("Lỗi: " + error);
+      message.error("Email không tồn tại ");
     }
   };
   return (
