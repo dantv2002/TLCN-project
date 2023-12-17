@@ -57,7 +57,7 @@ const DashboardDoctor = () => {
                     <UserOutlined style={{ marginRight: 20 }} /> Đổi mật khẩu
                 </span>
             ),
-            key: '0',
+            key: '4',
         },
         {
             label: (
@@ -65,7 +65,7 @@ const DashboardDoctor = () => {
                     <LogoutOutlined style={{ marginRight: 20 }} /> Đăng xuất
                 </span>
             ),
-            key: '1',
+            key: '5',
         },
     ];
     const handleMenuSelect = (item) => {

@@ -47,7 +47,8 @@ const DashboardAdmin = () => {
         }
     }
     const handlePasswordChange = () => {
-        navigate("/dashboard/changepass")
+        console.log("Đã nhấn")
+        navigate("/dashboard/changepass");
     }
 
     const items = [
@@ -57,7 +58,7 @@ const DashboardAdmin = () => {
                     <UserOutlined style={{ marginRight: 20 }} /> Đổi mật khẩu
                 </span>
             ),
-            key: '0',
+            key: '6',
         },
         {
             label: (
@@ -65,7 +66,7 @@ const DashboardAdmin = () => {
                     <LogoutOutlined style={{ marginRight: 20 }} /> Đăng xuất
                 </span>
             ),
-            key: '1',
+            key: '7',
         },
     ];
     const handleMenuSelect = (item) => {

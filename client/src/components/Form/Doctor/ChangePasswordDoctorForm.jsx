@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import "../../../css/User.css"
 import { message, Form, Button, Input } from 'antd';
 
-const ChangePasswordAdminForm = () => {
+const ChangePasswordDoctorForm = () => {
 
     const token = localStorage.getItem("token");
     const [oldpass, setOldpass] = useState("");
@@ -13,7 +13,7 @@ const ChangePasswordAdminForm = () => {
     const [confirmnewpass, setConfirmnewpass] = useState("");
     const navigate = useNavigate();
 
-    const handleChangePasswordAdmin = async() => {
+    const handleChangePasswordDoctor = async() => {
         if (newpass === confirmnewpass) {   
             try {
                 const response = await axios.post(changePasswordApi, {
@@ -55,8 +55,8 @@ const ChangePasswordAdminForm = () => {
 
     return (
         <div>
-            <div className="changepassadmin" style={{maxWidth: "500px", alignItems: "center"}}>
-                <Form onFinish={handleChangePasswordAdmin}>
+            <div className="changepassdoctor" style={{maxWidth: "500px", alignItems: "center"}}>
+                <Form onFinish={handleChangePasswordDoctor}>
                     <h1>Đổi mật khẩu</h1>
                     <Form.Item 
                         label="Mật khẩu cũ"
@@ -122,4 +122,4 @@ const ChangePasswordAdminForm = () => {
     )
 }
 
-export default ChangePasswordAdminForm
+export default ChangePasswordDoctorForm

@@ -43,6 +43,10 @@ import CreateMedicalRecordDoctor from './components/Form/Doctor/MedicalRecord/Cr
 import MedicalRecordDetailDoctor from './components/Form/Doctor/MedicalRecord/MedicalRecordDetailDoctor';
 import UpdateMedicalRecordDoctor from './components/Form/Doctor/MedicalRecord/UpdateMedicalRecordDoctor';
 import ChartUser from './pages/User/ChartUser';
+import ProtectedRoutePatient from './routes/ProtectedRoutePatient';
+import ProtectedRouteAdmin from './routes/ProtectedRouteAdmin';
+import ProtectedRouteDoctor from './routes/ProtectedRouteDoctor';
+import ChangePasswordDoctorForm from './components/Form/Doctor/ChangePasswordDoctorForm';
 
 function App() {
   return (
@@ -54,45 +58,194 @@ function App() {
       <Route path='/resetpassword' element={<ResetPasswordPage/>}/>
       <Route path='/verifyresetpassword' element={<VerifyResetPasswordPage/>}/>
       <Route path='/legal' element={<Legal />}/>
-      <Route path='/user/chart' element={<ChartUser/>}/>
-      <Route path='/user/changepassword' element={<ChangePasswordPatientForm/>}/>
-      <Route path='/user/patientrecord' element={<PatientRecord/>}/>
-      <Route path='/user/patientrecord/create' element={<CreatePatientRecordForm/>}/>
-      <Route path='/user/patientrecord/update' element={<UpdatePatientRecordForm/>}/>
-      <Route path='/user/medicalrecord' element={<MedicalRecord/>}/>
-      <Route path='/user/medicalrecord/detail/:id' element={<MedicalRecordDetailForm/>}/>
-      <Route path="/dashboard" element={<DashboardAdmin/>}>
-        <Route path='' element={<ChartAdmin/>}/>
-        <Route path='changepass' element={<ChangePasswordAdminForm/>}/>
-        <Route path='account' element={<Account/>}/>
-        <Route path='account/createdoctor' element={<CreateAccountDoctor/>}/>
-        <Route path='account/reissuepass/:id' element={<ReissuePassword/>}/>
-        <Route path='doctor' element={<Doctor/>}/>
-        <Route path='doctor/detail/:id' element={<DoctorDetail/>}/>
-        <Route path='doctor/update/:id' element={<UpdateDoctor/>}/>
-        <Route path='patient' element={<PatientRecordAdmin/>}/>
-        <Route path='patient/read/:id' element={<PatientRecordDetailAdmin/>}/>
-        <Route path='patient/create' element={<CreatePatientRecordAdmin/>}/>
-        <Route path='patient/update/:id' element={<UpdatePatientRecordAdmin/>}/>
-        <Route path='medical' element={<MedicalRecordAdmin/>}/>
-        <Route path='medical/create' element={<CreateMedicalRecordAdmin/>}/>
-        <Route path='medical/detail/:id' element={<MedicalRecordDetailAdmin/>}/>
-        <Route path='medical/update/:id' element={<UpdateMedicalRecordAdmin/>}/>
-        <Route path='diagnose' element={<DiagnosisAdmin/>}/>
-      </Route>
-      <Route path="/doctor" element={<DashboardDoctor/>}>
-        <Route path='' element={<ChartDoctor/>}/>
-        <Route path='patient' element={<PatientRecordDoctor/>}/>
-        <Route path='patient/read/:id' element={<PatientRecordDetailDoctor/>}/>
-        <Route path='patient/create' element={<CreatePatientRecordDoctor/>}/>
-        <Route path='patient/update/:id' element={<UpdatePatientRecordDoctor/>}/>
-        <Route path='medical' element={<MedicalRecordDoctor/>}/>
-        <Route path='medical/create' element={<CreateMedicalRecordDoctor/>}/>
-        <Route path='medical/detail/:id' element={<MedicalRecordDetailDoctor/>}/>
-        <Route path='medical/update/:id' element={<UpdateMedicalRecordDoctor/>}/>
-        <Route path='diagnose' element={<DiagnosisDoctor/>}/>
-      </Route>
       <Route path='*' element={<Pagenotfound/>}/>
+      <Route path='/user/chart' element={
+        <ProtectedRoutePatient>
+          <ChartUser/>
+        </ProtectedRoutePatient>
+      }/>
+      <Route path='/user/changepassword' element={
+        <ProtectedRoutePatient>
+          <ChangePasswordPatientForm/>
+        </ProtectedRoutePatient>
+      }/>
+      <Route path='/user/patientrecord' element={
+        <ProtectedRoutePatient>
+          <PatientRecord/>
+        </ProtectedRoutePatient>
+      }/>
+      <Route path='/user/patientrecord/create' element={
+        <ProtectedRoutePatient>
+          <CreatePatientRecordForm/>
+        </ProtectedRoutePatient>
+      }/>
+      <Route path='/user/patientrecord/update' element={
+        <ProtectedRoutePatient>
+          <UpdatePatientRecordForm/>
+        </ProtectedRoutePatient>
+      }/>
+      <Route path='/user/medicalrecord' element={
+        <ProtectedRoutePatient>
+          <MedicalRecord/>
+        </ProtectedRoutePatient>
+      }/>
+      <Route path='/user/medicalrecord/detail/:id' element={
+        <ProtectedRoutePatient>
+          <MedicalRecordDetailForm/>
+        </ProtectedRoutePatient>
+      }/>
+      <Route path="/dashboard" element={
+        <ProtectedRouteAdmin>
+          <DashboardAdmin/>
+        </ProtectedRouteAdmin>
+      }>
+        <Route path='' element={
+          <ProtectedRouteAdmin>
+            <ChartAdmin/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='changepass' element={
+          <ProtectedRouteAdmin>
+            <ChangePasswordAdminForm/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='account' element={
+          <ProtectedRouteAdmin>
+            <Account/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='account/createdoctor' element={
+          <ProtectedRouteAdmin>
+            <CreateAccountDoctor/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='account/reissuepass/:id' element={
+          <ProtectedRouteAdmin>
+            <ReissuePassword/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='doctor' element={
+          <ProtectedRouteAdmin>
+            <Doctor/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='doctor/detail/:id' element={
+          <ProtectedRouteAdmin>
+            <DoctorDetail/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='doctor/update/:id' element={
+          <ProtectedRouteAdmin>
+            <UpdateDoctor/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='patient' element={
+          <ProtectedRouteAdmin>
+            <PatientRecordAdmin/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='patient/read/:id' element={
+          <ProtectedRouteAdmin>
+            <PatientRecordDetailAdmin/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='patient/create' element={
+          <ProtectedRouteAdmin>
+            <CreatePatientRecordAdmin/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='patient/update/:id' element={
+          <ProtectedRouteAdmin>
+            <UpdatePatientRecordAdmin/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='medical' element={
+          <ProtectedRouteAdmin>
+            <MedicalRecordAdmin/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='medical/create' element={
+          <ProtectedRouteAdmin>
+            <CreateMedicalRecordAdmin/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='medical/detail/:id' element={
+          <ProtectedRouteAdmin>
+            <MedicalRecordDetailAdmin/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='medical/update/:id' element={
+          <ProtectedRouteAdmin>
+            <UpdateMedicalRecordAdmin/>
+          </ProtectedRouteAdmin>
+        }/>
+        <Route path='diagnose' element={
+          <ProtectedRouteAdmin>
+            <DiagnosisAdmin/>
+          </ProtectedRouteAdmin>
+        }/>
+      </Route>
+      <Route path="/doctor" element={
+        <ProtectedRouteDoctor>
+          <DashboardDoctor/>
+        </ProtectedRouteDoctor>
+      }>
+        <Route path='' element={
+          <ProtectedRouteDoctor>
+            <ChartDoctor/>
+          </ProtectedRouteDoctor>
+        }/>
+        <Route path='changepass' element={
+          <ProtectedRouteDoctor>
+            <ChangePasswordDoctorForm/>
+          </ProtectedRouteDoctor>
+        }/>
+        <Route path='patient' element={
+          <ProtectedRouteDoctor>
+            <PatientRecordDoctor/>
+          </ProtectedRouteDoctor>
+        }/>
+        <Route path='patient/read/:id' element={
+          <ProtectedRouteDoctor>
+            <PatientRecordDetailDoctor/>
+          </ProtectedRouteDoctor>
+        }/>
+        <Route path='patient/create' element={
+          <ProtectedRouteDoctor>
+            <CreatePatientRecordDoctor/>
+          </ProtectedRouteDoctor>
+        }/>
+        <Route path='patient/update/:id' element={
+          <ProtectedRouteDoctor>
+            <UpdatePatientRecordDoctor/>
+          </ProtectedRouteDoctor>
+        }/>
+        <Route path='medical' element={
+          <ProtectedRouteDoctor>
+            <MedicalRecordDoctor/>
+          </ProtectedRouteDoctor>
+        }/>
+        <Route path='medical/create' element={
+          <ProtectedRouteDoctor>
+            <CreateMedicalRecordDoctor/>
+          </ProtectedRouteDoctor>
+        }/>
+        <Route path='medical/detail/:id' element={
+          <ProtectedRouteDoctor>
+            <MedicalRecordDetailDoctor/>
+          </ProtectedRouteDoctor>
+        }/>
+        <Route path='medical/update/:id' element={
+          <ProtectedRouteDoctor>
+            <UpdateMedicalRecordDoctor/>
+          </ProtectedRouteDoctor>
+        }/>
+        <Route path='diagnose' element={
+          <ProtectedRouteDoctor>
+            <DiagnosisDoctor/>
+          </ProtectedRouteDoctor>
+        }/>
+      </Route>
     </Routes>
   );
 }
