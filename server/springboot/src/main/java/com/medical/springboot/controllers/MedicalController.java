@@ -138,8 +138,8 @@ public class MedicalController {
                 {
                     put("method", medical.getDiagnosticImages().getMethod());
                     put("content", medical.getDiagnosticImages().getContent());
-                    put("doctor", doctorService.findById(medical.getDiagnosticImages().getDoctorIdPerform())
-                            .orElseThrow(() -> new RuntimeException("Doctor not found")).getFullName());
+                    put("doctor", medical.getDiagnosticImages().getDoctorIdPerform().equals("ADMIN") ? "ADMIN" : (doctorService.findById(medical.getDiagnosticImages().getDoctorIdPerform())
+                            .orElseThrow(() -> new RuntimeException("Doctor not found")).getFullName()));
                     put("urlImage", medical.getDiagnosticImages().getUrlImage());
                     put("conclude", medical.getDiagnosticImages().getConclude());
                 }
