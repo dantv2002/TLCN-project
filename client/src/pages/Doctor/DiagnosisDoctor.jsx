@@ -12,7 +12,7 @@ const DiagnosisDoctor = () => {
 
   const token = localStorage.getItem("token");
   const [image, setImage] = useState("");
-  const [result, setResult] = useState("Bình thường");
+  const [result, setResult] = useState("");
   const [patient, setPatient] = useState("");
   const [patientRecords, setPatientRecords] = useState([]);
   const [medical, setMedical] = useState("");
