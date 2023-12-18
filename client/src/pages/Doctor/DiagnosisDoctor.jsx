@@ -165,7 +165,7 @@ const DiagnosisDoctor = () => {
             <div>
               <Button className='redict' 
                       onClick={handleDiagnosisImage}
-                      style={{marginTop: "5px", marginBottom: "5px"}}>Chuẩn đoán</Button>
+                      style={{marginTop: "5px", marginBottom: "5px"}}>Chẩn đoán</Button>
               <br/>
               <span>Kết quả: {result}</span>
             </div>

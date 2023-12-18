@@ -121,7 +121,7 @@ const ChartDoctor = () => {
           )
         ) : (
           <Spin tip="Đang load ..."/>
-        )};
+        )}
         <Form style={{marginTop: "30px", maxWidth: "400px"}} onFinish={() => {handleBlood(patientBlood)}}>
           <Form.Item 
             label="Ngày bắt đầu"
