@@ -5,8 +5,7 @@ import axios from 'axios'
 import { diagnosisImageApi, 
         saveDiagnosisImageApi, 
         readsMedicalPatientAdminApi,
-        readsMedicalDoctorAdminApi, 
-        readAllMedicalRecordByPatientDoctorAdminApi} from '../../api'
+        readMedicalRecordByPatientApi} from '../../api'
 import moment from 'moment';
 
 const DiagnosisDoctor = () => {
@@ -16,8 +15,6 @@ const DiagnosisDoctor = () => {
   const [result, setResult] = useState("Bình thường");
   const [patient, setPatient] = useState("");
   const [patientRecords, setPatientRecords] = useState([]);
-  const [doctor, setDoctor] = useState("");
-  const [doctorRecords, setDoctorRecords] = useState([]);
   const [medical, setMedical] = useState("");
   const [medicalRecords, setMedicalRecords] = useState([]);
   const [method, setMethod] = useState("");
@@ -66,45 +63,20 @@ const DiagnosisDoctor = () => {
   }, [token]);
 
   useEffect(() =>{
-    const fetchDoctorRecords = async () => {
-      try {
-        const response = await axios.get(readsMedicalDoctorAdminApi, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        setDoctorRecords(response.data.data.doctors);
-      } catch (error) {
-          console.error('Lỗi khi lấy dữ liệu bác sĩ', error);
-      }
-    };
-    fetchDoctorRecords();
-  }, [token]);
-
-  useEffect(() =>{
-    const fetchMedicalsByPatientDoctorRecords = async () => {
+    const fetchMedicalsByPatient = async () => {
         try {
-          let response;
-          if (doctor!=="") {
-            response = await axios.get(readAllMedicalRecordByPatientDoctorAdminApi(patient, doctor, "false"), {
+            const response = await axios.get(readMedicalRecordByPatientApi(patient), {
               headers: {
                   Authorization: `Bearer ${token}`,
               },
             });
-          } else {
-            response = await axios.get(readAllMedicalRecordByPatientDoctorAdminApi(patient, doctor, "true"), {
-              headers: {
-                  Authorization: `Bearer ${token}`,
-              },
-            });
-          }
           setMedicalRecords(response.data.data.medicals);
         } catch (error) {
             console.error('Lỗi khi lấy dữ liệu bệnh nhân', error);
         };
     };
-    fetchMedicalsByPatientDoctorRecords();
-  }, [token, patient, doctor]);
+    fetchMedicalsByPatient();
+  }, [token, patient]);
 
   const handleSaveResult = async(id) => {
     try {
@@ -157,36 +129,6 @@ const DiagnosisDoctor = () => {
   const formattedPatientRecords = patientRecords.map(patient => ({
     label: `${patient.email} - ${patient.fullName}`,
     value: patient.id
-  }));
-
-  const onChangeDoctor = (value) => {
-    if (typeof value !== 'undefined') {
-      console.log(`selected ${value}`);
-      setDoctor(value);
-    } else {
-      console.log('Clear selected');
-      setDoctor("");
-      console.log(doctor);
-    }
-  };
-
-  const onSearchDoctor = (value) => {
-    if (typeof value !== 'undefined') {
-      console.log(`selected ${value}`);
-      setDoctor(value);
-    } else {
-      console.log('Clear selected');
-      setDoctor("");
-      console.log(doctor);
-    }
-  };
-
-  const filterOptionDoctor = (input, option) =>
-  (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
-
-  const formattedDoctorRecords = doctorRecords.map(doctor => ({
-    label: `${doctor.email} - ${doctor.fullName}`,
-    value: doctor.id
   }));
 
   const onChangeMedical = (value) => {
@@ -246,17 +188,6 @@ const DiagnosisDoctor = () => {
               onSearch={onSearchPatient}
               filterOption={filterOptionPatient}
               options={formattedPatientRecords}
-            />
-            <Select mode='default'
-              showSearch
-              allowClear
-              style={{minWidth: "490px", marginTop: "5px"}}
-              placeholder="Tìm kiếm bác sĩ"
-              optionFilterProp='children' 
-              onChange={onChangeDoctor}
-              onSearch={onSearchDoctor}
-              filterOption={filterOptionDoctor}
-              options={formattedDoctorRecords}
             />
           <Form onFinish={() => handleSaveResult(medical)}>
             <Form.Item 

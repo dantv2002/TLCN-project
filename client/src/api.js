@@ -100,3 +100,5 @@ export const searchMedicalRecordApi = (keyword, page) =>
 //Medical Record
 export const readMedicalRecordByPatientDoctorApi = (patientid, page) =>
 	`${host}/auth/medical/search?patientId=${patientid}&page=${page}`;
+export const readMedicalRecordByPatientApi = (patientid) =>
+	`${host}/auth/medical/search?patientId=${patientid}&size=1000`;

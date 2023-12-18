@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { readMedicalRecordDetailAdminApi } from '../../../../api'
 import axios from 'axios'
 import moment from 'moment'
-import { Spin, Alert } from 'antd'
+import { Spin, Alert, Button } from 'antd'
 
 const MedicalRecordDetailDoctor = () => {  
 
