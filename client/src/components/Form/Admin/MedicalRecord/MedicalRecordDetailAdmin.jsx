@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { readMedicalRecordDetailAdminApi } from '../../../../api'
 import axios from 'axios'
 import moment from 'moment'
@@ -10,6 +10,7 @@ const MedicalRecordDetailAdmin = () => {
   const { id } = useParams();
   const [medicalRecord, setMedicalRecord] = useState(null);
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMedicalRecordDetail = async () => {
